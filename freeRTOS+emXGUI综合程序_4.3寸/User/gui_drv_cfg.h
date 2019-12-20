@@ -41,25 +41,25 @@
 #define	LCD_ROTATE      ROTATE_0
 
 /* 是否使用硬件图形加速器（DMA2D之类，驱动需要重新定制） */
-#define	DMA2D_EN                   0
+#define	DMA2D_EN                    0
 
 /* 是否使用缓冲型控件，使用的话会增加一层液晶像素数据的消耗，显示效果减少闪烁*/
 #define  FRAME_BUFFER_EN            1
 
 /*==========输入设备配置===gui_input_port.c==================================================*/
 /* 是否使用输入设备 */
-#define  GUI_INPUT_DEV_EN        1
+#define  GUI_INPUT_DEV_EN           1
 
 /* 是否使能键盘、鼠标、触摸屏 */
-#define	GUI_TOUCHSCREEN_EN      1
-#define	GUI_KEYBOARD_EN          0
-#define	GUI_MOUSE_EN             0
+#define	GUI_TOUCHSCREEN_EN          1
+#define	GUI_KEYBOARD_EN             0
+#define	GUI_MOUSE_EN                0
 
 /* 是否需要触摸校准-电阻屏才需要 */
-#define	GUI_TOUCHSCREEN_CALIBRATE       0
+#define	GUI_TOUCHSCREEN_CALIBRATE   0
 
 /* 是否显示光标 */
-#define  GUI_SHOW_CURSOR_EN        0
+#define  GUI_SHOW_CURSOR_EN         0
 
 /*===========存储器配置===gui_mem_port.c===============================================*/
 /* 通常GUI内核使用MEM内存堆，VMEM内存堆给用户使用 */
@@ -97,7 +97,7 @@
 /* 内存堆的总大小，单位为字节 */ 
 #define	VMEM_SIZE	        ((24*1024*1024))     
 /* 最小分配粒度，单位为字节*/  
-#define	VMEM_ALLOC_UNIT   (4)         //64字节   
+#define	VMEM_ALLOC_UNIT   (64)         //64字节   
 //设置变量定义到“EXRAM”节区的宏
 #define __EXRAM  __attribute__ ((section ("EXRAM")))
 
@@ -154,7 +154,7 @@
   #define   GUI_CONTROL_FONT_64      CONTROL_60_8BPP
 #else
   /* LOGO使用的字体 */
-  #define  GUI_LOGO_FONT              "LOGO_50_4BPP.xft"
+  #define  GUI_LOGO_FONT              "LOGO_30_4BPP.xft"
   #define  GUI_ICON_FONT_200          "logo_icon_200_200_4BPP.xft"
   /* ICON使用的字体 */
   #define   GUI_ICON_FONT_100         "APP_ICON_64_64_4BPP.xft"
@@ -173,25 +173,25 @@
 /* 是否开启调试输出、数组输出、进入函数的输出功能 */
 #define GUI_DEBUG_EN         	      1
 #define GUI_DEBUG_ARRAY_EN          0
-#define GUI_DEBUG_FUNC_EN   	       0
+#define GUI_DEBUG_FUNC_EN   	      0
 
 
 
 /*===========资源设备配置===gui_resource_port.c===============================================*/
 /* 是否使用资源设备 */
-#define GUI_RES_DEV_EN         1
+#define GUI_RES_DEV_EN              1
 
 /* 是否支持文件系统接口,需要移植fatfs文件系统 */
-#define GUI_FS_EN         1
+#define GUI_FS_EN                   1
 
 /* 是否支持文件系统接口,需要移植fatfs文件系统 */
-#define GUI_RES_FS_EN        1
+#define GUI_RES_FS_EN               1
 
 /* 资源所在的基地址 */
-#define GUI_RES_BASE             (16*1024*1024)
+#define GUI_RES_BASE               (16*1024*1024)
 
 /* 存储在FLASH中的资源目录大小 */
-#define GUI_CATALOG_SIZE         (8*1024)
+#define GUI_CATALOG_SIZE           (8*1024)
 
 /*===========图片接口配置===gui_picture_port.c===============================================*/
 /* 是否支持文件系统图片接口,需要移植fatfs文件系统 */
@@ -201,7 +201,7 @@
 #define GUI_PIC_JPEG_EN       1
 
 /* 是否支持显示JPEG图片,需要添加png解码库 */
-#define GUI_PIC_PNG_EN       1
+#define GUI_PIC_PNG_EN        1
 
 /* 截图 */
 #define GUI_PIC_CAPTURE_SCREEN_EN  ( 1 && GUI_PIC_FS_EN)

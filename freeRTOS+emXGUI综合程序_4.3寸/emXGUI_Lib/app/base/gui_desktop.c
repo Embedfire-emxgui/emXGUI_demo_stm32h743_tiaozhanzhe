@@ -94,7 +94,7 @@ static	void	_EraseBackgnd(HDC hdc,const RECT *lprc,HWND hwnd)
 		SetFont(hdc, GB2312_32_Font);
 		
 		SetTextColor(hdc,MapRGB(hdc,255,255,255));
-		rc.y +=20;
+		rc.y +=10;
 		DrawText(hdc,L"emXGUI@Embedfire STM32H743 ",-1,&rc,DT_CENTER);
 			
 		/* 背景 */
@@ -108,11 +108,11 @@ static	void	_EraseBackgnd(HDC hdc,const RECT *lprc,HWND hwnd)
 		SetFont(hdc, logoFont);
 		/* 显示logo */
 		GetClientRect(hwnd,&rc);
-		rc.y = GUI_YSIZE - HEAD_INFO_HEIGHT-10;
+		rc.y = GUI_YSIZE - HEAD_INFO_HEIGHT-7;
 		rc.h = HEAD_INFO_HEIGHT;
 		
 		SetTextColor(hdc,MapRGB(hdc,255,255,255)); 
-		DrawText(hdc,L" B",-1,&rc,DT_LEFT|DT_VCENTER);
+		DrawText(hdc,L"B",-1,&rc,DT_LEFT|DT_VCENTER);
 		
 		
 		GetClientRect(hwnd,&rc);
@@ -121,30 +121,30 @@ static	void	_EraseBackgnd(HDC hdc,const RECT *lprc,HWND hwnd)
 
 		/* 恢复默认字体 */
 		SetFont(hdc, defaultFont);
-		rc.x +=50;
+		rc.x +=12;
 		DrawText(hdc,L" 野火@emXGUI",-1,&rc,DT_LEFT|DT_VCENTER);
 
 		GetClientRect(hwnd,&rc);
-		rc.x = 370;
-		rc.y = GUI_YSIZE - HEAD_INFO_HEIGHT+15;
+		rc.x = 214;
+		rc.y = GUI_YSIZE - HEAD_INFO_HEIGHT+10;
 		rc.h = HEAD_INFO_HEIGHT;
-		rc.w = 80;    
+		rc.w = 58;    
 		/* 控制图标字体 */
-		SetFont(hdc, controlFont_72);
+		SetFont(hdc, controlFont_48);
 
 		/* 向上图标 */
 		SetTextColor(hdc,MapRGB(hdc,255,255,255)); 
 	//  DrawText(hdc,L"D",-1,&rc,DT_TOP|DT_CENTER);
-		DrawText(hdc,L"f",-1,&rc,DT_TOP);
+		DrawText(hdc,L"f",-1,&rc,DT_BOTTOM);
 
 	// /* 恢复默认字体 */
 		SetFont(hdc, defaultFont);
-		OffsetRect(&rc,20,-5);
+		OffsetRect(&rc,12,-9);
 		DrawText(hdc,L"说明",-1,&rc,DT_LEFT|DT_VCENTER);
-		rc.x = 360;
-		rc.w = 100;
-		rc.h = 40;
-		rc.y = 480-45-10;
+		rc.x = 211;
+		rc.w = 58;
+		rc.h = 21;
+		rc.y = 242;
 		SetPenColor(hdc, MapRGB(hdc, 250, 250, 250));
 		DrawRoundRect(hdc, &rc, MIN(rc.w, rc.h)>>1);
 	//  rc.y -= 20;
@@ -170,7 +170,7 @@ static	void	_EraseBackgnd(HDC hdc,const RECT *lprc,HWND hwnd)
 }
 extern GUI_SEM *Input_Sem;
 /* 使用专用的线程来处理输入 */
-#if 0
+#if 1
 static	void	gui_input_thread(void *p)
 {
 	while(1)
@@ -209,6 +209,12 @@ static 	 LRESULT  	desktop_proc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
                               8*1024,  /* 任务栈大小 */
                               NULL, /* 任务入口函数参数 */
                               5,    /* 任务的优先级 */
+                              10); /* 任务时间片，部分任务不支持 */
+          GUI_Thread_Create(gui_input_thread,  /* 任务入口函数 */
+                              "gui_input_thread",/* 任务名字 */
+                              1*1024,  /* 任务栈大小 */
+                              NULL, /* 任务入口函数参数 */
+                              11,    /* 任务的优先级 */
                               10); /* 任务时间片，部分任务不支持 */
 #else
           

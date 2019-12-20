@@ -27,14 +27,6 @@
 #define UPDATE_CONFIG    0    // 1 ：更新配置    0 ：不更新配置
 
 
-/*flags的可取值，注释掉的在本工程没有用到*/
-//#define I2C_M_TEN		0x0010	/* 表示这是个10位地址 */
-//#define I2C_M_NOSTART		0x4000	/* if I2C_FUNC_PROTOCOL_MANGLING */
-//#define I2C_M_REV_DIR_ADDR	0x2000	/* if I2C_FUNC_PROTOCOL_MANGLING */
-//#define I2C_M_IGNORE_NAK	0x1000	/* if I2C_FUNC_PROTOCOL_MANGLING */
-//#define I2C_M_NO_RD_ACK		0x0800	/* if I2C_FUNC_PROTOCOL_MANGLING */
-//#define I2C_M_RECV_LEN		0x0400	/* length will be first received byte */
-
 /* 表示读数据 */ 
 #define I2C_M_RD		0x0001	
  /*
@@ -198,7 +190,7 @@ extern const TOUCH_PARAM_TypeDef touch_param[];
 #define GTP_READ_COOR_ADDR    0x814E
 #define GTP_REG_SLEEP         0x8040
 #define GTP_REG_SENSOR_ID     0x814A
-#define GTP_REG_CONFIG_DATA   0x8047
+#define GTP_REG_CONFIG_DATA   touch_param[touchIC].config_reg_addr
 #define GTP_REG_VERSION       0x8140
 
 #define RESOLUTION_LOC        3

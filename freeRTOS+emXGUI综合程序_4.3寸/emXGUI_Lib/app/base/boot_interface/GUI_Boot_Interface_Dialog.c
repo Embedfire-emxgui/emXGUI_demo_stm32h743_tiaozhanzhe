@@ -102,7 +102,7 @@ static void progbar_owner_draw(DRAWITEM_HDR *ds)
   EnableAntiAlias(hdc, TRUE);
 	FillRoundRect(hdc,&ds->rc, MIN(rc.w,rc.h)/2);   
 //   //设置画笔颜色
-	SetPenColor(hdc,MapRGB(hdc,100,10,10));
+	SetPenColor(hdc,MapRGB(hdc,2,167,240));
 //   //绘制进度条的背景边框
 //   DrawRect(hdc,&rc);
    /*************第二步***************/	
@@ -112,7 +112,7 @@ static void progbar_owner_draw(DRAWITEM_HDR *ds)
    //生成进度条矩形
 	MakeProgressRect(m_rc,&rc,cfg.Rangle,cfg.Value,PB_ORG_LEFT);
    //设置进度条的颜色
-	SetBrushColor(hdc_mem,MapRGB(hdc,210,10,10));
+	SetBrushColor(hdc_mem,MapRGB(hdc,17,85,183));
   EnableAntiAlias(hdc, FALSE);
    //填充进度条
   // InflateRect(&m_rc[0],-1,-1);
@@ -162,7 +162,7 @@ static	LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       OffsetRect(&rc0,0,png_bm.Height);
       rc0.x = 0;
       rc0.y = rc.h/2;
-      rc0.h = 30;      
+      rc0.h = 20;      
       rc0.w = rc.w;
 
       CreateWindow(TEXTBOX, L"system booting", WS_VISIBLE, 
@@ -182,7 +182,7 @@ static	LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       OffsetRect(&rc0,0,rc0.h+10);
 
       rc0.x = 100;
-      rc0.h = 30;
+      rc0.h = 15;
       rc0.w = rc.w - 200;
 
       //PROGRESSBAR_CFG结构体的大小
@@ -202,17 +202,17 @@ static	LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       SendMessage(Boot_progbar,PBM_SET_VALUE,TRUE,0); 
       SetTimer(hwnd, 1, 20, TMR_SINGLE|TMR_START, NULL);
       
-      rc0.x = 305;
-      rc0.y = 410;
-      rc0.w = 200;
-      rc0.h = 30;
+      rc0.x = 183;
+      rc0.y = 232;
+      rc0.w = 152;
+      rc0.h = 20;
       
       CreateWindow(TEXTBOX, L"powered by", WS_VISIBLE, 
                     rc0.x,rc0.y,rc0.w,rc0.h,
                     hwnd, ID_TEXT3, NULL, NULL);
       SendMessage(GetDlgItem(hwnd, ID_TEXT3),TBM_SET_TEXTFLAG,0,
                     DT_SINGLELINE|DT_LEFT|DT_VCENTER|DT_BKGND); 
-      rc0.y = 441;          
+      rc0.y = 250;          
       CreateWindow(TEXTBOX, L"emXGUI+FreeRTOS", WS_VISIBLE, 
                     rc0.x,rc0.y,rc0.w,rc0.h,
                     hwnd, ID_TEXT4, NULL, NULL);
@@ -384,7 +384,7 @@ void	GUI_Boot_Interface_Dialog(void *param)
     
         GUI_Thread_Create(GUI_Board_App_Desktop,     /* 任务入口函数 */
                               "GUI_Board_App_Desktop",    /* 任务名字 */
-                              40*1024,               /* 任务栈大小 */
+                              120*1024,               /* 任务栈大小 */
                               NULL,                  /* 任务入口函数参数 */
                               8,                     /* 任务的优先级 */
                               10);                   /* 任务时间片，部分任务不支持 */
@@ -393,7 +393,7 @@ void	GUI_Boot_Interface_Dialog(void *param)
                               "GUI_SLIDE_WIN",       /* 任务名字 */
                               3*1024,                /* 任务栈大小 */
                               NULL,                  /* 任务入口函数参数 */
-                              9,                     /* 任务的优先级 */
+                              7,                     /* 任务的优先级 */
                               10);                   /* 任务时间片，部分任务不支持 */
        
 //       xTaskCreate(PhoneCallMonitorTask,       /* 任务入口函数 */
@@ -402,9 +402,10 @@ void	GUI_Boot_Interface_Dialog(void *param)
 //                              NULL,                  /* 任务入口函数参数 */
 //                              6,                     /* 任务的优先级 */
 //                              CallCallMonitorHandle);                   /* 任务时间片，部分任务不支持 */
-       
-     }
-//  } 
+//       
+ 
+		 }
+
 
     /* 部分操作系统在退出任务函数时，必须删除线程自己 */
     GUI_Thread_Delete(GUI_GetCurThreadHandle());

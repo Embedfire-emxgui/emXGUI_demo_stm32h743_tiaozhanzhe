@@ -32,8 +32,8 @@ typedef struct
 #define  LCD_PIXEL_HEIGHT         lcd_param[cur_lcd].lcd_pixel_height
 
 /* 使用的各个屏幕中最大的分辨率 */
-#define  LCD_MAX_PIXEL_WIDTH    ((uint16_t)800)  
-#define  LCD_MAX_PIXEL_HEIGHT   ((uint16_t)480)  
+#define  LCD_MAX_PIXEL_WIDTH    ((uint16_t)480)  
+#define  LCD_MAX_PIXEL_HEIGHT   ((uint16_t)272)  
 
 #define LCD_BUFFER       ((uint32_t)0xD0000000)
 #define BUFFER_OFFSET          ((uint32_t)LCD_PIXEL_WIDTH*LCD_PIXEL_HEIGHT*2)
