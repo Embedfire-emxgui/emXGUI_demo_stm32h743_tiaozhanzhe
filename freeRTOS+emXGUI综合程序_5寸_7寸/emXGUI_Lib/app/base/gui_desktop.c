@@ -112,6 +112,7 @@ static	void	_EraseBackgnd(HDC hdc,const RECT *lprc,HWND hwnd)
 		rc.h = HEAD_INFO_HEIGHT;
 		
 		SetTextColor(hdc,MapRGB(hdc,255,255,255)); 
+		OffsetRect(&rc,0,5);
 		DrawText(hdc,L" B",-1,&rc,DT_LEFT|DT_VCENTER);
 		
 		
@@ -122,6 +123,7 @@ static	void	_EraseBackgnd(HDC hdc,const RECT *lprc,HWND hwnd)
 		/* 恢复默认字体 */
 		SetFont(hdc, defaultFont);
 		rc.x +=50;
+		OffsetRect(&rc,0,5);
 		DrawText(hdc,L" 野火@emXGUI",-1,&rc,DT_LEFT|DT_VCENTER);
 
 		GetClientRect(hwnd,&rc);
@@ -135,7 +137,7 @@ static	void	_EraseBackgnd(HDC hdc,const RECT *lprc,HWND hwnd)
 		/* 向上图标 */
 		SetTextColor(hdc,MapRGB(hdc,255,255,255)); 
 	//  DrawText(hdc,L"D",-1,&rc,DT_TOP|DT_CENTER);
-		DrawText(hdc,L"f",-1,&rc,DT_TOP);
+		DrawText(hdc,L"f",-1,&rc,DT_VCENTER);
 
 	// /* 恢复默认字体 */
 		SetFont(hdc, defaultFont);
@@ -152,7 +154,7 @@ static	void	_EraseBackgnd(HDC hdc,const RECT *lprc,HWND hwnd)
 		GetClientRect(hwnd,&rc);
 		rc.y = GUI_YSIZE - HEAD_INFO_HEIGHT;
 		rc.h = HEAD_INFO_HEIGHT;
-
+		OffsetRect(&rc,0,5);
 		DrawText(hdc,L"www.firebbs.cn  ",-1,&rc,DT_RIGHT|DT_VCENTER);  
 	}
 	else

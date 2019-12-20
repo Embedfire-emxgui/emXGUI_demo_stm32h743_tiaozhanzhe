@@ -1,13 +1,13 @@
 #include "emXGUI.h"
-#include "./clock/GUI_CLOCK_DIALOG.h"
+#include "./app/Board_App/clock/GUI_CLOCK_DIALOG.h"
 #include "x_libc.h"
 #include "string.h"
 #include "ff.h"
 #include "GUI_AppDef.h"
 #include "emXGUI_JPEG.h"
 #include "emxgui_png.h"
-#include "./clock/RTC/bsp_rtc.h"
 #include <stdlib.h>
+#include "board.h"
 #include "./pic_load/gui_pic_load.h"
 
 #define ICON_BTN_NUM     2     // 按钮数量
@@ -1245,7 +1245,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         
         SetWindowText(GetDlgItem(hwnd, ID_CLOCK_WEEK), Week_List[RTC_Date.WeekDay - 1]);    // 设置星期
 
-        SetTimer(hwnd, 1, 400, TMR_START, NULL);
+        SetTimer(hwnd, 1, 200, TMR_START, NULL);
         
         /* 转换成bitmap */
         DCtoBitmap(hdc_clock_png[hdc_clock_s_00], &bm_clock_s_00);

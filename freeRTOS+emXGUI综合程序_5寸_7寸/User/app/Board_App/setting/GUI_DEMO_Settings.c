@@ -313,12 +313,12 @@ static LRESULT DetWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         DrawText(hdc, L"关于开发板", -1, &rc1, DT_VCENTER|DT_CENTER);//绘制文字(居中对齐方式)
 
         DrawText(hdc, L"硬件版本", -1, &rc, DT_VCENTER|DT_LEFT);//绘制文字(居中对齐方式)
-        DrawText(hdc, L"V", -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式) 
+        DrawText(hdc, L"V2", -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式) 
         HLine(hdc, rc.x, rc.y+rc.h, rc.x+782);
 
         OffsetRect(&rc,0,rc.h);
         DrawText(hdc, L"开发板型号", -1, &rc, DT_VCENTER|DT_LEFT);//绘制文字(居中对齐方式)
-        DrawText(hdc, L"野火-H743", -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式) 
+        DrawText(hdc, L"野火-H743挑战者", -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式) 
         HLine(hdc, rc.x, rc.y+rc.h, rc.x+782);
 
         OffsetRect(&rc,0,rc.h);

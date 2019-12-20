@@ -157,7 +157,7 @@
   #define  GUI_LOGO_FONT              "LOGO_50_4BPP.xft"
   #define  GUI_ICON_FONT_200          "logo_icon_200_200_4BPP.xft"
   /* ICON使用的字体 */
-  #define   GUI_ICON_FONT_100         "APP_ICON_64_64_4BPP.xft"
+  #define   GUI_ICON_FONT_100         "APP_ICON_100_100_4BPP.xft"
   #define   GUI_ICON_FONT_252         "app_icon_252_252_4BPP.xft"
   /* 控制ICON使用的字体 */
   #define   GUI_CONTROL_FONT_48      "CONTROL_ICON_48_48_4BPP.xft"

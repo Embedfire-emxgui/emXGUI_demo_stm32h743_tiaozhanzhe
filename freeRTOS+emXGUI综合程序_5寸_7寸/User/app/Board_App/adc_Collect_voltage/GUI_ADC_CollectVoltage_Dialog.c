@@ -9,6 +9,7 @@
 #include "emxgui_png.h"
 #include  "GUI_ADC_CollectVoltage_Dialog.h"
 #include "./pic_load/gui_pic_load.h"
+#include "board.h"
 
 /* 图片资源 */
 //#define BMP    1    // 1：使用png 0：使用bmp
@@ -55,7 +56,6 @@ uint8_t AovingDirection = 0;
 HWND MAIN_Handle;
 HWND Title_Handle;
 HWND Brigh_Handle;
-HWND ADC_Handle;
 HWND Brigh_TEXTBOX_Handle;
 
 HDC BacklightFont_hdc;
@@ -570,7 +570,7 @@ static LRESULT	ADCWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         double vol_buff = 0.0;
         static uint8_t xC = 0;
         static double ADC_Vol_Old;
-
+				ADC_ConvertedValue = HAL_ADC_GetValue(&ADC_Handle); 
         vol_buff =(double) ADC_ConvertedValue/65536*(double)3.3; // 读取转换的AD值
 //        GUI_DEBUG("电压值前为：%f", ADC_Vol);
         #if 1
@@ -874,7 +874,7 @@ static LRESULT	CollectVoltage_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
       rc.w = GUI_XSIZE*2;
       rc.h = GUI_YSIZE - TitleHeight * 2;
       // 创建" ADC 采集窗口"的控件.
-      ADC_Handle = CreateWindowEx(WS_EX_NOFOCUS, &wcex,L"---",WS_CLIPCHILDREN|WS_VISIBLE,rc.x,rc.y+7,rc.w,rc.h,hwnd,ID_ADV_WIN,NULL,NULL);
+      CreateWindowEx(WS_EX_NOFOCUS, &wcex,L"---",WS_CLIPCHILDREN|WS_VISIBLE,rc.x,rc.y+7,rc.w,rc.h,hwnd,ID_ADV_WIN,NULL,NULL);
             
       CreateWindow(BUTTON, L"O", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY |WS_OWNERDRAW|WS_VISIBLE,
                   720, 5, 80, 80, hwnd, eID_ADC_EXIT, NULL, NULL); 

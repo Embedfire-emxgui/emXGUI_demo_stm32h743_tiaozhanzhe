@@ -356,10 +356,10 @@ void SDRAM_Init(void)
 //  RCC_PeriphClkInit.PLL2.PLL2N = 144;
   RCC_PeriphClkInit.PLL2.PLL2M = 2;
   RCC_PeriphClkInit.PLL2.PLL2N = 16;
-  RCC_PeriphClkInit.PLL2.PLL2P = 2;
+  RCC_PeriphClkInit.PLL2.PLL2P = 7;//ADC,33.33M
   RCC_PeriphClkInit.PLL2.PLL2Q = 2;
 //  RCC_PeriphClkInit.PLL2.PLL2R = 3;
-	RCC_PeriphClkInit.PLL2.PLL2R = 1;
+	RCC_PeriphClkInit.PLL2.PLL2R = 1;//FMC,200/2=100M
   RCC_PeriphClkInit.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_2;
   RCC_PeriphClkInit.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   RCC_PeriphClkInit.PLL2.PLL2FRACN = 0;
@@ -368,6 +368,7 @@ void SDRAM_Init(void)
   {
     while(1);
   }
+	
   /* Ê¹ÄÜ FMC Ê±ÖÓ */
   __FMC_CLK_ENABLE();
 

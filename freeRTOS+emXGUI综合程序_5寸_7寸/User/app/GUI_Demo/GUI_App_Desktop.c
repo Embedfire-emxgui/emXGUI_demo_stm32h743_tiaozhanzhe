@@ -52,65 +52,15 @@ extern void	GUI_DEMO_ShowWave(void);
 extern void GUI_Auto_Meter_DIALOG(void);
 extern int	Calculator_WinMain(void);
 
-#if 0
-static void App_GUI_DEMO_Hello(HWND hwnd)
-{
+static struct __obj_list GUI_DEMO_menu_list[] = {
 
-	static int thread = 0;
-	static int app = 0;
-	rt_thread_t h;
-
-
-	if (thread == 0)
-	{  //创建一个独立线程来运行自已...
-//		CreateThread((FN_ThreadEntry*)app_gui_test,hwnd,8192);
-		h = rt_thread_create("GUI_APP_DEMO_Hello", (void(*)(void*))App_GUI_DEMO_Hello, NULL, 8192, 5, 5);
-		rt_thread_startup(h);
-
-		thread = 1;
-		return;
-	}
-
-	if (thread == 1) //线程已创建了?
-	{
-		if (app == 0)
-		{
-			app = 1;
-			GUI_DEMO_Hello();
-
-			app = 0;
-			thread = 0;
-		}
-		else
-		{
-			//			MSGBOX(hwnd,L"程序已在运行中...",L"消息提示!");
-		}
-	}
-}
-#endif
-
-
-
-
-static struct __obj_list menu_list_1[] = {
-
-	L"图形加速器",		NULL, 	L"d", 	RGB_WHITE,			GUI_DEMO_Graphics_Accelerator,
-		L"波形显示",		NULL,	  L"B", RGB_WHITE,				GUI_DEMO_ShowWave,
-		//  	L"Hello",		NULL,	  L"B", RGB_WHITE,				dummy,
-		//		L"Button",		NULL,	  L"C", RGB_WHITE,				App_GUI_Climate_Cabinet,
-
-				L"仪表盘",		NULL,	  L"H",RGB_WHITE, 				(void (*)(HWND))GUI_Auto_Meter_DIALOG,
-
-				L"计算器",	NULL, 	L"Z", RGB_WHITE,				(void (*)(HWND))Calculator_WinMain,
-			//	L"Radiobox",	NULL,   L"E", RGB_WHITE,				dummy,
-			//	L"Textbox",	NULL,	  L"F", RGB_WHITE,				dummy,
-
-				//    L"Speed",		NULL,	  L"G",RGB_WHITE, 				dummy,
-				//    L"Hello",		NULL,	  L"H", RGB_WHITE,				dummy,
-				//    L"Button",	  NULL,	  L"I", RGB_WHITE,				dummy,
-				//    L"Checkbox",	NULL,	  L"J", RGB_WHITE,				dummy,
-
-						NULL,	NULL,NULL,	NULL, NULL,//结束标志!
+		L"图形加速器",		NULL, 	L"d", 	RGB_WHITE,			GUI_DEMO_Graphics_Accelerator,
+		L"波形显示",			NULL,	  L"B", RGB_WHITE,				GUI_DEMO_ShowWave,
+		L"仪表盘",				NULL,	  L"H",RGB_WHITE, 				(void (*)(HWND))GUI_Auto_Meter_DIALOG,
+		L"计算器",				NULL, 	L"Z", RGB_WHITE,				(void (*)(HWND))Calculator_WinMain,
+//	L"Radiobox",	NULL,   L"E", RGB_WHITE,				dummy,
+		
+		NULL,	NULL,NULL,	NULL, NULL,//结束标志!
 
 };
 
@@ -259,7 +209,7 @@ static	LRESULT	WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 
 					//ListMenu控件，需要在创建时传入一个 list_menu_cfg_t 的结构体参数.
-		cfg.list_objs = menu_list_1; //指定list列表.
+		cfg.list_objs = GUI_DEMO_menu_list; //指定list列表.
 		cfg.x_num = 3; //水平项数.
 		cfg.y_num = 1; //垂直项数.
 		
@@ -318,7 +268,7 @@ static	LRESULT	WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			switch (id)
 			{
 			case ID_LIST_1:
-				menu_list_1[nm->idx].cbStartup(hwnd);
+				GUI_DEMO_menu_list[nm->idx].cbStartup(hwnd);
 				break;
 				////
 			case ID_LIST_2:
@@ -391,7 +341,7 @@ static	LRESULT	WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     SetTextColor(hdc, MapRGB(hdc, 255, 255, 255));
     rc.y += 20;
    
-    DrawText(hdc, L"emXGUI@Embedfire STM32H743/750 ", -1, &rc, DT_CENTER);
+    DrawText(hdc, L"emXGUI@Embedfire STM32H743挑战者", -1, &rc, DT_CENTER);
 
 		EndPaint(hwnd, &ps);
 		////
@@ -497,13 +447,10 @@ static	LRESULT	WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 /*============================================================================*/
 
 void	GUI_App_Desktop(void *p)
-//static void	AppMain(void)
 {
 	HWND	hwnd;
 	WNDCLASS	wcex;
 	MSG msg;
-
-	/////
 	wcex.Tag = WNDCLASS_TAG;
 
 	wcex.Style = CS_HREDRAW | CS_VREDRAW;
@@ -516,17 +463,13 @@ void	GUI_App_Desktop(void *p)
 
 	//创建主窗口
 	hwnd = CreateWindowEx(WS_EX_FRAMEBUFFER,
-		&wcex,
-      L"IconViewer",
-		//								/*WS_MEMSURFACE|*/WS_CAPTION|WS_DLGFRAME|WS_BORDER|WS_CLIPCHILDREN,
-		/*WS_MEMSURFACE|*/WS_CLIPCHILDREN,
-
-		0, 0, GUI_XSIZE, 400,
-		NULL, NULL, NULL, NULL);
-
+												&wcex,
+												L"IconViewer",
+												WS_CLIPCHILDREN,
+												0, 0, GUI_XSIZE, 400,
+												NULL, NULL, NULL, NULL);
 	//显示主窗口
 	ShowWindow(hwnd, SW_SHOW);
-
 	//开始窗口消息循环(窗口关闭并销毁时,GetMessage将返回FALSE,退出本消息循环)。
 	while (GetMessage(&msg, hwnd))
 	{

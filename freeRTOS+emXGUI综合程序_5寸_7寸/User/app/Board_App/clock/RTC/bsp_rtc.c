@@ -16,11 +16,8 @@
   */
   
 #include "stm32h7xx.h"
-#include "./RTC/bsp_rtc.h"
+#include "./bsp_rtc.h"
 #include "./usart/bsp_usart.h"
-#include "./lcd/bsp_lcd.h"
-#include "./led/bsp_led.h"
-//#include "./beep/bsp_beep.h"
 
 RTC_HandleTypeDef Rtc_Handle;
 
@@ -120,6 +117,8 @@ void RTC_TimeAndDate_Show(void)
   */
 void RTC_CLK_Config(void)
 {  
+	RTC_Check_Hrest();
+	
 	RCC_OscInitTypeDef        RCC_OscInitStruct;
 	RCC_PeriphCLKInitTypeDef  PeriphClkInitStruct;
 
@@ -182,6 +181,35 @@ void RTC_CLK_Config(void)
 	{
 		printf("\n\r RTC 时钟初始化失败 \r\n");
 	}	
+	RTC_Check_Hrest();
 }
 
+void RTC_Check_Hrest(void)
+{
+	if ( HAL_RTCEx_BKUPRead(&Rtc_Handle,RTC_BKP_DRX) != 0x32F2)
+	{
+		/* 设置时间和日期 */
+		RTC_TimeAndDate_Set();
+	}
+	else
+	{
+		/* 检查是否电源复位 */
+		if (__HAL_RCC_GET_FLAG(RCC_FLAG_PORRST) != RESET)
+		{
+			printf("\r\n发生电源复位....\r\n");
+		}
+		/* 检查是否外部复位 */
+		else if (__HAL_RCC_GET_FLAG(RCC_FLAG_PINRST) != RESET)
+		{
+			printf("\r\n发生外部复位....\r\n");
+		}
+		printf("\r\n不需要重新配置RTC....\r\n");    
+//		/* 使能 PWR 时钟 */
+//		__HAL_RCC_RTC_ENABLE();
+//		/* PWR_CR:DBF置1，使能RTC、RTC备份寄存器和备份SRAM的访问 */
+//		HAL_PWR_EnableBkUpAccess();
+//		/* 等待 RTC APB 寄存器同步 */
+//		HAL_RTC_WaitForSynchro(&Rtc_Handle);
+	}
+}
 /**********************************END OF FILE*************************************/

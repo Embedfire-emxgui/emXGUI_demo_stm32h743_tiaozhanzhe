@@ -7,8 +7,7 @@
 #include "GUI_AppDef.h"
 #include "emXGUI_JPEG.h"
 #include "emxgui_png.h"
-#include "./led/bsp_led.h"  
-#include "./key/bsp_key.h" 
+#include "board.h"
 #include "./pic_load/gui_pic_load.h"
 /* 图片资源 */
 #define GUI_LED_KEY_PIC    "LED_KEY.jpg"
@@ -105,6 +104,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
   {
     case WM_CREATE:
     {
+			LED_GPIO_Config();
       Key_GPIO_Config();//初始化按键
       RECT rc;
       GetClientRect(hwnd, &rc); 
