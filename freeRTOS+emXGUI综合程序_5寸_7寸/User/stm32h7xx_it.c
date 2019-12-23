@@ -198,3 +198,14 @@ void MPU_IRQHandler(void)
 	}  
 }
 
+/* OV5640中断服务函数 */
+void DMA2_Stream1_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&DMA_Handle_dcmi);
+}
+
+void DCMI_IRQHandler(void)
+{
+  HAL_DCMI_IRQHandler(&DCMI_Handle);
+}
+

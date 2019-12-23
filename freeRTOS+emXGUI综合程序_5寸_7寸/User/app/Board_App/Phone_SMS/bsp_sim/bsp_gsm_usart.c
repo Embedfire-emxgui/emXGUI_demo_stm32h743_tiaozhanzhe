@@ -35,7 +35,7 @@ void GSM_USART_Config(void)
 //		RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART6;
 //		RCC_PeriphClkInit.Usart6ClockSelection = RCC_USART6CLKSOURCE_PCLK2;
 //		HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphClkInit);
-		/* 使能串口7时钟 */
+		/* 使能串口6时钟 */
 		GSM_USART_TX_GPIO_CLK;
 		GSM_USART_RX_GPIO_CLK;
 		GSM_USART_CLK_ENABLE();

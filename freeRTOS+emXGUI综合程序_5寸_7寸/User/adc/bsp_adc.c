@@ -22,7 +22,7 @@ extern float ADC_vol;
 
 ADC_HandleTypeDef ADC_Handle;
 DMA_HandleTypeDef hdma_adc;
-__attribute__ ((at(0x24002000))) __IO uint16_t ADC_ConvertedValue=0 ;//__EXRAM;//
+__EXRAM __IO uint16_t ADC_ConvertedValue=0 ;//;//__attribute__ ((at(0x24002000)))
 
 
 /**

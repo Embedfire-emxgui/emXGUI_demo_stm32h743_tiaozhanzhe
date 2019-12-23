@@ -22,9 +22,9 @@ int		number_input_box(int x, int y, int w, int h,
 
 TaskHandle_t Network_Task_Handle=NULL;
 TaskHandle_t TCPIP_Init_Task_Handle=NULL;
-SemaphoreHandle_t Wait_TCPIP_Init_Sem;
+GUI_SEM *Wait_TCPIP_Init_Sem;
 extern void My_TCPIP_initialization(uint8_t *ipaddr_test);
-int8_t NetworkTypeSelection = 0;
+int8_t NetworkTypeSelection = 1;
 
 HWND Send_Handle;
 HWND Receive_Handle;
@@ -69,10 +69,10 @@ void Network_Dispose_Task(void *p)
 	
 	if(network_start_flag == 0)
 	{
-	if(xSemaphoreTake( Wait_TCPIP_Init_Sem,5000) != pdTRUE)
+	if(GUI_SemWait( Wait_TCPIP_Init_Sem,5000) != pdTRUE)
 		{
       network_start_flag=0;
-      bsp_result |=1;
+      bsp_result =0;
       /* 初始化出错 */
       SetTimer(Network_Main_Handle, 10, 100, TMR_SINGLE|TMR_START, NULL);
       vTaskSuspend(Network_Task_Handle);    // 挂起自己 不在执行 
@@ -80,15 +80,14 @@ void Network_Dispose_Task(void *p)
     else
     {
       network_start_flag=1;
-      bsp_result &=~ 1;  
+      bsp_result = 1;  
     }
 	}
 	DestroyWindow(Message_Hwnd);
 	EnableWindow(GetDlgItem(Network_Main_Handle, eID_Network_EXIT), ENABLE);
 	EnableWindow(GetDlgItem(Network_Main_Handle, eID_LINK_STATE), ENABLE);
 	
-#if 1
-  if((drv_network.net_init==0)&&((bsp_result&1)==0))
+  if((drv_network.net_init==0)&&(bsp_result==1))
   {
     /* Initilaize the LwIP stack */
 		/* Config TCP Server IP and Local IP*/
@@ -113,18 +112,13 @@ void Network_Dispose_Task(void *p)
     
     drv_network.net_init=1;
   }
- #endif 
-//  PostCloseMessage(GetDlgItem(Network_Main_Handle, ID_Hint_Win));
 
   InvalidateRect(Network_Main_Handle, NULL, TRUE);
   drv_network.net_connect=0;
-  drv_network.net_type=0; 
-//  TIM3_Config(999,899);//10ms定时器 
+  drv_network.net_type=1; 
   LocalTime=0;
-//  TIM_SetCounter(TIM3,0);
-//  HAL_TIM_Base_Start_IT(&TIM3_Handle); 
   EthLinkStatus=0;
-		/* 由中断处理接受到的数据 ---> HAL_ETH_RxCpltCallback */
+	/* 由中断处理接受到的数据 ---> HAL_ETH_RxCpltCallback */
 	GUI_Thread_Delete(Network_Task_Handle);    // 删除网络处理任务
 	GUI_Thread_Delete(TCPIP_Init_Task_Handle); //删除初始化任务		
 	while(1){GUI_Yield();}
@@ -320,7 +314,7 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       CreateWindow(BUTTON,L"UDP",BS_RADIOBOX|WS_VISIBLE,
       rc.x,rc.y,rc.w,rc.h,hwnd,ID_RB3,NULL,NULL);
       
-      CreateWindow(BUTTON, L"未连接", WS_TRANSPARENT | BS_NOTIFY|WS_VISIBLE|WS_OWNERDRAW|WS_DISABLED,
+      CreateWindow(BUTTON, L"未连接", WS_TRANSPARENT | BS_NOTIFY|WS_VISIBLE|WS_OWNERDRAW,
                   702, 218, 95, 30, hwnd, eID_LINK_STATE, NULL, NULL);
       
       /* 数据发送文本窗口 */
@@ -624,7 +618,7 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       
       if(code == BN_CLICKED && id == eID_LINK_STATE)
       {
-        if((bsp_result&1)||EthLinkStatus)
+        if((bsp_result==0)||EthLinkStatus)
           {
             break;
           }
