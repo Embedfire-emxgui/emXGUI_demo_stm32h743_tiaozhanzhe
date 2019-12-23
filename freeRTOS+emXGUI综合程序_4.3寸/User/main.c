@@ -107,6 +107,8 @@ static void BSP_Init(void)
   BEEP_GPIO_Config();               
 	/* usart 端口初始化 */
   Debug_USART_Config();
+	
+	RTC_CLK_Config();
  
 	MODIFY_REG(FMC_Bank1->BTCR[0],FMC_BCR1_MBKEN,0); //关闭FMC_Bank1,不然LCD会闪.
 

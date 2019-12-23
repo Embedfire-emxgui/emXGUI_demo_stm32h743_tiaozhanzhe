@@ -97,7 +97,7 @@
 /* 内存堆的总大小，单位为字节 */ 
 #define	VMEM_SIZE	        ((24*1024*1024))     
 /* 最小分配粒度，单位为字节*/  
-#define	VMEM_ALLOC_UNIT   (64)         //64字节   
+#define	VMEM_ALLOC_UNIT   (4)         //64字节   
 //设置变量定义到“EXRAM”节区的宏
 #define __EXRAM  __attribute__ ((section ("EXRAM")))
 

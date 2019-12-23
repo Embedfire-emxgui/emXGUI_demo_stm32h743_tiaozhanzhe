@@ -154,10 +154,10 @@ struct __obj_list menu_list_1[] = {
 //      L"ÊÓÆµ²¥·ÅÆ÷",		NULL,	  L"D",   RGB_WHITE,				(void(*)(void *))GUI_VideoPlayer_DIALOG,
       L"Ê±ÖÓ",		      NULL,	  L"H",   RGB_WHITE,				(void(*)(void *))GUI_CLOCK_DIALOG,//dummy,
 //				
-//			L"ÍÓÂÝÒÇ",	      NULL,	  L"R", 	RGB_WHITE,			  (void(*)(void *))GUI_Gyro_Dialog,//dummy,
+			L"ÍÓÂÝÒÇ",	      NULL,	  L"R", 	RGB_WHITE,			  (void(*)(void *))GUI_Gyro_Dialog,//dummy,
       L"RGB²ÊµÆ",	     	NULL,	  L"L",   RGB_WHITE,				(void(*)(void *))GUI_LED_DIALOG,
 //      L"ÉãÏñÍ·",	    	NULL,	  L"M",   RGB_WHITE, 				(void(*)(void *))GUI_Camera_DIALOG,//dummy,
-//      L"Í¼Æ¬ä¯ÀÀÆ÷",  	NULL, 	L"G",   RGB_WHITE,				(void(*)(void *))GUI_PicViewer_Dialog,
+      L"Í¼Æ¬ä¯ÀÀÆ÷",  	NULL, 	L"G",   RGB_WHITE,				(void(*)(void *))GUI_PicViewer_Dialog,
 //			
       L"ÎÂÊª¶È",	      NULL,   L"O",   RGB_WHITE,				(void(*)(void *))GUI_T_RH_Dialog,//dummy,
       L"µçÑ¹±í",		    NULL,	  L"W",   RGB_WHITE,				(void(*)(void *))GUI_ADC_CollectVoltage_Dialog,//dummy,  
@@ -167,8 +167,8 @@ struct __obj_list menu_list_1[] = {
 //			L"ÓÎÏ·",        	NULL,	  L"S",   RGB_WHITE,				(void(*)(void *))dummy,
 //      //L"Ä£ÄâUÅÌ",   	NULL,	  L"N",   RGB_WHITE,				dummy,       
 //      //L"WiFi",	    	NULL,	  L"P",   RGB_WHITE,				dummy,
-//      L"µç»°",	        NULL, 	L"T",   RGB_WHITE,				(void(*)(void *))GUI_Phone_Dialog,
-//      L"¶ÌÐÅ",         	NULL,   L"U",   RGB_WHITE,				(void(*)(void *))GUI_SMS_Dialog,
+      L"µç»°",	        NULL, 	L"T",   RGB_WHITE,				(void(*)(void *))GUI_Phone_Dialog,
+      L"¶ÌÐÅ",         	NULL,   L"U",   RGB_WHITE,				(void(*)(void *))GUI_SMS_Dialog,
 //      L"¶þÎ¬Âë",       	NULL,	  L"V",   RGB_WHITE,				(void(*)(void *))GUI_Camera_QRCode_DIALOG,//dummy,
 //				
 //      L"Â¼Òô»ú",	      NULL,	  L"Y", 	RGB_WHITE,			  (void(*)(void *))GUI_RECORDER_DIALOG,//dummy,        

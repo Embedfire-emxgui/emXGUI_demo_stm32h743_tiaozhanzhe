@@ -25,6 +25,12 @@
 #include "./mpu/bsp_mpu.h" 
 #include "./beep/bsp_beep.h"   
 #include "bsp_adc.h" 
+#include "./app/Board_App/Phone_SMS/bsp_sim/bsp_gsm_usart.h"
+#include "./app/Board_App/Phone_SMS/bsp_sim/bsp_gsm_gprs.h"
+#include "./app/Board_App/clock/RTC/bsp_rtc.h"
+#include "./app/Board_App/gyro/i2c_for_mpu6050/MPU6050_i2c.h"
+#include "./app/Board_App/gyro/mpu6050/bsp_mpu_exti.h"
+
 
 /*
 *************************************************************************

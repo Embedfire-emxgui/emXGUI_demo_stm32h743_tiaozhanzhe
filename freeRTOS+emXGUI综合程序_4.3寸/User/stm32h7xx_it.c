@@ -184,4 +184,17 @@ void BASIC_TIM_IRQHandler(void)
 //        CPU_RunTime++;
 //}
 
+/* MPU6050中断服务函数 */
+extern void gyro_data_ready_cb(void);
+void MPU_IRQHandler(void)
+{
+	
+	if(__HAL_GPIO_EXTI_GET_IT(MPU_INT_GPIO_PIN) != RESET) //确保是否产生了EXTI Line中断
+	{
+		/* Handle new gyro*/
+		gyro_data_ready_cb();
+	
+		__HAL_GPIO_EXTI_CLEAR_IT(MPU_INT_GPIO_PIN);     //清除中断标志位
+	}  
+}
 

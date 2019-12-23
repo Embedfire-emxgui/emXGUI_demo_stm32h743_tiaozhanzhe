@@ -27,7 +27,7 @@
 #include "packet.h"
 #include "log.h"
 #include "stm32h7xx.h"
-#include "./usart/bsp_usart.h"
+#include "board.h"
 
 #define BUF_SIZE        (256)
 #define PACKET_LENGTH   (23)
@@ -115,7 +115,7 @@ int _MLPrintLog (int priority, const char* tag, const char* fmt, ...)
 void eMPL_send_quat(long *quat)
 {
     char out[PACKET_LENGTH];
-//    int i;
+    int i;
     if (!quat)
         return;
     memset(out, 0, PACKET_LENGTH);
@@ -140,9 +140,9 @@ void eMPL_send_quat(long *quat)
     out[21] = '\r';
     out[22] = '\n';
     
-//    for (i=0; i<PACKET_LENGTH; i++) {
-//      fputcc(out[i]);
-//    }
+    for (i=0; i<PACKET_LENGTH; i++) {
+      fputcc(out[i]);
+    }
 }
 
 void eMPL_send_data(unsigned char type, long *data)

@@ -3,23 +3,23 @@
 
 #include "stm32h7xx.h"
 #include <stdio.h>
-
+#include "board.h"
 
 // GSM_GPRS使用的串口
-#define  GSM_USARTx                            USART6
-#define  GSM_USART_CLK_ENABLE()              __USART6_CLK_ENABLE()
-#define  GSM_USART_BAUDRATE                    115200
+#define  GSM_USARTx                          USART6
+#define  GSM_USART_CLK_ENABLE()              __HAL_RCC_USART6_CLK_ENABLE()
+#define  GSM_USART_BAUDRATE                  115200
 
 // USART GPIO 引脚宏定义
-#define  GSM_USART_TX_GPIO_CLK               __HAL_RCC_GPIOC_CLK_ENABLE()  
-#define  GSM_TX_GPIO_PORT         		       GPIOC   
-#define  GSM_TX_GPIO_PIN          		       GPIO_PIN_6
+#define  GSM_USART_TX_GPIO_CLK               __HAL_RCC_GPIOG_CLK_ENABLE()  
+#define  GSM_TX_GPIO_PORT         		       GPIOG
+#define  GSM_TX_GPIO_PIN          		       GPIO_PIN_14
 #define  GSM_TX_AF             			         GPIO_AF7_USART6
 
 
-#define  GSM_USART_RX_GPIO_CLK               __HAL_RCC_GPIOC_CLK_ENABLE()  
-#define  GSM_RX_GPIO_PORT       			       GPIOC
-#define  GSM_RX_GPIO_PIN        			       GPIO_PIN_7
+#define  GSM_USART_RX_GPIO_CLK               __HAL_RCC_GPIOG_CLK_ENABLE()  
+#define  GSM_RX_GPIO_PORT       			       GPIOG
+#define  GSM_RX_GPIO_PIN        			       GPIO_PIN_9
 #define  GSM_RX_AF             			         GPIO_AF7_USART6
 
 

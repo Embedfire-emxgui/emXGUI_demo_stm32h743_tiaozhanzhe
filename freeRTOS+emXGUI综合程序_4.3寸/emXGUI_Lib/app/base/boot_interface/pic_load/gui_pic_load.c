@@ -22,22 +22,22 @@ static HDC Load_png_to_hdc(char *file_name, int w, int h);
 /****************************** Ê±ÖÓ App Í¼Æ¬ ********************************/
 const clock_hdc_t clock_png_info[hdc_clock_end] = 
 {
-  {GUI_CLOCK_BTN_PIC,       166, 70,     hdc_clock_btn},
-  {GUI_CLOCK_BTN_PRESS_PIC, 166, 70,     hdc_clock_btn_press},
-  {GUI_CLOCK_CALENDAR_PIC,  220, 240,    hdc_clock_calendar},
-  {GUI_CLOCK_00BACK_PIC,    233, 243,    hdc_clock_back_00},
-  {GUI_CLOCK_00H_PIC,         5, 45+39,  hdc_clock_h_00},
-  {GUI_CLOCK_00M_PIC,         5, 65+59,  hdc_clock_m_00},
-  {GUI_CLOCK_00S_PIC,         9, 103+53, hdc_clock_s_00},
-  {GUI_CLOCK_01BACK_PIC,    233, 243,    hdc_clock_back_01},
-  {GUI_CLOCK_01H_PIC,         6, 20+166, hdc_clock_h_01},
-  {GUI_CLOCK_01M_PIC,        16, 85+63,  hdc_clock_m_01},
-  {GUI_CLOCK_01S_PIC,         6, 102+72, hdc_clock_s_01},
-  {GUI_CLOCK_02BACK_PIC,    233, 243,    hdc_clock_back_02},
-  {GUI_CLOCK_02H_PIC,        15, 61+41,  hdc_clock_h_02},
-  {GUI_CLOCK_02M_PIC,        15, 77+57,  hdc_clock_m_02},
-  {GUI_CLOCK_02S_PIC,         7, 86+46,  hdc_clock_s_02},
-  {GUI_CLOCK_CHCKED_PIC,    272, 272,    hdc_clock_chcked},
+  {GUI_CLOCK_BTN_PIC,       100, 40,     hdc_clock_btn},
+  {GUI_CLOCK_BTN_PRESS_PIC, 100, 40,     hdc_clock_btn_press},
+  {GUI_CLOCK_CALENDAR_PIC,  132, 136,    hdc_clock_calendar},
+  {GUI_CLOCK_00BACK_PIC,    133, 139,    hdc_clock_back_00},
+  {GUI_CLOCK_00H_PIC,         3, 26+23,  hdc_clock_h_00},
+  {GUI_CLOCK_00M_PIC,         3, 37+33,  hdc_clock_m_00},
+  {GUI_CLOCK_00S_PIC,         5, 59+31,  hdc_clock_s_00},
+  {GUI_CLOCK_01BACK_PIC,    133, 139,    hdc_clock_back_01},
+  {GUI_CLOCK_01H_PIC,         3, 11+97,  hdc_clock_h_01},
+  {GUI_CLOCK_01M_PIC,         9, 49+35,  hdc_clock_m_01},
+  {GUI_CLOCK_01S_PIC,         3, 58+42,  hdc_clock_s_01},
+  {GUI_CLOCK_02BACK_PIC,    133, 139,    hdc_clock_back_02},
+  {GUI_CLOCK_02H_PIC,         9, 35+23,  hdc_clock_h_02},
+  {GUI_CLOCK_02M_PIC,         9, 44+34,  hdc_clock_m_02},
+  {GUI_CLOCK_02S_PIC,         4, 49+27,  hdc_clock_s_02},
+  {GUI_CLOCK_CHCKED_PIC,    154, 154,    hdc_clock_chcked},
 
 };
 
@@ -98,7 +98,6 @@ const am_hdc_t am_png_info[hdc_am_end] =
   {GUI_RIGHT11_PIC,                51,  12,     hdc_right11},
 };
 
-
 HDC hdc_am_bk;
 HDC hdc_am_png[hdc_am_end];
 /****************************** Æû³µÒÇ±í App Í¼Æ¬ END ********************************/
@@ -108,10 +107,10 @@ HDC hdc_am_png[hdc_am_end];
 ********************************************************************************************/
 const adc_hdc_t adc_png_info[hdc_adc_end] = 
 {
-  {GUI_ADC_SLIDER_BTN_PIC,     90,  90,     hdc_adc_slider_btn},
-  {GUI_ADC_SLIDER_PIC,         600, 45,     hdc_adc_slider},
+  {GUI_ADC_SLIDER_BTN_PIC,     53,  53,     hdc_adc_slider_btn},
+  {GUI_ADC_SLIDER_PIC,         360, 27,     hdc_adc_slider},
   {GUI_ADC_CIRCLE_PIC,         270, 270,    hdc_adc_circle},
-  {GUI_ADC_H7_RP_PIC,        350, 340,    hdc_adc_H7_RP},
+  {GUI_ADC_H7_RP_PIC,          350, 340,    hdc_adc_H7_RP},
 };
 
 HDC hdc_adc_bk;
@@ -164,11 +163,11 @@ HDC hdc_home_bk;
 ********************************************************************************************/
 const beeper_hdc_t beeper_png_info[hdc_beeper_end] = 
 {
-  {GUI_BEEPER_HORN_PIC,    103, 190,   hdc_beeper_horn},
-  {GUI_BEEPER_HORN1_PIC,    33,  74,    hdc_beeper_horn1},
-  {GUI_BEEPER_HORN2_PIC,    53, 148,    hdc_beeper_horn2},
-  {GUI_BEEPER_HORN3_PIC,    74, 220,   hdc_beeper_horn3},
-  {GUI_BEEPER_BUTTON_PIC,   83,  83,    hdc_beeper_button},
+  {GUI_BEEPER_HORN_PIC,     62, 115,   hdc_beeper_horn},
+  {GUI_BEEPER_HORN1_PIC,    20, 45,    hdc_beeper_horn1},
+  {GUI_BEEPER_HORN2_PIC,    32, 90,    hdc_beeper_horn2},
+  {GUI_BEEPER_HORN3_PIC,    44, 131,   hdc_beeper_horn3},
+  {GUI_BEEPER_BUTTON_PIC,   51, 51,    hdc_beeper_button},
 };
 
 HDC hdc_beeper_bk;
@@ -182,10 +181,10 @@ HDC hdc_beeper_png[hdc_beeper_end];
 ********************************************************************************************/
 const led_key_hdc_t led_key_png_info[hdc_led_key_end] = 
 {
-  {GUI_LED_KEY_OFF_PIC,    98, 181,   hdc_led_key_off_btn},
-	{GUI_LED_KEY_1_PIC,      98, 181,   hdc_led_key_1_btn},
-	{GUI_LED_KEY_2_PIC,      98, 181,   hdc_led_key_2_btn},
-	{GUI_LED_KEY_3_PIC,      98, 181,   hdc_led_key_3_btn},
+  {GUI_LED_KEY_OFF_PIC,    59, 103,   hdc_led_key_off_btn},
+	{GUI_LED_KEY_1_PIC,      59, 103,   hdc_led_key_1_btn},
+	{GUI_LED_KEY_2_PIC,      59, 103,   hdc_led_key_2_btn},
+	{GUI_LED_KEY_3_PIC,      59, 103,   hdc_led_key_3_btn},
 };
  
 HDC hdc_led_key_png[hdc_led_key_end];

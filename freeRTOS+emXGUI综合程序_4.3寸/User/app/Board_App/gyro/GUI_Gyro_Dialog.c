@@ -7,7 +7,7 @@
 #include "emXGUI_JPEG.h"
 #include "emxgui_png.h"
 
-#include "./i2c/i2c.h"
+#include "./i2c_for_mpu6050/MPU6050_i2c.h"  
 #include "./mpu6050/bsp_mpu_exti.h"
 #include "inv_mpu.h"
 #include "inv_mpu_dmp_motion_driver.h"
@@ -131,8 +131,9 @@ static void read_from_mpl(void)
         * test app to visually represent a 3D quaternion, it's sent each time
         * the MPL has new data.
         */
+#if	Printf_Log
         eMPL_send_quat(data);
-
+#endif
         /* Specific data packets can be sent or suppressed using USB commands. */
         if (hal.report & PRINT_QUAT)
             eMPL_send_data(PACKET_DATA_QUAT, data);
@@ -672,7 +673,7 @@ void Gyro_Dispose_Task(void *p)
 	EXTI_MPU_Config();
 	
 		// Configure I2C
-	I2CMaster_Init(); 
+	MPU6050_I2cMaster_Init();
 
 	
 	//MPU_DEBUG("F4 MPU6050 test");
@@ -1292,14 +1293,13 @@ static void CollectVoltage_ExitButton_OwnerDraw(DRAWITEM_HDR *ds)
 		SetPenColor(hdc, MapRGB(hdc, 250, 250, 250));      //设置画笔色
 	}
 
-  SetPenSize(hdc, 2);
-
-  OffsetRect(&rc,20,5);
-	
+  rc.w = 25;
+  OffsetRect(&rc, 0, 5);
+  
   for(int i=0; i<4; i++)
-  {	
-    HLine(hdc, rc.x, rc.y ,58);//rc.w
-    rc.y += 9;
+  {
+    HLine(hdc, rc.x, rc.y, rc.w);
+    rc.y += 6;
   }
 }
 
@@ -1320,14 +1320,14 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                   (TaskHandle_t*  )&Gyro_Task_Handle);     /* 任务控制块指针 */
                       
       CreateWindow(BUTTON, L"O", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY |WS_OWNERDRAW|WS_VISIBLE,
-                  720, 5, 80, 80, hwnd, eID_Gyro_EXIT, NULL, NULL); 
+                 444, 0, 36, 30, hwnd, eID_Gyro_EXIT, NULL, NULL); 
       
       BOOL res;
       u8 *jpeg_buf;
       u32 jpeg_size;
       JPG_DEC *dec;
       res = RES_Load_Content(GUI_GYRO_BACKGROUNG_PIC, (char**)&jpeg_buf, &jpeg_size);
-    //   res = FS_Load_Content(GUI_GYRO_BACKGROUNG_PIC, (char**)&jpeg_buf, &jpeg_size);
+//      res = FS_Load_Content(GUI_GYRO_BACKGROUNG_PIC, (char**)&jpeg_buf, &jpeg_size);
       bk_hdc = CreateMemoryDC(SURF_SCREEN, GUI_XSIZE, GUI_YSIZE);
       if(res)
       {
@@ -1352,7 +1352,7 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       #endif 
       
       /* 创建横滚角刻度 HDC */
-      Roll_hdc = CreateMemoryDC((SURF_FORMAT)COLOR_FORMAT_ARGB8888, 43, 582);
+      Roll_hdc = CreateMemoryDC((SURF_FORMAT)COLOR_FORMAT_ARGB8888, 37, 581);
       ClrDisplay(Roll_hdc, NULL, 0);
       res = RES_Load_Content(GUI_GYRO_ROLL_PIC, (char**)&pic_buf, &pic_size);
     //   res = FS_Load_Content(GUI_GYRO_ROLL_PIC, (char**)&pic_buf, &pic_size);
@@ -1371,7 +1371,7 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       RES_Release_Content((char **)&pic_buf);
 
       /* 创建俯仰角刻度 HDC */
-      Pitch_hdc = CreateMemoryDC((SURF_FORMAT)COLOR_FORMAT_ARGB8888, 1168, 36);
+      Pitch_hdc = CreateMemoryDC((SURF_FORMAT)COLOR_FORMAT_ARGB8888, 1168, 37);
       ClrDisplay(Pitch_hdc, NULL, 0);
       res = RES_Load_Content(GUI_GYRO_PITCH_PIC, (char**)&pic_buf, &pic_size);
     //   res = FS_Load_Content(GUI_GYRO_PITCH_PIC, (char**)&pic_buf, &pic_size);
@@ -1408,9 +1408,9 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_ERASEBKGND:
     {
       HDC hdc =(HDC)wParam;
-      uint32_t tick;
+//      uint32_t tick;
       
-      tick = GUI_GetTickCount();
+//      tick = GUI_GetTickCount();
 
       BitBlt(hdc, 0, 0, GUI_XSIZE, GUI_YSIZE, bk_hdc, 0, 0, SRCCOPY);
       //GUI_DEBUG("刷背景耗时：%d", GUI_GetTickCount() - tick);
@@ -1428,24 +1428,24 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
       RECT rc =  {0, 0, GUI_XSIZE, GUI_YSIZE};
       hdc_pointer    = CreateMemoryDC(SURF_SCREEN, COMPASS_W, COMPASS_H);
-      hdc_pitch_temp = CreateMemoryDC(SURF_SCREEN, 320, 60);
-      hdc_roll_temp  = CreateMemoryDC(SURF_SCREEN, 60, 320);
+      hdc_pitch_temp = CreateMemoryDC(SURF_SCREEN, 235, 43);
+      hdc_roll_temp  = CreateMemoryDC(SURF_SCREEN, 43, 182);
       hdc = BeginPaint(hwnd, &ps);
 
       /* 偏航角 */
-      BitBlt(hdc_pointer, 0, 0, COMPASS_W, COMPASS_H, bk_hdc, 135, 125, SRCCOPY);
+      BitBlt(hdc_pointer, 0, 0, COMPASS_W, COMPASS_H, bk_hdc, 66, 73, SRCCOPY);
       X_MeterPointer(hdc_pointer, COMPASS_W/2, COMPASS_H/2, COMPASS_W/2-1, MapRGB(hdc_pointer,227,227,227), 90, 180, 180, Yaw, 0);
-      BitBlt(hdc, 135, 123, COMPASS_W, COMPASS_H, hdc_pointer, 0, 0, SRCCOPY);
+      BitBlt(hdc, 66, 73, COMPASS_W, COMPASS_H, hdc_pointer, 0, 0, SRCCOPY);
 
       /********************************** 俯仰角 ***************************/
-      BitBlt(hdc_pitch_temp, 0, 0, 320, 60, bk_hdc, 449, 394, SRCCOPY);
+      BitBlt(hdc_pitch_temp, 0, 0, 235, 43, bk_hdc, 240, 223, SRCCOPY);
 
       /* 计算要拷贝的刻度位置 */
-      Copy_Start = 434 + Pitch * 2;    
+      Copy_Start = 480 + Pitch * 2;    
 
       /* 拷贝不超过边界 */
       Copy_Site = 13;
-      Copy_Len  = 300;
+      Copy_Len  = 230;
 
       /* 拷贝区域越界处理 */
       if (Copy_Start < 0)
@@ -1459,18 +1459,18 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
           Copy_Len = 1168 - Copy_Start;    // 限制拷贝长度
       }
       
-      BitBlt(hdc_pitch_temp, Copy_Site, 9, Copy_Len, 36, Pitch_hdc, Copy_Start, 0, SRCCOPY);
-      BitBlt(hdc, 449, 394, 300, 60, hdc_pitch_temp, 0, 0, SRCCOPY);
+      BitBlt(hdc_pitch_temp, Copy_Site, 4, Copy_Len, 37, Pitch_hdc, Copy_Start, 0, SRCCOPY);
+      BitBlt(hdc,  240, 223, 235, 43, hdc_pitch_temp, 0, 0, SRCCOPY);
 
       /******************************* 横滚角 ********************************/
-      BitBlt(hdc_roll_temp, 0, 0, 60, 320, bk_hdc, 570, 63, SRCCOPY);
+      BitBlt(hdc_roll_temp, 0, 0, 43, 182, bk_hdc, 335, 36, SRCCOPY);
       
       /* 计算要拷贝的刻度位置 */
-      Copy_Start = 142 - Roll * 3;    
+      Copy_Start = 207 - Roll * 3;    
 
       /* 拷贝不超过边界 */
       Copy_Site = 13;
-      Copy_Len  = 300;
+      Copy_Len  = 182-5;
 
       /* 拷贝区域越界处理 */
       if (Copy_Start < 0)
@@ -1484,8 +1484,8 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
           Copy_Len = 582 - Copy_Start;    // 限制拷贝长度
       }
 
-      BitBlt(hdc_roll_temp, 9, Copy_Site, 43, Copy_Len, Roll_hdc, 0, Copy_Start, SRCCOPY);    // 拷贝刻度到缓冲区
-      BitBlt(hdc, 570, 63, 60, 320, hdc_roll_temp, 0, 0, SRCCOPY);
+      BitBlt(hdc_roll_temp, 4, Copy_Site, 37, Copy_Len, Roll_hdc, 0, Copy_Start, SRCCOPY);    // 拷贝刻度到缓冲区
+      BitBlt(hdc, 335, 36, 43, 182, hdc_roll_temp, 0, 0, SRCCOPY);
 
       EndPaint(hwnd, &ps);
       DeleteDC(hdc_pointer);
