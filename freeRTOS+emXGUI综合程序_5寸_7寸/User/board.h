@@ -27,6 +27,8 @@
 #include "./beep/bsp_beep.h"
 #include "./app/Board_App/clock/RTC/bsp_rtc.h"
 #include "./adc/bsp_adc.h" 
+#include "./app/Board_App/gyro/i2c_for_mpu6050/MPU6050_i2c.h"
+#include "./app/Board_App/gyro/mpu6050/bsp_mpu_exti.h"
 
 /*
 *************************************************************************

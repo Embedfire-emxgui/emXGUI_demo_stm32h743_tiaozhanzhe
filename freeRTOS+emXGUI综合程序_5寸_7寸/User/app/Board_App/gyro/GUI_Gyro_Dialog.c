@@ -7,7 +7,7 @@
 #include "emXGUI_JPEG.h"
 #include "emxgui_png.h"
 
-#include "./i2c/i2c.h"
+#include "./i2c_for_mpu6050/MPU6050_i2c.h"  
 #include "./mpu6050/bsp_mpu_exti.h"
 #include "inv_mpu.h"
 #include "inv_mpu_dmp_motion_driver.h"
@@ -131,8 +131,9 @@ static void read_from_mpl(void)
         * test app to visually represent a 3D quaternion, it's sent each time
         * the MPL has new data.
         */
+#if	Printf_Log
         eMPL_send_quat(data);
-
+#endif
         /* Specific data packets can be sent or suppressed using USB commands. */
         if (hal.report & PRINT_QUAT)
             eMPL_send_data(PACKET_DATA_QUAT, data);
@@ -672,7 +673,7 @@ void Gyro_Dispose_Task(void *p)
 	EXTI_MPU_Config();
 	
 		// Configure I2C
-	I2CMaster_Init(); 
+	MPU6050_I2cMaster_Init();
 
 	
 	//MPU_DEBUG("F4 MPU6050 test");
@@ -1327,7 +1328,7 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       u32 jpeg_size;
       JPG_DEC *dec;
       res = RES_Load_Content(GUI_GYRO_BACKGROUNG_PIC, (char**)&jpeg_buf, &jpeg_size);
-    //   res = FS_Load_Content(GUI_GYRO_BACKGROUNG_PIC, (char**)&jpeg_buf, &jpeg_size);
+//      res = FS_Load_Content(GUI_GYRO_BACKGROUNG_PIC, (char**)&jpeg_buf, &jpeg_size);
       bk_hdc = CreateMemoryDC(SURF_SCREEN, GUI_XSIZE, GUI_YSIZE);
       if(res)
       {
@@ -1408,9 +1409,9 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_ERASEBKGND:
     {
       HDC hdc =(HDC)wParam;
-      uint32_t tick;
+//      uint32_t tick;
       
-      tick = GUI_GetTickCount();
+//      tick = GUI_GetTickCount();
 
       BitBlt(hdc, 0, 0, GUI_XSIZE, GUI_YSIZE, bk_hdc, 0, 0, SRCCOPY);
       //GUI_DEBUG("Ë¢±³¾°ºÄÊ±£º%d", GUI_GetTickCount() - tick);

@@ -8,9 +8,9 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32H750 开发板 
+  * 实验平台:野火 STM32F767 开发板 
   * 论坛    :http://www.firebbs.cn
-  * 淘宝    :http://firestm32.taobao.com
+  * 淘宝    :https://fire-stm32.taobao.com
   *
   ******************************************************************************
   */
@@ -38,12 +38,13 @@ void EXTI_MPU_Config(void)
     /* 使用上面的结构体初始化按键 */
     HAL_GPIO_Init(MPU_INT_GPIO_PORT, &GPIO_InitStructure); 
     /* 配置 EXTI 中断源 到key1 引脚、配置中断优先级*/
-    HAL_NVIC_SetPriority(MPU_INT_EXTI_IRQ, 1, 1);
+    HAL_NVIC_SetPriority(MPU_INT_EXTI_IRQ, 7, 0);
     /* 使能中断 */
     HAL_NVIC_EnableIRQ(MPU_INT_EXTI_IRQ);
 }
+
 void EXTI_MPU_Disable(void)
 {
-	  //HAL_NVIC_DisableIRQ(MPU_INT_EXTI_IRQ);
+		HAL_NVIC_DisableIRQ(MPU_INT_EXTI_IRQ);
 }
 /*********************************************END OF FILE**********************/
