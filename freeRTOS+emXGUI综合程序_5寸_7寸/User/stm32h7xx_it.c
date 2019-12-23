@@ -168,21 +168,21 @@ void SDMMC1_IRQHandler(void)
 
 /* 用于统计运行时间中断服务 */
 volatile uint32_t CPU_RunTime = 0UL;
-//extern TIM_HandleTypeDef TIM_Base;
+extern TIM_HandleTypeDef TIM_Base;
 void BASIC_TIM_IRQHandler(void)
 {
-//    HAL_TIM_IRQHandler(&TIM_Base);
+    HAL_TIM_IRQHandler(&TIM_Base);
 }
-///**
-//  * @brief  定时器更新中断回调函数
-//  * @param  htim : TIM句柄
-//  * @retval 无
-//  */
-//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-//{
-//    if(htim->Instance == TIM6)
-//        CPU_RunTime++;
-//}
+
+/* 视频播放定时器6 */
+extern volatile uint8_t video_timeout;//视频播放引入
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if(htim->Instance == TIM6)
+        CPU_RunTime++;
+		if(htim->Instance == TIM3)
+        video_timeout = 1;
+}
 
 /* MPU6050中断服务函数 */
 extern void gyro_data_ready_cb(void);

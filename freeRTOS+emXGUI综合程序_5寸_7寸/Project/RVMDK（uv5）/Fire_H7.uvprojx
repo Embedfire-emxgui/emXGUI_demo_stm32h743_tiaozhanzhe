@@ -877,6 +877,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\beep\bsp_beep.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_basic_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\tim\bsp_basic_tim.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1936,6 +1941,26 @@
               <FileName>zepif.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\app\Board_App\NetworkDLG\LwIP\netif\zepif.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/video_player</GroupName>
+          <Files>
+            <File>
+              <FileName>Backend_avifile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\video_player\Backend_avifile.c</FilePath>
+            </File>
+            <File>
+              <FileName>Backend_vidoplayer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\video_player\Backend_vidoplayer.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUI_VEDIOPLAYER_DIALOG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\video_player\GUI_VEDIOPLAYER_DIALOG.c</FilePath>
             </File>
           </Files>
         </Group>

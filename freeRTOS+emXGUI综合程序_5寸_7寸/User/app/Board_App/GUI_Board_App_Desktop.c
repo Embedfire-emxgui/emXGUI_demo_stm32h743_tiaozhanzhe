@@ -65,13 +65,13 @@ extern void GUI_SMS_Dialog(void);//短信
 extern void	GUI_Camera_DIALOG(void);//摄像头
 extern void GUI_Camera_QRCode_DIALOG(void);//二维码
 extern void GUI_NetworkDLG_Dialog(void);//以太网
-
+extern void	GUI_VideoPlayer_DIALOG(void);//视频播放器
 #if 0
 extern void GUI_DEMO_DrawJPEG(void);//
 extern void App_LED_DIALOG(void);//
 extern void App_GUI_Tutorial_DEMO(void);//GUI演示
 extern void	GUI_MUSICPLAYER_DIALOG(void);//音乐播放器
-extern void	GUI_VideoPlayer_DIALOG(void);//视频播放器
+
 extern void GUI_AVIList_DIALOG(void);//
 
 
@@ -155,7 +155,7 @@ struct __obj_list menu_list_1[] = {
 
       L"GUI应用",		    NULL, 	L"J", 	RGB_WHITE,		  	(void(*)(void *))GUI_App_Desktop,//GUI_App_Desktop,
 //      L"MP3播放器",		  NULL,	  L"I",   RGB_WHITE,			  (void(*)(void *))GUI_MUSICPLAYER_DIALOG,//dummy,
-//      L"视频播放器",		NULL,	  L"D",   RGB_WHITE,				(void(*)(void *))GUI_VideoPlayer_DIALOG,
+      L"视频播放器",		NULL,	  L"D",   RGB_WHITE,				(void(*)(void *))GUI_VideoPlayer_DIALOG,
       L"时钟",		      NULL,	  L"H",   RGB_WHITE,				(void(*)(void *))GUI_CLOCK_DIALOG,//dummy,
 //				
 			L"陀螺仪",	      NULL,	  L"R", 	RGB_WHITE,			  (void(*)(void *))GUI_Gyro_Dialog,//dummy,
