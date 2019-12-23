@@ -117,8 +117,6 @@ void RTC_TimeAndDate_Show(void)
   */
 void RTC_CLK_Config(void)
 {  
-	RTC_Check_Hrest();
-	
 	RCC_OscInitTypeDef        RCC_OscInitStruct;
 	RCC_PeriphCLKInitTypeDef  PeriphClkInitStruct;
 
@@ -130,7 +128,7 @@ void RTC_CLK_Config(void)
 	/* PWR_CR:DBF置1，使能RTC、RTC备份寄存器和备份SRAM的访问 */
 	HAL_PWR_EnableBkUpAccess();
 
-	#if defined (RTC_CLOCK_SOURCE_LSI) 
+#if defined (RTC_CLOCK_SOURCE_LSI) 
 	/* 使用LSI作为RTC时钟源会有误差 
 	 * 默认选择LSE作为RTC的时钟源
 	 */
@@ -145,7 +143,7 @@ void RTC_CLK_Config(void)
 	PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
 	HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
 
-	#elif defined (RTC_CLOCK_SOURCE_LSE)
+#elif defined (RTC_CLOCK_SOURCE_LSE)
 	/* 初始化LSE */ 
 	RCC_OscInitStruct.OscillatorType =  RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_LSE;
 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
@@ -160,7 +158,7 @@ void RTC_CLK_Config(void)
 	/* Configures the External Low Speed oscillator (LSE) drive capability */
 	__HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_HIGH);  
 
-	#endif /* RTC_CLOCK_SOURCE_LSI */
+#endif /* RTC_CLOCK_SOURCE_LSI */
 
 	/* 使能RTC时钟 */
 	__HAL_RCC_RTC_ENABLE(); 
@@ -180,7 +178,7 @@ void RTC_CLK_Config(void)
 	if (HAL_RTC_Init(&Rtc_Handle) != HAL_OK)
 	{
 		printf("\n\r RTC 时钟初始化失败 \r\n");
-	}	
+	}
 	RTC_Check_Hrest();
 }
 
@@ -204,12 +202,12 @@ void RTC_Check_Hrest(void)
 			printf("\r\n发生外部复位....\r\n");
 		}
 		printf("\r\n不需要重新配置RTC....\r\n");    
-//		/* 使能 PWR 时钟 */
-//		__HAL_RCC_RTC_ENABLE();
-//		/* PWR_CR:DBF置1，使能RTC、RTC备份寄存器和备份SRAM的访问 */
-//		HAL_PWR_EnableBkUpAccess();
-//		/* 等待 RTC APB 寄存器同步 */
-//		HAL_RTC_WaitForSynchro(&Rtc_Handle);
+		/* 使能 PWR 时钟 */
+		__HAL_RCC_RTC_ENABLE();
+		/* PWR_CR:DBF置1，使能RTC、RTC备份寄存器和备份SRAM的访问 */
+		HAL_PWR_EnableBkUpAccess();
+		/* 等待 RTC APB 寄存器同步 */
+		HAL_RTC_WaitForSynchro(&Rtc_Handle);
 	}
 }
 /**********************************END OF FILE*************************************/

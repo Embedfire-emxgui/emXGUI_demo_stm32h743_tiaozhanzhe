@@ -58,6 +58,7 @@ extern void GUI_CLOCK_DIALOG(void);//Ê±ÖÓ
 extern void GUI_Settings_DIALOG(void);//ÉèÖÃ
 extern void GUI_ADC_CollectVoltage_Dialog(void);//µçÑ¹²É¼¯
 extern void GUI_T_RH_Dialog(void);//ÎÂÊª¶È
+extern void	GUI_PicViewer_Dialog(void);//Í¼Æ¬ä¯ÀÀÆ÷
 
 #if 0
 extern void GUI_DEMO_DrawJPEG(void);//
@@ -71,7 +72,7 @@ extern void	GUI_Camera_DIALOG(void);//ÉãÏñÍ·
 extern void GUI_Camera_QRCode_DIALOG(void);//¶þÎ¬Âë
 extern void	GUI_RES_WRITER_DIALOG(void);//
 extern void GUI_Boot_Interface_DIALOG(void);//
-extern void	GUI_PicViewer_Dialog(void);//Í¼Æ¬ä¯ÀÀÆ÷
+
 extern void	GUI_RECORDER_DIALOG(void);//Â¼Òô
 
 
@@ -166,7 +167,7 @@ struct __obj_list menu_list_1[] = {
 //			L"ÍÓÂÝÒÇ",	      NULL,	  L"R", 	RGB_WHITE,			  (void(*)(void *))GUI_Gyro_Dialog,//dummy,
       L"RGB²ÊµÆ",	     	NULL,	  L"L",   RGB_WHITE,				(void(*)(void *))GUI_LED_DIALOG,
 //      L"ÉãÏñÍ·",	    	NULL,	  L"M",   RGB_WHITE, 				(void(*)(void *))GUI_Camera_DIALOG,//dummy,
-//      L"Í¼Æ¬ä¯ÀÀÆ÷",  	NULL, 	L"G",   RGB_WHITE,				(void(*)(void *))GUI_PicViewer_Dialog,
+      L"Í¼Æ¬ä¯ÀÀÆ÷",  	NULL, 	L"G",   RGB_WHITE,				(void(*)(void *))GUI_PicViewer_Dialog,
 //			
       L"ÎÂÊª¶È",	      NULL,   L"O",   RGB_WHITE,				(void(*)(void *))GUI_T_RH_Dialog,//dummy,
       L"µçÑ¹±í",		    NULL,	  L"W",   RGB_WHITE,				(void(*)(void *))GUI_ADC_CollectVoltage_Dialog,//dummy,  

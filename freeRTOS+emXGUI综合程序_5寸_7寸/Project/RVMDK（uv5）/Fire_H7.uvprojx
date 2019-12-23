@@ -1494,6 +1494,16 @@
             </File>
           </Files>
         </Group>
+        <Group>
+          <GroupName>tutorial/pic_viwer</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_PicViewr_Dialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\pic_viewer\GUI_PicViewr_Dialog.c</FilePath>
+            </File>
+          </Files>
+        </Group>
       </Groups>
     </Target>
   </Targets>

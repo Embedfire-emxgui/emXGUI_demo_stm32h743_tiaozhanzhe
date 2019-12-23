@@ -81,7 +81,8 @@ void* GUI_VMEM_Alloc(u32 size)
 	GUI_MutexUnlock(mutex_vmem);
   if(p==NULL)
 	{
-	    GUI_ERROR("GUI_VMEM_Alloc,no enough space(for %d byte)",size);
+	  GUI_ERROR("GUI_VMEM_Alloc,no enough space(for %d byte)",size);
+		while(1);
 	}
   
 	return p;
@@ -127,7 +128,8 @@ void*	GUI_MEM_Alloc(U32 size)
 	p =OS_MALLOC(size);
 	if(p==NULL)
 	{
-	    GUI_ERROR("GUI_MEM_Alloc.");
+	  GUI_ERROR("GUI_MEM_Alloc.");
+		while(1);
 	}
 
 	return p;
