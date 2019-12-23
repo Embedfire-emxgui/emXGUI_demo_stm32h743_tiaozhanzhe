@@ -221,7 +221,7 @@ void CListMenu::draw_icon_obj(HDC hdc, struct __x_obj_item *obj, u32 flag, u32 s
         BMP_GetInfo(&info, bmp);
 
         x = rc.x + (((int)rc.w - (int)info.Width) / 2);
-        y = rc.y;// + (((int)rc.h - (int)info.Height) / 2);
+        y = rc.y+5;// + (((int)rc.h - (int)info.Height) / 2);
         BMP_Draw(hdc, x, y, bmp, NULL);
 
         SetTextColor(hdc, MapXRGB8888(hdc, icon_color));
@@ -231,10 +231,10 @@ void CListMenu::draw_icon_obj(HDC hdc, struct __x_obj_item *obj, u32 flag, u32 s
     {
         icon_color = obj_tbl[obj->id].color;
         /* 显示APP对应的字体图标 */
-        SetFont(hdc, iconFont_100);
+        SetFont(hdc, iconFont_64);
 
         rc0.w = rc.w;
-        rc0.h = rc.h * 2 / 3;
+        rc0.h = rc.h * 4 / 5;
         rc0.x = rc.x;
         rc0.y = rc.y;
 
@@ -251,8 +251,8 @@ void CListMenu::draw_icon_obj(HDC hdc, struct __x_obj_item *obj, u32 flag, u32 s
 
         if (style& LMS_ICONINNERFRAME)
         {
-            //矩形内框，图标字体宽度为100*100，所以减去它们的宽度除以2
-            InflateRect(&rc0, -(rc0.w - 100) / 2, -(rc0.h - 100) / 2);
+            //矩形内框，图标字体宽度为72*72，所以减去它们的宽度除以2
+            InflateRect(&rc0, -(rc0.w - 72) / 2, -(rc0.h - 72) / 2);
             if (flag&OBJ_ACTIVE)
                SetPenColor(hdc, MapRGB(hdc, 105, 105, 105));
             else
@@ -269,7 +269,7 @@ void CListMenu::draw_icon_obj(HDC hdc, struct __x_obj_item *obj, u32 flag, u32 s
     rc0.w = rc.w;
     rc0.h = rc.h * 1 / 3;
     rc0.x = rc.x;
-    rc0.y = rc.y + rc.h - rc0.h - 6;
+    rc0.y = rc.y + rc.h - rc0.h + 6;
     DrawText(hdc, obj->pszText, -1, &rc0, DT_VCENTER | DT_CENTER);
 
 }
@@ -581,10 +581,14 @@ LRESULT CListMenu::DrawFrame(HDC hdc, HWND hwnd)
     GetClientRect(hwnd, &rc_tmp);//得到控件的位置
     WindowToScreen(hwnd, (POINT *)&rc_tmp, 1);//坐标转换
 
-    BitBlt(hdc, 0,0,rc_main.w,rc_main.h, hdc_home_bk, rc_tmp.x, rc_tmp.y, SRCCOPY);
-    //BitBlt(hdc,0,0,rc_main.w,rc_main.h,hdc_home_bk,0,0,SRCCOPY);
     if (bg_color != 1)
+    {
         ClrDisplay(hdc, NULL, MapXRGB8888(hdc, bg_color));
+    }
+    else 
+    {
+        BitBlt(hdc, 0,0,rc_main.w,rc_main.h, hdc_home_bk, rc_tmp.x, rc_tmp.y, SRCCOPY);
+    }
     //BMP_Draw(hdc,0,0,bkgnd_bmp,NULL);
 
 #if 0
@@ -782,10 +786,10 @@ LRESULT CListMenu::DrawFrame(HDC hdc, HWND hwnd)
         {
             i = MIN(0 - obj->rc.x, page_num*rc_list.w);
 
-            rc.w = 150;
-            rc.h = 20;
+            rc.w = 100;
+            rc.h = 10;
             rc.x = (rc_main.w - rc.w) >> 1;
-            rc.y = rc_main.h - rc.h - 15;
+            rc.y = rc_main.h - rc.h - 2;
             MakeProgressRect(m_rc, &rc, page_num*rc_list.w, i, PB_ORG_LEFT);
 
             SetPenColor(hdc, MapRGB(hdc, 250, 220, 220));
@@ -921,7 +925,7 @@ LRESULT CListMenu::OnCreate(HWND hwnd, list_menu_cfg_t *cfg)
 
     OffsetRect(&rc, 0, rc.h);
     rc.h = rc_main.h - rc.y;
-    InflateRectEx(&rc, 0, 0, 0, -28);
+    InflateRectEx(&rc, 0, 0, 0, -14);    // 中间列表偏移
     rc_list = rc;
 
 
@@ -979,7 +983,7 @@ LRESULT CListMenu::OnCreate(HWND hwnd, list_menu_cfg_t *cfg)
   //	hFontSEG_32 =XFT_CreateFont(SEG_NUM_32);
 
 
-    SetTimer(hwnd, ID_TMR_100, 5, TMR_START, NULL); 
+    SetTimer(hwnd, ID_TMR_100, 10, TMR_START, NULL); 
     delete m_rc;
 
     return TRUE;
@@ -1512,7 +1516,7 @@ LRESULT	CListMenu::OnTimer(HWND hwnd, int tmr_id)
                         }
                         else
                         {
-                            y = MIN(1, y_move_to - y);
+                            y = MIN(2, y_move_to - y);
                         }
                         OffsetObjs(0, y);
                         need_draw = TRUE;
@@ -1536,7 +1540,7 @@ LRESULT	CListMenu::OnTimer(HWND hwnd, int tmr_id)
                         }
                         else
                         {
-                            x = MIN(3, x - x_move_to);
+                            x = MIN(2, x - x_move_to);
                         }
 
                         OffsetObjs(-x, 0);
@@ -1555,7 +1559,7 @@ LRESULT	CListMenu::OnTimer(HWND hwnd, int tmr_id)
                         }
                         else
                         {
-                            x = MIN(3, x_move_to - x);
+                            x = MIN(2, x_move_to - x);
                         }
                         OffsetObjs(x, 0);
                         need_draw = TRUE;

@@ -161,14 +161,15 @@ static void exit_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 		
 	}
 
-  SetPenSize(hdc, 2);
+//  SetPenSize(hdc, 2);
 
-  OffsetRect(&rc,20,15);
-	
+  rc.w = 25;
+  OffsetRect(&rc, 0, 20);
+  
   for(int i=0; i<4; i++)
-  {	
-    HLine(hdc, rc.x, rc.y ,58);//rc.w
-    rc.y += 9;
+  {
+    HLine(hdc, rc.x, rc.y, rc.w);
+    rc.y += 6;
   }
 
 }
@@ -1123,7 +1124,7 @@ static	LRESULT	WinProc(HWND hwnd,U32 msg,WPARAM wParam,LPARAM lParam)
 				GetClientRect(hwnd,&rc);
 				
 				x=4;
-				y=64;
+				y=58;
 				
 				CreateWindow(GROUPBOX,L"",WS_VISIBLE,x,y,rc.w>>1,60,hwnd,IDC_MODE_GROUP,NULL,NULL);
 				//SetWindowColor(GetDlgItem(hwnd,IDC_MODE_GROUP),RGB(0,0,0),RGB_TRANS,GetWindowBkColor(hwnd));
@@ -1133,9 +1134,9 @@ static	LRESULT	WinProc(HWND hwnd,U32 msg,WPARAM wParam,LPARAM lParam)
 				//GetMatrixRectangle(m_rc,2,16,rc.w,rc.h-16,3,3,2,2);
 				
 				rc0.x =2;
-				rc0.y =16;
+				rc0.y =10;
 				rc0.w =rc.w;
-				rc0.h =rc.h-16;
+				rc0.h =rc.h-10;
 				MakeMatrixRect(m_rc,&rc0,2,2,2,2);		
 				for(i=0;i<4;i++)
 				{					
@@ -1153,7 +1154,7 @@ static	LRESULT	WinProc(HWND hwnd,U32 msg,WPARAM wParam,LPARAM lParam)
 				}
 				////
 
-				CreateWindow(BUTTON,L"-",WS_VISIBLE|WS_OWNERDRAW|WS_TRANSPARENT,720,5,80,80,hwnd,IDC_EIXT,NULL,NULL);
+				CreateWindow(BUTTON,L"-",WS_VISIBLE|WS_OWNERDRAW|WS_TRANSPARENT,444,0,36,45,hwnd,IDC_EIXT,NULL,NULL);
 				
 				GetClientRect(hwnd,&rc);
 				x=(rc.w>>1)+8;
@@ -1165,9 +1166,9 @@ static	LRESULT	WinProc(HWND hwnd,U32 msg,WPARAM wParam,LPARAM lParam)
 				GetClientRect(GetDlgItem(hwnd,IDC_TRIFUN_GROUP),&rc);
 				//GetMatrixRectangle(m_rc,2,16,rc.w,rc.h-16,3,3,2,1);
 				rc0.x =2;
-				rc0.y =16;
+				rc0.y =10;
 				rc0.w =rc.w;
-				rc0.h =rc.h-16;
+				rc0.h =rc.h-10;
 				MakeMatrixRect(m_rc,&rc0,3,3,2,1);		
 				for(i=0;i<2;i++)
 				{
