@@ -336,22 +336,22 @@ void BSP_SD_MspInit(void)
     //禁用WIFI模块
     WIFI_PDN_INIT();
         
-    HAL_NVIC_SetPriority(SDMMC1_IRQn,0,0);  //配置SDMMC1中断
+    HAL_NVIC_SetPriority(SDMMC1_IRQn,6,0);  //配置SDMMC1中断
     HAL_NVIC_EnableIRQ(SDMMC1_IRQn);        //使能SDMMC1中断
     
     HAL_NVIC_SetPriority(SysTick_IRQn, 0x0E ,0);
 }
 
-//SDMMC1发送完成回调函数
-void HAL_SD_TxCpltCallback(SD_HandleTypeDef *hsd)
-{
-    TX_Flag=1; //标记写完成
-}
+////SDMMC1发送完成回调函数
+//void HAL_SD_TxCpltCallback(SD_HandleTypeDef *hsd)
+//{
+//    TX_Flag=1; //标记写完成
+//}
 
-//SDMMC1接受完成回调函数
-void HAL_SD_RxCpltCallback(SD_HandleTypeDef *hsd)
-{
-    //SCB_InvalidateDCache_by_Addr((uint32_t*)Buffer_Block_Rx, MULTI_BUFFER_SIZE/4);
-    RX_Flag=1;
-}
+////SDMMC1接受完成回调函数
+//void HAL_SD_RxCpltCallback(SD_HandleTypeDef *hsd)
+//{
+//    //SCB_InvalidateDCache_by_Addr((uint32_t*)Buffer_Block_Rx, MULTI_BUFFER_SIZE/4);
+//    RX_Flag=1;
+//}
 /************************END OF FILE*******************/

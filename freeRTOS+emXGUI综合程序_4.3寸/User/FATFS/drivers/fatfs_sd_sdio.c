@@ -20,8 +20,12 @@
 #include "./sd_card/bsp_sdio_sd.h"
 #include "ff_gen_drv.h"
 #include "./led/bsp_led.h" 
+#include "emXGUI.h"
+
 /* Disk status */
 static volatile DSTATUS Stat = STA_NOINIT;
+static GUI_SEM *sem_sd = NULL;
+static GUI_MUTEX *mutex_lock=NULL;
 
 extern SD_HandleTypeDef uSdHandle;
 //发送标志位
@@ -47,6 +51,8 @@ DSTATUS SD_initialize(BYTE lun)
     if(BSP_SD_Init() == HAL_OK)
     {    
         Stat &= ~STA_NOINIT;
+			  sem_sd = GUI_SemCreate(0,1);//SD卡任务同步图像
+        mutex_lock = GUI_MutexCreate();
     }
     return Stat;
 }
@@ -68,12 +74,32 @@ DRESULT SD_read(BYTE lun,//物理扇区，多个设备时用到(0...)
   DRESULT res = RES_ERROR;
   uint32_t timeout;
   uint32_t alignedAddr;
-
   RX_Flag = 0;
-  
+
   alignedAddr = (uint32_t)buff & ~0x1F;
-  //更新相应的DCache
-  SCB_CleanDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
+	/* 检查指针地址是否对齐,不对齐进行操作 */
+  if((DWORD)buff&3)
+  {
+		DRESULT res = RES_OK;
+    DWORD scratch[BLOCKSIZE / 4];
+
+    while (count--) 
+    {
+      res = disk_read(0,(void *)scratch, sector++, 1);
+			SCB_InvalidateDCache_by_Addr((uint32_t*)scratch, BLOCKSIZE);//DMA读完数据清理Cache
+      if (res != RES_OK) 
+      {
+        break;
+      }
+      memcpy(buff, scratch, BLOCKSIZE);
+      buff += BLOCKSIZE;
+    }
+    return res;
+	}
+  //更新相应的DCache(WB模式选用)
+//  SCB_CleanDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
+	GUI_MutexLock(mutex_lock,0xffffff);
+	/* 指针地址对齐,正常进行数据读取操作 */
   if(HAL_SD_ReadBlocks_DMA(&uSdHandle, (uint8_t*)buff,
                            (uint32_t) (sector),
                            count) == HAL_OK)
@@ -112,8 +138,9 @@ DRESULT SD_read(BYTE lun,//物理扇区，多个设备时用到(0...)
       }
     }
   }
-
+	GUI_MutexUnlock(mutex_lock);
   return res;
+
 }
   
 DRESULT SD_write(BYTE lun,//物理扇区，多个设备时用到(0...)
@@ -121,6 +148,7 @@ DRESULT SD_write(BYTE lun,//物理扇区，多个设备时用到(0...)
                  DWORD sector, //扇区首地址
                  UINT count)//扇区个数(1..128)
 {
+#if 0
     DRESULT res = RES_ERROR;
     uint32_t timeout;
     uint32_t alignedAddr;
@@ -155,6 +183,65 @@ DRESULT SD_write(BYTE lun,//物理扇区，多个设备时用到(0...)
             res = RES_OK;
             //使相应的DCache无效
             SCB_InvalidateDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
+
+             break;
+          }
+        }
+      }
+    }
+    return res;
+#endif
+    DRESULT res = RES_ERROR;
+    uint32_t timeout;
+
+  
+    TX_Flag = 0;
+	if((DWORD)buff&3)
+    {
+      DRESULT res = RES_OK;
+      DWORD scratch[BLOCKSIZE / 4];
+
+      while (count--) 
+      {
+        memcpy( scratch,buff,BLOCKSIZE);
+        res = disk_write(0,(void *)scratch, sector++, 1);
+        if (res != RES_OK) 
+        {
+          break;
+        }					
+        buff += BLOCKSIZE;
+      }
+      return res;
+    }	
+//    alignedAddr = (uint32_t)buff & ~0x1F;
+//    //更新相应的DCache
+//    SCB_CleanDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
+    if(HAL_SD_WriteBlocks_DMA(&uSdHandle, (uint8_t*)buff,
+                             (uint32_t) (sector),
+                             count) == HAL_OK)
+    {
+      /* Wait that the reading process is completed or a timeout occurs */
+      timeout = HAL_GetTick();
+      while((TX_Flag == 0) && ((HAL_GetTick() - timeout) < SD_TIMEOUT))
+      {
+      }
+      /* incase of a timeout return error */
+      if (TX_Flag == 0)
+      {
+        res = RES_ERROR;
+      }
+      else
+      {
+        TX_Flag = 0;
+        timeout = HAL_GetTick();
+
+        while((HAL_GetTick() - timeout) < SD_TIMEOUT)
+        {
+          if (HAL_SD_GetCardState(&uSdHandle) == HAL_SD_CARD_TRANSFER)
+          {
+            res = RES_OK;
+            //使相应的DCache无效
+//            SCB_InvalidateDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr));
 
              break;
           }
@@ -202,5 +289,20 @@ DRESULT SD_ioctl(BYTE lun,BYTE cmd, void *buff){
     }
     return RES_OK;
 }
+
+//SDMMC1发送完成回调函数
+void HAL_SD_TxCpltCallback(SD_HandleTypeDef *hsd)
+{
+  //GUI_SemPostISR(sem_sd);
+  TX_Flag=1; //标记写完成
+}
+
+//SDMMC1接受完成回调函数
+void HAL_SD_RxCpltCallback(SD_HandleTypeDef *hsd)
+{
+  GUI_SemPostISR(sem_sd);
+  RX_Flag=1;
+}
+
 /*****************************END OF FILE****************************/
 

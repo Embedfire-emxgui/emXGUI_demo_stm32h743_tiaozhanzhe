@@ -23,7 +23,8 @@
 #include "./cm_backtrace/cm_backtrace.h"
 #include "./sd_card/bsp_sdio_sd.h"
 #include "./mpu/bsp_mpu.h" 
-
+#include "./beep/bsp_beep.h"   
+#include "bsp_adc.h" 
 
 /*
 *************************************************************************

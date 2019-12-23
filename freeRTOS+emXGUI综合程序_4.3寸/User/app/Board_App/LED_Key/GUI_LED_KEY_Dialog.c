@@ -88,13 +88,14 @@ static void LED_KEY_ExitButton_OwnerDraw(DRAWITEM_HDR *ds)
 		SetPenColor(hdc, MapRGB(hdc, 250, 250, 250));
 	}
 
-  SetPenSize(hdc, 2);
-	
-  OffsetRect(&rc,15,20);
+  rc.w = 25;
+ 
+  OffsetRect(&rc, 0, 11);
+  
   for(int i=0; i<4; i++)
-  {	
-    HLine(hdc, rc.x, rc.y ,58);//rc.w
-    rc.y += 9;
+  {
+    HLine(hdc, rc.x, rc.y, rc.w);
+    rc.y += 6;
   }
 
 }
@@ -110,13 +111,13 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       GetClientRect(hwnd, &rc); 
 
 			CreateWindow(BUTTON, L"O", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY |WS_OWNERDRAW|WS_VISIBLE,
-									720, 5, 80, 80, hwnd , eID_LED_KEY_EXIT, NULL, NULL); 
+									444, 0, 36, 36, hwnd , eID_LED_KEY_EXIT, NULL, NULL); 
 			CreateWindow(BUTTON, L"USER", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY |WS_OWNERDRAW|WS_VISIBLE,
-									46,  393, 166, 70, hwnd, eID_LED_USER, NULL, NULL); 
+									28,  222, 100, 40, hwnd, eID_LED_USER, NULL, NULL); 
 			CreateWindow(BUTTON, L"ON/OFF", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY |WS_OWNERDRAW|WS_VISIBLE,
-									317, 393, 166, 70, hwnd, eID_LED_ONOFF, NULL, NULL); 
+									190, 222, 100, 40, hwnd, eID_LED_ONOFF, NULL, NULL); 
 			CreateWindow(BUTTON, L"KEY", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY |WS_OWNERDRAW|WS_VISIBLE,
-									588, 393, 166, 70, hwnd, eID_LED_KEY, NULL, NULL); 
+									353, 222, 100, 40, hwnd, eID_LED_KEY, NULL, NULL); 
 
       BOOL res;
       u8 *jpeg_buf;
@@ -235,26 +236,26 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			
 			if(LED1_ON_FLAG ==1)
 			{
-				BitBlt(hdc,  81, 122, 98, 181, hdc_led_key_png[hdc_led_key_1_btn], 0, 0, SRCCOPY);
+				BitBlt(hdc,  49, 69, 59, 103, hdc_led_key_png[hdc_led_key_1_btn], 0, 0, SRCCOPY);
 			}else
 			{
-				BitBlt(hdc,  81, 122, 98, 181, hdc_led_key_png[hdc_led_key_off_btn], 0, 0, SRCCOPY);
+				BitBlt(hdc,  49, 69, 59, 103, hdc_led_key_png[hdc_led_key_off_btn], 0, 0, SRCCOPY);
 			}
 			
 			if(LED2_ON_FLAG ==1)
 			{
-				BitBlt(hdc,  351, 122, 98, 181, hdc_led_key_png[hdc_led_key_2_btn], 0, 0, SRCCOPY);
+				BitBlt(hdc,  211, 69, 59, 103, hdc_led_key_png[hdc_led_key_2_btn], 0, 0, SRCCOPY);
 			}else
 			{
-				BitBlt(hdc, 351, 122, 98, 181, hdc_led_key_png[hdc_led_key_off_btn], 0, 0, SRCCOPY);
+				BitBlt(hdc, 211, 69, 59, 103, hdc_led_key_png[hdc_led_key_off_btn], 0, 0, SRCCOPY);
 			}
 			
 			if(LED3_ON_FLAG ==1)
 			{
-				BitBlt(hdc,  622, 122, 98, 181, hdc_led_key_png[hdc_led_key_3_btn], 0, 0, SRCCOPY);
+				BitBlt(hdc,  373, 69, 59, 103, hdc_led_key_png[hdc_led_key_3_btn], 0, 0, SRCCOPY);
 			}else
 			{
-				BitBlt(hdc, 622, 122, 98, 181, hdc_led_key_png[hdc_led_key_off_btn], 0, 0, SRCCOPY);
+				BitBlt(hdc, 373, 69, 59, 103, hdc_led_key_png[hdc_led_key_off_btn], 0, 0, SRCCOPY);
 			}
 			
       EndPaint(hwnd, &ps);

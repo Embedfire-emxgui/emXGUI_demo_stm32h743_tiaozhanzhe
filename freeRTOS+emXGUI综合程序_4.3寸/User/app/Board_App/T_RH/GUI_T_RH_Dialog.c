@@ -52,16 +52,14 @@ static void T_RH_ExitButton_OwnerDraw(DRAWITEM_HDR *ds)
    { //按钮是弹起状态
       SetPenColor(hdc, MapRGB(hdc, 255,255,255));      //设置文字色
    }
-
-	 SetPenSize(hdc, 2);
-	 
-  OffsetRect(&rc,15,20);
-	
-  for(int i=0; i<4; i++)
-  {	
-    HLine(hdc, rc.x, rc.y ,58);//rc.w
-    rc.y += 9;
-  }
+   rc.w = 25;
+   OffsetRect(&rc, 0, 11);			
+ 
+   for(int i=0; i<4; i++)
+   {
+      HLine(hdc, rc.x, rc.y, rc.w);
+      rc.y += 6;
+   }
 }
 
 /*
@@ -104,7 +102,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	    DHT11_GPIO_Config();
             
       CreateWindow(BUTTON, L"O", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY |WS_OWNERDRAW|WS_VISIBLE,
-                  720,5,80,80, hwnd, eID_T_RH_EXIT, NULL, NULL); 
+                  444, 0, 36, 36, hwnd, eID_T_RH_EXIT, NULL, NULL); 
 
       rc.w = GUI_XSIZE / 2;
       rc.h = TitleHeight-2;
@@ -170,20 +168,20 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 //      EnableAntiAlias(hdc, FALSE);
       
       /* 温度数值显示 */
-      rc.w = 141;
-      rc.h = 74;
-      rc.x = 535;
-      rc.y = 134;
+      rc.w = 62;
+      rc.h = 46;
+      rc.x = 317;
+      rc.y = 75;
       
       x_wsprintf(wbuf, L"%d.%d", DHT11_Data.temp_int,DHT11_Data.temp_deci);
       SetTextColor(hdc, MapRGB(hdc, 250, 250, 250));
-      SetFont(hdc, controlFont_72);
+      SetFont(hdc, controlFont_32);
       DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式)
 
       /* 显示湿度数值 *///defaultFont
-      rc.y = 270;
-      rc.w = 141;
-      rc.x = 535;
+      rc.y = 146;
+      rc.w = 36;
+      rc.x = 326;
       x_wsprintf(wbuf, L"%d", DHT11_Data.humi_int);//.%d//,DHT11_Data.humi_deci
       DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式)
 

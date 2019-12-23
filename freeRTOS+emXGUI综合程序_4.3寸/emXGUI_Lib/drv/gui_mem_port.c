@@ -82,6 +82,7 @@ void* GUI_VMEM_Alloc(u32 size)
   if(p==NULL)
 	{
 	    GUI_ERROR("GUI_VMEM_Alloc,no enough space(for %d byte)",size);
+			while(1);
 	}
   
 	return p;
@@ -128,6 +129,7 @@ void*	GUI_MEM_Alloc(U32 size)
 	if(p==NULL)
 	{
 	    GUI_ERROR("GUI_MEM_Alloc,no enough space(for %d byte)",size);	
+			while(1);
 	}
 
 	return p;

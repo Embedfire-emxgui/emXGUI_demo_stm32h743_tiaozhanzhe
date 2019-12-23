@@ -16,7 +16,8 @@ LR_IROM1 0x08000000 0x00200000  {    ; load region size_region
   RW_IRAM2 0x24000000 0x00080000  {
    .ANY (+RW +ZI)
    gui_fs_port.o (+RW +ZI);由于DMA访问权限,功能要正常使用的话,缓冲区要放在非TCM区中   
-  }
+   fatfs_sd_sdio.o (+RW +ZI);
+}
   
   RW_ERAM1 (0xd19bb800) 0x00400000 {  ; 外部SDRAM 4M
    *.o (HEAP)        		 ;选择堆区

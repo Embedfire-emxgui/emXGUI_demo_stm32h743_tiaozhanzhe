@@ -103,7 +103,8 @@ static void BSP_Init(void)
 	
 	/* LED 端口初始化 */
 	LED_GPIO_Config();	
-	
+	/* 初始化蜂鸣器 */
+  BEEP_GPIO_Config();               
 	/* usart 端口初始化 */
   Debug_USART_Config();
  

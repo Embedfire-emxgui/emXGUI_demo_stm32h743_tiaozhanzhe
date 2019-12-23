@@ -22,10 +22,10 @@
 
 #define Rheostat_ADC12_IRQ                          ADC_IRQn
 
-#define Rheostat_ADC1_DMA_IRQ                       DMA1_Stream1_IRQn
+extern ADC_HandleTypeDef ADC_Handle;
 
 void ADC_Init(void);
-void Rheostat_DISABLE(void);
 uint16_t ADC_GetValue(void);
 void Rheostat_ADC_NVIC_Config(void);
+void Rheostat_DISABLE(void);
 #endif /* __ADC_H */

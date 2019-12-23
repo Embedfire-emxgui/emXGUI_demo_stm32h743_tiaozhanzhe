@@ -8,6 +8,7 @@
 #include "emXGUI_JPEG.h"
 #include "emxgui_png.h"
 #include "./pic_load/gui_pic_load.h"
+#include "board.h"   
 
 /* 按钮 ID */
 enum 
@@ -40,15 +41,14 @@ static void ExitButton_OwnerDraw(DRAWITEM_HDR *ds)
     SetPenColor(hdc, MapRGB(hdc, 250, 250, 250));
   }
 
-  SetPenSize(hdc, 2);
+   rc.w = 25;
+   OffsetRect(&rc, 0, 5);
 
-  OffsetRect(&rc,20,10);
-	
-  for(int i=0; i<4; i++)
-  {	
-    HLine(hdc, rc.x, rc.y ,58);//rc.w
-    rc.y += 9;
-  }
+   for(int i=0; i<4; i++)
+   {
+      HLine(hdc, rc.x, rc.y, rc.w);
+      rc.y += 6;
+   }
 }
 
 /*
@@ -75,20 +75,20 @@ static void sw_button_OwnerDraw(DRAWITEM_HDR *ds)
   BitBlt(hdc, rc.x, rc.y, rc.w, rc.h, hdc_beeper_bk, rc_tmp.x, rc_tmp.y, SRCCOPY);
 
   GetWindowText(hwnd, wbuf, 128); //获得按钮控件的文字
-  rc.h = 83;
+  rc.h = 51;
   if (ds->ID == ID_BEEPER_SW)
   {
     if (sw_flag == 0)
     {
       BitBlt(hdc, rc.x, rc.y, rc.w, rc.h, hdc_beeper_png[hdc_beeper_button], 0, 0, SRCCOPY);
-      InflateRect(&rc, 0, -6);
+      // InflateRect(&rc, 0, -6);
       DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_CENTER);    // 绘制文字(居中对齐方式)
     }
     else 
     {
       rc.y = ds->rc.h - rc.h;
       BitBlt(hdc, rc.x, rc.y, rc.w, rc.h, hdc_beeper_png[hdc_beeper_button], 0, 0, SRCCOPY);
-      InflateRect(&rc, 0, -6);
+      // InflateRect(&rc, 0, -6);
       DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_CENTER);    // 绘制文字(居中对齐方式)
     }
   }
@@ -97,14 +97,14 @@ static void sw_button_OwnerDraw(DRAWITEM_HDR *ds)
     if (tick_flag == 0)
     {
       BitBlt(hdc, rc.x, rc.y, rc.w, rc.h, hdc_beeper_png[hdc_beeper_button], 0, 0, SRCCOPY);
-      InflateRect(&rc, 0, -6);
+      // InflateRect(&rc, 0, -6);
       DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_CENTER);    // 绘制文字(居中对齐方式)
     }
     else 
     {
       rc.y = ds->rc.h - rc.h;
       BitBlt(hdc, rc.x, rc.y, rc.w, rc.h, hdc_beeper_png[hdc_beeper_button], 0, 0, SRCCOPY);
-      InflateRect(&rc, 0, -6);
+      // InflateRect(&rc, 0, -6);
       DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_CENTER);    // 绘制文字(居中对齐方式)
     }
   }
@@ -132,18 +132,18 @@ static void press_button_OwnerDraw(DRAWITEM_HDR *ds)
 
   BitBlt(hdc, rc.x, rc.y, rc.w, rc.h, hdc_beeper_bk, rc_tmp.x, rc_tmp.y, SRCCOPY);
 
-  BitBlt(hdc, 54, 77, 103, 190, hdc_beeper_png[hdc_beeper_horn], 0, 0, SRCCOPY);
+  BitBlt(hdc, 34, 48, 62, 115, hdc_beeper_png[hdc_beeper_horn], 0, 0, SRCCOPY);
   
   switch (press_flag)
   {
     case 3:
-      BitBlt(hdc, 200, 62, 74, 220, hdc_beeper_png[hdc_beeper_horn3], 0, 0, SRCCOPY);
+      BitBlt(hdc, 125, 40, 44, 131, hdc_beeper_png[hdc_beeper_horn3], 0, 0, SRCCOPY);
     
     case 2:
-      BitBlt(hdc, 187, 98, 53, 148, hdc_beeper_png[hdc_beeper_horn2], 0, 0, SRCCOPY);
+      BitBlt(hdc, 115, 61, 32, 90, hdc_beeper_png[hdc_beeper_horn2], 0, 0, SRCCOPY);
 
     case 1:
-      BitBlt(hdc, 174, 135, 33, 74, hdc_beeper_png[hdc_beeper_horn1], 0, 0, SRCCOPY);
+      BitBlt(hdc, 105, 83, 20, 45, hdc_beeper_png[hdc_beeper_horn1], 0, 0, SRCCOPY);
   
   default:
     break;
@@ -160,16 +160,16 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       GetClientRect(hwnd, &rc); 
             
       CreateWindow(BUTTON, L"O", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY | WS_OWNERDRAW | WS_VISIBLE,
-                  720, 5, 80, 80, hwnd, ID_BEEPER_EXIT, NULL, NULL); 
+                  444, 0, 36, 30, hwnd, ID_BEEPER_EXIT, NULL, NULL); 
 
       CreateWindow(BUTTON, L"滴答", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY | WS_OWNERDRAW | WS_VISIBLE,
-                  71, 177, 83, 166, hwnd, ID_BEEPER_TICK, NULL, NULL); 
+                  43, 98, 51, 94, hwnd, ID_BEEPER_TICK, NULL, NULL); 
 
       CreateWindow(BUTTON, L"按住叫", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY | WS_OWNERDRAW | WS_VISIBLE,
-                  228, 82, 344, 344, hwnd, ID_BEEPER_PRESS, NULL, NULL); 
+                  137, 46, 206, 206, hwnd, ID_BEEPER_PRESS, NULL, NULL); 
 
       CreateWindow(BUTTON, L"长鸣", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY | WS_OWNERDRAW | WS_VISIBLE,
-                  650, 177, 83, 166, hwnd, ID_BEEPER_SW, NULL, NULL); 
+                  390, 98, 51, 94, hwnd, ID_BEEPER_SW, NULL, NULL); 
 
       SetTimer(hwnd, 5, 10, TMR_START | TMR_SINGLE, NULL);
       SetTimer(hwnd, 6, 1000, TMR_START | TMR_SINGLE, NULL);
@@ -330,6 +330,8 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       press_flag = 3;
       
       BEEP_OFF;
+	  KillTimer(hwnd,55);
+      KillTimer(hwnd,66);
       return PostQuitMessage(hwnd);	
     } 
 

@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx,X_GUI_USE_FREERTOS,Fire_H7_InFlash,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Libraries\CMSIS\Include;..\..\Libraries\CMSIS\Device\ST\STM32H7xx\Include;..\..\Libraries\STM32H7xx_HAL_Driver\Inc;..\..\User;..\..\freeRTOS\include;..\..\freeRTOS\port\RVDS\ARM_CM7\r0p1;..\..\User\cm_backtrace;..\..\User\FATFS;..\..\emXGUI_Lib\arch\Inc;..\..\emXGUI_Lib\inc;..\..\emXGUI_Lib\drv;..\..\emXGUI_Lib\app\base;..\..\User\app\GUI_Demo;..\..\emXGUI_Lib\app\base\boot_interface;..\..\User\lib\libpng-1.6.34;..\..\User\lib\zlib-1.2.11;..\..\User\lib\app;..\..\User\app\Board_App\rgb_led;..\..\User\app\Board_App\rgb_led\OwnerDraw</IncludePath>
+              <IncludePath>..\..\Libraries\CMSIS\Include;..\..\Libraries\CMSIS\Device\ST\STM32H7xx\Include;..\..\Libraries\STM32H7xx_HAL_Driver\Inc;..\..\User;..\..\freeRTOS\include;..\..\freeRTOS\port\RVDS\ARM_CM7\r0p1;..\..\User\cm_backtrace;..\..\User\FATFS;..\..\emXGUI_Lib\arch\Inc;..\..\emXGUI_Lib\inc;..\..\emXGUI_Lib\drv;..\..\emXGUI_Lib\app\base;..\..\User\app\GUI_Demo;..\..\emXGUI_Lib\app\base\boot_interface;..\..\User\lib\libpng-1.6.34;..\..\User\lib\zlib-1.2.11;..\..\User\lib\app;..\..\User\app\Board_App\rgb_led;..\..\User\app\Board_App\rgb_led\OwnerDraw;..\..\User\app\Board_App\adc_Collect_voltage;..\..\User\app\Board_App;..\..\User\app\Board_App\clock\RTC</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -866,6 +866,16 @@
               <FileName>cpuusage.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\cpuusage\cpuusage.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_beep.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\beep\bsp_beep.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\key\bsp_key.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1408,6 +1418,84 @@
               <FilePath>..\..\必读说明.txt</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/beep</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_Beeper_Dialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\beeper_control\GUI_Beeper_Dialog.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/LED&amp;KEY</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_LED_KEY_Dialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\LED_Key\GUI_LED_KEY_Dialog.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/setting</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_DEMO_Settings.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\setting\GUI_DEMO_Settings.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/clock</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_CLOCK_DIALOG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\clock\GUI_CLOCK_DIALOG.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\clock\RTC\bsp_rtc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/adc</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_ADC_CollectVoltage_Dialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\adc_Collect_voltage\GUI_ADC_CollectVoltage_Dialog.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\adc_Collect_voltage\bsp_adc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/dth11</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_T_RH_Dialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\T_RH\GUI_T_RH_Dialog.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_dht11.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\T_RH\dht11\bsp_dht11.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/pic_viwer</GroupName>
         </Group>
       </Groups>
     </Target>
