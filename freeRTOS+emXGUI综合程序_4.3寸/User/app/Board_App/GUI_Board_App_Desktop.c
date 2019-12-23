@@ -50,7 +50,7 @@ static void dummy(void *p)
 }
 
 extern void	GUI_App_Desktop(void);//
-#if 0
+#if 1
 extern void GUI_DEMO_DrawJPEG(void);//
 extern void App_LED_DIALOG(void);//
 extern void App_GUI_Tutorial_DEMO(void);//GUI—› æ
@@ -155,7 +155,7 @@ struct __obj_list menu_list_1[] = {
 //      L" ±÷”",		      NULL,	  L"H",   RGB_WHITE,				(void(*)(void *))GUI_CLOCK_DIALOG,//dummy,
 //				
 //			L"Õ”¬›“«",	      NULL,	  L"R", 	RGB_WHITE,			  (void(*)(void *))GUI_Gyro_Dialog,//dummy,
-//      L"RGB≤ µ∆",	     	NULL,	  L"L",   RGB_WHITE,				(void(*)(void *))GUI_LED_DIALOG,
+      L"RGB≤ µ∆",	     	NULL,	  L"L",   RGB_WHITE,				(void(*)(void *))GUI_LED_DIALOG,
 //      L"…„œÒÕ∑",	    	NULL,	  L"M",   RGB_WHITE, 				(void(*)(void *))GUI_Camera_DIALOG,//dummy,
 //      L"Õº∆¨‰Ø¿¿∆˜",  	NULL, 	L"G",   RGB_WHITE,				(void(*)(void *))GUI_PicViewer_Dialog,
 //			

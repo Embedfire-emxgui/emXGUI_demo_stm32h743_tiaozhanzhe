@@ -111,7 +111,7 @@ const adc_hdc_t adc_png_info[hdc_adc_end] =
   {GUI_ADC_SLIDER_BTN_PIC,     90,  90,     hdc_adc_slider_btn},
   {GUI_ADC_SLIDER_PIC,         600, 45,     hdc_adc_slider},
   {GUI_ADC_CIRCLE_PIC,         270, 270,    hdc_adc_circle},
-  {GUI_ADC_F429_RP_PIC,        350, 340,    hdc_adc_F429_RP},
+  {GUI_ADC_H7_RP_PIC,        350, 340,    hdc_adc_H7_RP},
 };
 
 HDC hdc_adc_bk;

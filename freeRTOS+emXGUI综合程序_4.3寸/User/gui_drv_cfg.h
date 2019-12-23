@@ -147,7 +147,7 @@
 
 #if 0
   /* LOGO使用的字体 */
-  #define  GUI_LOGO_FONT          LOGO_30_4BPP
+  #define  GUI_LOGO_FONT          LOGO_50_4BPP
   /* ICON使用的字体 */
   #define   GUI_ICON_FONT_100         ICON_100_4BPP
   /* 控制ICON使用的字体 */
@@ -157,7 +157,7 @@
   #define  GUI_LOGO_FONT              "LOGO_30_4BPP.xft"
   #define  GUI_ICON_FONT_200          "logo_icon_200_200_4BPP.xft"
   /* ICON使用的字体 */
-  #define   GUI_ICON_FONT_64         "APP_ICON_64_64_4BPP.xft"
+  #define   GUI_ICON_FONT_100         "APP_ICON_64_64_4BPP.xft"
   #define   GUI_ICON_FONT_252         "app_icon_252_252_4BPP.xft"
   /* 控制ICON使用的字体 */
   #define   GUI_CONTROL_FONT_48      "CONTROL_ICON_48_48_4BPP.xft"
@@ -167,6 +167,7 @@
   #define   GUI_CONTROL_FONT_32      "CONTROL_ICON_32_32_4BPP.xft"
   #define   GUI_CONTROL_FONT_24      "CONTROL_ICON_24_24_4BPP.xft"
 #endif
+
 
 /*===========日志输出设备配置===gui_log_port.c===============================================*/
 
@@ -206,6 +207,9 @@
 /* 截图 */
 #define GUI_PIC_CAPTURE_SCREEN_EN  ( 1 && GUI_PIC_FS_EN)
 
+
+//设置变量定义到“EXRAM”节区的宏
+#define __EXRAM  __attribute__ ((section ("EXRAM")))
 /*===========是否启用各种APP===============================================*/
 
 /* 启动界面 */

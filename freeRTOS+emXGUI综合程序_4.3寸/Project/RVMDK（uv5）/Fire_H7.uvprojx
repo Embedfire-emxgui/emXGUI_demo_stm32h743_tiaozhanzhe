@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx,X_GUI_USE_FREERTOS,Fire_H7_InFlash,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Libraries\CMSIS\Include;..\..\Libraries\CMSIS\Device\ST\STM32H7xx\Include;..\..\Libraries\STM32H7xx_HAL_Driver\Inc;..\..\User;..\..\freeRTOS\include;..\..\freeRTOS\port\RVDS\ARM_CM7\r0p1;..\..\User\cm_backtrace;..\..\User\FATFS;..\..\emXGUI_Lib\arch\Inc;..\..\emXGUI_Lib\inc;..\..\emXGUI_Lib\drv;..\..\emXGUI_Lib\app\base;..\..\User\app\GUI_Demo;..\..\emXGUI_Lib\app\base\boot_interface;..\..\User\lib\libpng-1.6.34;..\..\User\lib\zlib-1.2.11;..\..\User\lib\app</IncludePath>
+              <IncludePath>..\..\Libraries\CMSIS\Include;..\..\Libraries\CMSIS\Device\ST\STM32H7xx\Include;..\..\Libraries\STM32H7xx_HAL_Driver\Inc;..\..\User;..\..\freeRTOS\include;..\..\freeRTOS\port\RVDS\ARM_CM7\r0p1;..\..\User\cm_backtrace;..\..\User\FATFS;..\..\emXGUI_Lib\arch\Inc;..\..\emXGUI_Lib\inc;..\..\emXGUI_Lib\drv;..\..\emXGUI_Lib\app\base;..\..\User\app\GUI_Demo;..\..\emXGUI_Lib\app\base\boot_interface;..\..\User\lib\libpng-1.6.34;..\..\User\lib\zlib-1.2.11;..\..\User\lib\app;..\..\User\app\Board_App\rgb_led;..\..\User\app\Board_App\rgb_led\OwnerDraw</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1376,6 +1376,26 @@
               <FileName>GUI_SelectDialogBox.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\app\GUI_Demo\GUI_SelectDialogBox.c</FilePath>
+            </File>
+            <File>
+              <FileName>Widget.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\rgb_led\OwnerDraw\Widget.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/rgb_led</GroupName>
+          <Files>
+            <File>
+              <FileName>Backend_RGBLED.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\rgb_led\Backend_RGBLED.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUI_RGBLED_DIALOG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\rgb_led\GUI_RGBLED_DIALOG.c</FilePath>
             </File>
           </Files>
         </Group>

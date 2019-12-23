@@ -91,12 +91,13 @@ const FONT_PARAM_TypeDef gui_font_param[GUI_LCD_TYPE_NUM] = {
   {   
     .default_en = ASCII_24_4BPP,                /* 默认英文字体，内部flash */
     .default_extern_cn = "GB2312_24_4BPP.xft", /* 默认中文字体，外部 */
+		.default_extern_logo100 = "APP_ICON_100_100_4BPP.xft",
   },
   /* 4.3寸屏 */
   {   
     .default_en = ASCII_16_4BPP,                /* 默认英文字体，内部flash */
-    .default_extern_cn = "GB2312_16_4BPP.xft", /* 默认中文字体，外部 */
-		.default_extern_logo100 = "APP_ICON_100_100_4BPP.xft",
+		.default_extern_cn = "GB2312_16_4BPP.xft", /* 默认中文字体，外部 */
+    .default_extern_logo100 = "APP_ICON_100_100_4BPP.xft",
   },
 };
 
@@ -269,7 +270,7 @@ HFONT GUI_Init_Extern_Font(void)
       
       logoFont_200 =  GUI_Init_Extern_Font_2RAM(GUI_ICON_FONT_200,&logo_font_buf_200);
       /* 创建图标字体 */  
-      iconFont_64 =  GUI_Init_Extern_Font_2RAM(GUI_ICON_FONT_64,&icon_font_100_buf);
+      iconFont_64 =  GUI_Init_Extern_Font_2RAM(GUI_ICON_FONT_100,&icon_font_100_buf);
       iconFont_252 =  GUI_Init_Extern_Font_2RAM(GUI_ICON_FONT_252,&icon_font_252_buf);   
       /* 创建图标字体 */
       controlFont_32 =  GUI_Init_Extern_Font_2RAM(GUI_CONTROL_FONT_32,&control_font_32_buf);      
@@ -280,10 +281,8 @@ HFONT GUI_Init_Extern_Font(void)
       /* 创建控制图标字体 */  
       controlFont_72 =  GUI_Init_Extern_Font_2RAM(GUI_CONTROL_FONT_72,&control_font_72_buf); 
       controlFont_100 =  GUI_Init_Extern_Font_2RAM(GUI_CONTROL_FONT_100,&control_font_100_buf);
- 			controlFont_24  =  GUI_Init_Extern_Font_2RAM(GUI_CONTROL_FONT_24,&control_font_24_buf);
-
-
-		 }
+			controlFont_24  =  GUI_Init_Extern_Font_2RAM(GUI_CONTROL_FONT_24,&control_font_24_buf);
+     }
     #endif
   }
   

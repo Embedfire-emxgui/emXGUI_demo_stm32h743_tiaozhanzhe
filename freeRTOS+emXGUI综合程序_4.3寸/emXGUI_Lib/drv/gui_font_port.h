@@ -34,11 +34,11 @@ extern HFONT logoFont;
 extern HFONT iconFont_64;
 extern HFONT iconFont_252;
 /* 控制图标字体 */
+extern HFONT controlFont_24;
 extern HFONT controlFont_48;
 extern HFONT controlFont_64;
 extern HFONT controlFont_72;
 extern HFONT controlFont_32;
-extern HFONT controlFont_24;
 extern HFONT controlFont_100;
 /* 其它 */
 extern HFONT GB2312_32_Font;
