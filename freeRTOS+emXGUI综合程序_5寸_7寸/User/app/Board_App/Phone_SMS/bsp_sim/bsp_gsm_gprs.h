@@ -3,7 +3,7 @@
 
 #include "stm32h7xx.h"
 #include "./bsp_gsm_usart.h"
-
+#include "FreeRTOS.h"
 //#include "ff.h"
 
 typedef enum{
@@ -35,7 +35,7 @@ extern  uint8_t     gsm_cmd_check   	(char *reply);
 #define     GSM_TX(cmd)                	GSM_USART_printf("%s",cmd)
 #define     GSM_IS_RX()                 (__HAL_USART_GET_FLAG (&ESP8266_UartHandle, USART_FLAG_RXNE) != RESET)
 #define     GSM_RX(len)                 ((char *)get_rebuff(&(len)))
-#define     GSM_DELAY(time)              GUI_msleep(time)                 //延时
+#define     GSM_DELAY(time)              vTaskDelay(time)                 //延时
 #define     GSM_SWAP16(data)    				 __REVSH(data)
 
 /*************************** 电话 功能 ***************************/
@@ -74,7 +74,7 @@ uint8_t	PostGPRS(void);
 
 /*调试用串口*/
 
-#define GSM_DEBUG_ON         	0
+#define GSM_DEBUG_ON         	1
 #define GSM_DEBUG_ARRAY_ON    0
 #define GSM_DEBUG_FUNC_ON   	0
 // Log define

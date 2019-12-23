@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火  STM32 H750 开发板  
+  * 实验平台:野火  STM32 H743 开发板  
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :https://fire-stm32.taobao.com
   *
@@ -29,13 +29,15 @@
 void GSM_USART_Config(void)
 {
 	  GPIO_InitTypeDef GPIO_InitStruct;
-    RCC_PeriphCLKInitTypeDef RCC_PeriphClkInit;
-	
-	 /* 配置串口6时钟源*/
-		RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART6;
-		RCC_PeriphClkInit.Usart16ClockSelection = RCC_USART16CLKSOURCE_D2PCLK2;
-		HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphClkInit);
-		/* 使能串口6时钟 */
+//    RCC_PeriphCLKInitTypeDef RCC_PeriphClkInit;
+//	
+//	 /* 配置串口6时钟源*/
+//		RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART6;
+//		RCC_PeriphClkInit.Usart6ClockSelection = RCC_USART6CLKSOURCE_PCLK2;
+//		HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphClkInit);
+		/* 使能串口7时钟 */
+		GSM_USART_TX_GPIO_CLK;
+		GSM_USART_RX_GPIO_CLK;
 		GSM_USART_CLK_ENABLE();
 	
 	/* 配置Tx引脚为复用功能  */
@@ -62,7 +64,7 @@ void GSM_USART_Config(void)
 	  HAL_UART_Init(&GSM_UartHandle);
 	  	
 				/*配置中断优先级*/
-		HAL_NVIC_SetPriority(GSM_USART_IRQ, 1, 0);
+		HAL_NVIC_SetPriority(GSM_USART_IRQ, 7, 0);
 		 /*使能DMA中断*/
 		HAL_NVIC_EnableIRQ(GSM_USART_IRQ);
 		 /*配置中断条件*/
@@ -158,14 +160,14 @@ void GSM_USART_IRQHandler(void)
 {
     if(uart_p<UART_BUFF_SIZE)
     {
-        if(__HAL_UART_GET_IT(&GSM_UartHandle, USART_IT_RXNE) != RESET)
+        if(__HAL_UART_GET_IT(&GSM_UartHandle, UART_IT_RXNE) != RESET)
         {
             uart_buff[uart_p] = GSM_UartHandle.Instance->RDR;
             uart_p++;
         }
     }
 		
-	 if(__HAL_UART_GET_IT(&GSM_UartHandle, USART_IT_IDLE) != RESET)
+	 if(__HAL_UART_GET_IT(&GSM_UartHandle, UART_IT_IDLE) != RESET)
 		{
 			GUI_SemPostISR(Call_Sem);
 			HAL_UART_Receive(&GSM_UartHandle, clearbuf , 0, 0);

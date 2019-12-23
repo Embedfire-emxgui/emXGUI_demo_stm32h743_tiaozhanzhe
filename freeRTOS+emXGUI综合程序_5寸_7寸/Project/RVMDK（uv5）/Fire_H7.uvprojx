@@ -1609,6 +1609,31 @@
             </File>
           </Files>
         </Group>
+        <Group>
+          <GroupName>tutorial/PhoneCallMonitorTask</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_Phone_Dialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\Phone_SMS\GUI_Phone_Dialog.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUI_SMS_Dialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\Phone_SMS\GUI_SMS_Dialog.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_gsm_gprs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\Phone_SMS\bsp_sim\bsp_gsm_gprs.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_gsm_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\Phone_SMS\bsp_sim\bsp_gsm_usart.c</FilePath>
+            </File>
+          </Files>
+        </Group>
       </Groups>
     </Target>
   </Targets>

@@ -60,6 +60,8 @@ extern void GUI_ADC_CollectVoltage_Dialog(void);//电压采集
 extern void GUI_T_RH_Dialog(void);//温湿度
 extern void	GUI_PicViewer_Dialog(void);//图片浏览器
 extern void GUI_Gyro_Dialog(void);//陀螺仪
+extern void GUI_Phone_Dialog(void);//电话
+extern void GUI_SMS_Dialog(void);//短信
 
 #if 0
 extern void GUI_DEMO_DrawJPEG(void);//
@@ -77,14 +79,9 @@ extern void GUI_Boot_Interface_DIALOG(void);//
 extern void	GUI_RECORDER_DIALOG(void);//录音
 
 
-extern void GUI_Phone_Dialog(void);//电话
-
-
-
 extern void GUI_NetworkDLG_Dialog(void);//以太网
 
-extern void GUI_Phone_Dialog(void);//电话
-extern void GUI_SMS_Dialog(void);//短信
+
 
 
 #endif
@@ -178,8 +175,8 @@ struct __obj_list menu_list_1[] = {
 //			L"游戏",        	NULL,	  L"S",   RGB_WHITE,				(void(*)(void *))dummy,
 //      //L"模拟U盘",   	NULL,	  L"N",   RGB_WHITE,				dummy,       
 //      //L"WiFi",	    	NULL,	  L"P",   RGB_WHITE,				dummy,
-//      L"电话",	        NULL, 	L"T",   RGB_WHITE,				(void(*)(void *))GUI_Phone_Dialog,
-//      L"短信",         	NULL,   L"U",   RGB_WHITE,				(void(*)(void *))GUI_SMS_Dialog,
+      L"电话",	        NULL, 	L"T",   RGB_WHITE,				(void(*)(void *))GUI_Phone_Dialog,
+      L"短信",         	NULL,   L"U",   RGB_WHITE,				(void(*)(void *))GUI_SMS_Dialog,
 //      L"二维码",       	NULL,	  L"V",   RGB_WHITE,				(void(*)(void *))GUI_Camera_QRCode_DIALOG,//dummy,
 //				
 //      L"录音机",	      NULL,	  L"Y", 	RGB_WHITE,			  (void(*)(void *))GUI_RECORDER_DIALOG,//dummy,        
