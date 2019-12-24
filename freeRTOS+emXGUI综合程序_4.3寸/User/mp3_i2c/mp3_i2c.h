@@ -2,12 +2,11 @@
 File    : i2c.h
 Purpose : 
 **********************************************************************/
-#ifndef __MPU6050_I2C_H__
-#define __MPU6050_I2C_H__
+#ifndef __I2C_H__
+#define __I2C_H__
 /****************************** Includes *****************************/
 #include "stm32h7xx.h"
-#include "stm32h7xx_hal.h"
-#include "board.h"
+#include "./usart/bsp_usart.h"
 /****************************** Defines *******************************/
 
 #define I2C_OWN_ADDRESS           0x00
@@ -25,7 +24,7 @@ Purpose :
 
 #define SENSORS_I2C_SCL_GPIO_PORT         		GPIOB
 #define SENSORS_I2C_SCL_GPIO_CLK_ENABLE()    	__GPIOB_CLK_ENABLE()
-#define SENSORS_I2C_SCL_GPIO_PIN         		GPIO_PIN_6
+#define SENSORS_I2C_SCL_GPIO_PIN         		  GPIO_PIN_6
  
 #define SENSORS_I2C_SDA_GPIO_PORT         		GPIOB
 #define SENSORS_I2C_SDA_GPIO_CLK_ENABLE()   	__GPIOB_CLK_ENABLE()
@@ -33,7 +32,7 @@ Purpose :
 
 #define SENSORS_I2C_AF                    		GPIO_AF4_I2C1
 
-#define SENSORS_I2C              		  		I2C1
+#define SENSORS_I2C              		  		  I2C1
 #define SENSORS_I2C_RCC_CLK_ENABLE()     		__HAL_RCC_I2C1_CLK_ENABLE()
 
 #define SENSORS_I2C_FORCE_RESET()      			__HAL_RCC_I2C1_FORCE_RESET()
@@ -57,14 +56,14 @@ Purpose :
 
 
 																			 
-void MPU6050_I2cMaster_Init(void);
+void MP3_I2cMaster_Init(void);
 unsigned short Get_I2C_Retry(void);
 																			 
-int MPU6050_Sensors_I2C_ReadRegister(unsigned char slave_addr,
+int Sensors_I2C_ReadRegister(unsigned char slave_addr,
                                        unsigned char reg_addr,
                                        unsigned short len, 
                                        unsigned char *data_ptr);
-int MPU6050_Sensors_I2C_WriteRegister(unsigned char slave_addr,
+int Sensors_I2C_WriteRegister(unsigned char slave_addr,
                                         unsigned char reg_addr,
                                         unsigned short len, 
                                         unsigned char *data_ptr);

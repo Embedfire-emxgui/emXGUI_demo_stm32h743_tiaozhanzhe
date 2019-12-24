@@ -150,7 +150,7 @@ struct __obj_list menu_list_1[] = {
     //L"Textbox",		app_1, 		NULL,	 	RGB_WHITE,			dummy,
 
       L"GUI应用",		    NULL, 	L"J", 	RGB_WHITE,		  	(void(*)(void *))GUI_App_Desktop,//GUI_App_Desktop,
-//      L"MP3播放器",		  NULL,	  L"I",   RGB_WHITE,			  (void(*)(void *))GUI_MUSICPLAYER_DIALOG,//dummy,
+      L"MP3播放器",		  NULL,	  L"I",   RGB_WHITE,			  (void(*)(void *))GUI_MUSICPLAYER_DIALOG,//dummy,
 //      L"视频播放器",		NULL,	  L"D",   RGB_WHITE,				(void(*)(void *))GUI_VideoPlayer_DIALOG,
       L"时钟",		      NULL,	  L"H",   RGB_WHITE,				(void(*)(void *))GUI_CLOCK_DIALOG,//dummy,
 //				
@@ -171,7 +171,7 @@ struct __obj_list menu_list_1[] = {
       L"短信",         	NULL,   L"U",   RGB_WHITE,				(void(*)(void *))GUI_SMS_Dialog,
 //      L"二维码",       	NULL,	  L"V",   RGB_WHITE,				(void(*)(void *))GUI_Camera_QRCode_DIALOG,//dummy,
 //				
-//      L"录音机",	      NULL,	  L"Y", 	RGB_WHITE,			  (void(*)(void *))GUI_RECORDER_DIALOG,//dummy,        
+      L"录音机",	      NULL,	  L"Y", 	RGB_WHITE,			  (void(*)(void *))GUI_RECORDER_DIALOG,//dummy,        
 //      L"基础控件",	    NULL, 	L"D",   RGB_WHITE,				(void(*)(void *))GUI_DEMO_RadiaMenu,
       L"蜂鸣器",	      NULL, 	L"i",   RGB_WHITE,				(void(*)(void *))GUI_Beeper_Dialog,
 			L"LED&KEY",       NULL,	  L"j",   RGB_WHITE,		 	  (void(*)(void *))GUI_LED_KEY_Dialog,				

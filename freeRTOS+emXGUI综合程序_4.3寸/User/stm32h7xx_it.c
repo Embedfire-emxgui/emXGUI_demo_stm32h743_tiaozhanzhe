@@ -37,6 +37,7 @@
 /* FreeRTOS头文件 */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "board.h"
 
 
 /* External variables --------------------------------------------------------*/
@@ -184,6 +185,8 @@ void BASIC_TIM_IRQHandler(void)
 //        CPU_RunTime++;
 //}
 
+
+
 /* MPU6050中断服务函数 */
 extern void gyro_data_ready_cb(void);
 void MPU_IRQHandler(void)
@@ -196,5 +199,19 @@ void MPU_IRQHandler(void)
 	
 		__HAL_GPIO_EXTI_CLEAR_IT(MPU_INT_GPIO_PIN);     //清除中断标志位
 	}  
+}
+/**
+* @brief This function handles DMA1 stream4 global interrupt.
+*/
+void DMA1_Stream4_IRQHandler(void)
+{
+  I2Sx_TX_DMA_STREAM_IRQFUN();
+}
+/**
+* @brief This function handles DMA1 stream3 global interrupt.
+*/
+void DMA1_Stream3_IRQHandler(void)
+{
+  I2Sxext_RX_DMA_STREAM_IRQFUN();
 }
 

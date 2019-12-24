@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32H743xx,X_GUI_USE_FREERTOS,Fire_H7_InFlash,USE_DMP,MPL_LOG_NDEBUG=1,EMPL,MPU6050,EMPL_TARGET_STM32F7,NDEBUG,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Libraries\CMSIS\Include;..\..\Libraries\CMSIS\Device\ST\STM32H7xx\Include;..\..\Libraries\STM32H7xx_HAL_Driver\Inc;..\..\User;..\..\freeRTOS\include;..\..\freeRTOS\port\RVDS\ARM_CM7\r0p1;..\..\User\cm_backtrace;..\..\User\FATFS;..\..\emXGUI_Lib\arch\Inc;..\..\emXGUI_Lib\inc;..\..\emXGUI_Lib\drv;..\..\emXGUI_Lib\app\base;..\..\User\app\GUI_Demo;..\..\emXGUI_Lib\app\base\boot_interface;..\..\User\lib\libpng-1.6.34;..\..\User\lib\zlib-1.2.11;..\..\User\lib\app;..\..\User\app\Board_App\rgb_led;..\..\User\app\Board_App\rgb_led\OwnerDraw;..\..\User\app\Board_App\adc_Collect_voltage;..\..\User\app\Board_App;..\..\User\app\Board_App\clock\RTC;..\..\User\app\Board_App\gyro\mpu6050\driver\stm32L;..\..\User\app\Board_App\gyro\mpu6050\driver\eMPL;..\..\User\app\Board_App\gyro\mpu6050\driver\include;..\..\User\app\Board_App\gyro\mpu6050\eMPL-hal;..\..\User\app\Board_App\gyro\mpu6050\mllite;..\..\User\app\Board_App\gyro;..\..\User\app\Board_App\gyro\mpu6050\mpl;..\..\User\app\Board_App\Phone_SMS</IncludePath>
+              <IncludePath>..\..\Libraries\CMSIS\Include;..\..\Libraries\CMSIS\Device\ST\STM32H7xx\Include;..\..\Libraries\STM32H7xx_HAL_Driver\Inc;..\..\User;..\..\freeRTOS\include;..\..\freeRTOS\port\RVDS\ARM_CM7\r0p1;..\..\User\cm_backtrace;..\..\User\FATFS;..\..\emXGUI_Lib\arch\Inc;..\..\emXGUI_Lib\inc;..\..\emXGUI_Lib\drv;..\..\emXGUI_Lib\app\base;..\..\User\app\GUI_Demo;..\..\emXGUI_Lib\app\base\boot_interface;..\..\User\lib\libpng-1.6.34;..\..\User\lib\zlib-1.2.11;..\..\User\lib\app;..\..\User\app\Board_App\rgb_led;..\..\User\app\Board_App\rgb_led\OwnerDraw;..\..\User\app\Board_App\adc_Collect_voltage;..\..\User\app\Board_App;..\..\User\app\Board_App\clock\RTC;..\..\User\app\Board_App\gyro\mpu6050\driver\stm32L;..\..\User\app\Board_App\gyro\mpu6050\driver\eMPL;..\..\User\app\Board_App\gyro\mpu6050\driver\include;..\..\User\app\Board_App\gyro\mpu6050\eMPL-hal;..\..\User\app\Board_App\gyro\mpu6050\mllite;..\..\User\app\Board_App\gyro;..\..\User\app\Board_App\gyro\mpu6050\mpl;..\..\User\app\Board_App\Phone_SMS;..\..\User\app\Board_App\recorder;..\..\User\app\Board_App\recorder;..\..\User\app\Board_App\mp3_decoder;..\..\User\app\Board_App\mp3_decoder\pub;..\..\User\app\Board_App\mp3_decoder\real</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -876,6 +876,16 @@
               <FileName>bsp_key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\key\bsp_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_wm8978.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\wm8978\bsp_wm8978.c</FilePath>
+            </File>
+            <File>
+              <FileName>mp3_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\mp3_i2c\mp3_i2c.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1631,6 +1641,156 @@
               <FileName>libmpllib.lib</FileName>
               <FileType>4</FileType>
               <FilePath>..\..\User\app\Board_App\gyro\mpu6050\mpl\libmpllib_Keil_M4\libmpllib.lib</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/bsp_mp3</GroupName>
+          <Files>
+            <File>
+              <FileName>mp3dec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\mp3dec.c</FilePath>
+            </File>
+            <File>
+              <FileName>mp3tabs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\mp3tabs.c</FilePath>
+            </File>
+            <File>
+              <FileName>assembly.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\assembly.h</FilePath>
+            </File>
+            <File>
+              <FileName>bitstream.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\bitstream.c</FilePath>
+            </File>
+            <File>
+              <FileName>buffers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\buffers.c</FilePath>
+            </File>
+            <File>
+              <FileName>coder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\coder.h</FilePath>
+            </File>
+            <File>
+              <FileName>dct32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\dct32.c</FilePath>
+            </File>
+            <File>
+              <FileName>dequant.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\dequant.c</FilePath>
+            </File>
+            <File>
+              <FileName>dqchan.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\dqchan.c</FilePath>
+            </File>
+            <File>
+              <FileName>huffman.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\huffman.c</FilePath>
+            </File>
+            <File>
+              <FileName>hufftabs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\hufftabs.c</FilePath>
+            </File>
+            <File>
+              <FileName>imdct.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\imdct.c</FilePath>
+            </File>
+            <File>
+              <FileName>scalfact.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\scalfact.c</FilePath>
+            </File>
+            <File>
+              <FileName>stproc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\stproc.c</FilePath>
+            </File>
+            <File>
+              <FileName>subband.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\subband.c</FilePath>
+            </File>
+            <File>
+              <FileName>trigtabs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\trigtabs.c</FilePath>
+            </File>
+            <File>
+              <FileName>asmmisc.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\arm\asmmisc.s</FilePath>
+            </File>
+            <File>
+              <FileName>asmpoly_thumb2.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\real\arm\asmpoly_thumb2.s</FilePath>
+            </File>
+            <File>
+              <FileName>mp3common.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\pub\mp3common.h</FilePath>
+            </File>
+            <File>
+              <FileName>mp3dec.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\pub\mp3dec.h</FilePath>
+            </File>
+            <File>
+              <FileName>mpadecobjfixpt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\pub\mpadecobjfixpt.h</FilePath>
+            </File>
+            <File>
+              <FileName>statname.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_decoder\pub\statname.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/mp3</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_MUSICPLAYER_DIALOG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_player\GUI_MUSICPLAYER_DIALOG.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUI_MusicList_DIALOG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_player\GUI_MusicList_DIALOG.c</FilePath>
+            </File>
+            <File>
+              <FileName>Backend_mp3Player.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\mp3_player\Backend_mp3Player.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/recorder</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_RECORDER_DIALOG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\recorder\GUI_RECORDER_DIALOG.c</FilePath>
+            </File>
+            <File>
+              <FileName>Backend_Recorder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\recorder\Backend_Recorder.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -109,6 +109,12 @@ static void BSP_Init(void)
   Debug_USART_Config();
 	
 	RTC_CLK_Config();
+	
+	/* wm8978 播放器初始化	*/
+	if (wm8978_Init()==0)
+  {
+    printf("检测不到WM8978芯片!!!\n");
+  }
  
 	MODIFY_REG(FMC_Bank1->BTCR[0],FMC_BCR1_MBKEN,0); //关闭FMC_Bank1,不然LCD会闪.
 

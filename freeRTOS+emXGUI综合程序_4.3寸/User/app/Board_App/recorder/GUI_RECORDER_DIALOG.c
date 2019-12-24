@@ -5,30 +5,30 @@
 #include "ff.h"
 #include "./mp3_player/Backend_mp3Player.h"
 #include "Backend_Recorder.h"
-#include "./sai/bsp_sai.h"
+#include "./wm8978/bsp_wm8978.h"
 uint16_t TaskGetState = 0;
 extern GUI_SEM * exit_sem;//创建一个信号量
 //图标管理数组
 recorder_icon_t record_icon[] = {
 
-   {L"A",        {308, 412, 48, 48},   ID_RECORD_bPOWER},    // 0. 音量
-   {L"Q",        {718, 407, 64, 64},   ID_RECORD_BUGLE},     // 1. 喇叭按钮
-   {L"S",        {446, 407, 64, 64},   ID_RECORD_BACK},      // 2. 上一首
-   {L"T",        {538, 405, 72, 72},   ID_RECORD_PLAY},      // 3. 播放
-   {L"V",        {642, 407, 64, 64},   ID_RECORD_NEXT},      // 4. 下一首
-   {L"U",        {79,  308, 64, 64},   ID_RECORD_STOP},      // 5. 停止录音
-   {L"U",        {181, 308, 64, 64},   ID_RECORD_START},     // 6. 开始录音
-   {L"U",        {181, 308, 72, 72},   ID_RECORD_PADNC},     // 7. 暂停继续
-   {L"O",        {720,  5, 80, 80},   ID_RECORD_EXIT},      // 8. 退出
+   {L"A",        {184, 240, 26, 24},   ID_RECORD_bPOWER},    // 0. 音量
+   {L"Q",        {431, 236, 36, 36},   ID_RECORD_BUGLE},     // 1. 喇叭按钮
+   {L"S",        {290, 236, 36, 36},   ID_RECORD_BACK},      // 2. 上一首
+   {L"T",        {325, 237, 35, 35},   ID_RECORD_PLAY},      // 3. 播放
+   {L"V",        {370, 236, 36, 36},   ID_RECORD_NEXT},      // 4. 下一首
+   {L"U",        {47,  174, 32, 32},   ID_RECORD_STOP},      // 5. 停止录音
+   {L"U",        {109, 174, 32, 32},   ID_RECORD_START},     // 6. 开始录音
+   {L"U",        {109, 174, 32, 32},   ID_RECORD_PADNC},     // 7. 暂停继续
+   {L"O",         {446, 0, 34, 36},   ID_RECORD_EXIT},      // 8. 退出
 
-   {L"录音机",    {96,  85, 120, 30},   ID_RECORD_STATE},    // 9. 正在录音
-   {L"00:00",    {106, 187,100, 30},   ID_RECORD_TIME},      // 10. 录音时长
-   {L"00:00",    {302, 379, 66, 30},   ID_PLAY_TIME},        // 11. 播放时长
-   {L"00:00",    {732, 379, 66, 30},   ID_PLAY_TOTAL_TIME},  // 12. 录音总时长
+   {L"录音机",    {55,  45, 86, 30},   ID_RECORD_STATE},    // 9. 正在录音
+   {L"00:00",    {66,  98, 63, 30},   ID_RECORD_TIME},      // 10. 录音时长
+   {L"00:00",    {181, 216, 44, 20},   ID_PLAY_TIME},        // 11. 播放时长
+   {L"00:00",    {435, 214, 47, 20 },   ID_PLAY_TOTAL_TIME},  // 12. 录音总时长
   
-   {L" ",        {325, 47, 406,301},   ID_RECORD_LIST},      // 13. 音乐列表
-   {L" ",        {370, 378,355, 30},   ID_PLAY_PROGRESS},    // 14. 播放进度条
-   {L" ",        {369, 423, 74, 30},   ID_RECORD_sPOWER},    // 15. 音量进度条
+   {L" ",        {195, 25, 244,171},   ID_RECORD_LIST},      // 13. 音乐列表
+   {L" ",        {225, 212,205, 23},   ID_PLAY_PROGRESS},    // 14. 播放进度条
+   {L" ",        {216, 243, 64, 23},   ID_RECORD_sPOWER},    // 15. 音量进度条
   
 };
 
@@ -46,9 +46,9 @@ extern char music_name[FILE_NAME_LEN] __EXRAM;    // 歌曲名数组
 extern int play_index;      // 播放歌曲的编号值
 extern HWND music_wnd_time; // 歌曲进度条窗口句柄
 extern uint8_t chgsch;      // 调整进度条标志位
-
+extern uint8_t chgsch_TouchUp;
 static char path[100];     // 文件根目录
-static int  power = 20;    // 音量值
+static int  power = 35;    // 音量值
 
 /**
   * @brief  scan_files 递归扫描sd卡内的录音文件
@@ -140,8 +140,8 @@ extern WavHead rec_wav;             /* WAV设备  */
 extern FRESULT result; 
 extern UINT bw;            					/* File R/W count */
 extern REC_TYPE Recorder;           /* 录音设备 */
-extern __align(4) uint16_t record_buffer0[RECBUFFER_SIZE]	__attribute__((at(0x24008000)));  /* 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 */
-extern __align(4) uint16_t record_buffer1[RECBUFFER_SIZE]	__attribute__((at(0x24004000)));  /* 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
+extern __align(4) uint16_t record_buffer0[RECBUFFER_SIZE];  /* 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 */
+extern __align(4) uint16_t record_buffer1[RECBUFFER_SIZE];  /* 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
 
 static void App_Record(void *p)
 {
@@ -169,7 +169,7 @@ static void App_Record(void *p)
   * @param  hwnd:主窗口句柄
   * @retval 无
   */
-static int thread=0;
+static __IO int thread=0;
 extern int NoSource_flag;
 static void App_PlayRecord(HWND hwnd)
 {
@@ -211,6 +211,7 @@ static void App_PlayRecord(HWND hwnd)
     GUI_msleep(20);
 	   
    }
+	thread = 0xff;
 	 while(1)
 	 {
 		GUI_msleep(20);//任务结束,等待任务回收
@@ -242,14 +243,14 @@ static void exit_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 		  SetPenColor(hdc, MapRGB(hdc, 250, 250, 250)); //设置画笔色
 	}
 
-  SetPenSize(hdc, 2);
+  rc.w = 25;
 
-  OffsetRect(&rc,15,20);
-	
+  OffsetRect(&rc, 0, 11);
+  
   for(int i=0; i<4; i++)
-  {	
-    HLine(hdc, rc.x, rc.y ,58);//rc.w
-    rc.y += 9;
+  {
+    HLine(hdc, rc.x, rc.y, rc.w);
+    rc.y += 5;
   }
 }
 
@@ -287,7 +288,7 @@ static void stop_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
   DrawCircle(hdc, rc.x+rc.w/2, rc.y+rc.h/2, rc.w/2);
 
   /* 绘制圆角矩形 */
-	InflateRect(&rc, -13, -13);
+	InflateRect(&rc, -7, -7);
   FillRoundRect(hdc, &rc, 5);
   
   EnableAntiAlias(hdc, FALSE);
@@ -328,7 +329,7 @@ static void start_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
   DrawCircle(hdc, rc.x+rc.w/2, rc.y+rc.h/2, rc.w/2);
 
   /* 绘制圆角矩形 */
-  FillCircle(hdc, rc.x+rc.w/2, rc.x+rc.w/2, 27);
+  FillCircle(hdc, rc.x+rc.w/2, rc.x+rc.w/2, 10);
   
   EnableAntiAlias(hdc, FALSE);
 }
@@ -373,11 +374,11 @@ static void button_owner_draw(DRAWITEM_HDR *ds)
 
    //播放键使用100*100的字体
    if(ds->ID == ID_RECORD_PLAY || ds->ID == ID_RECORD_PADNC)
-      SetFont(hdc_mem, controlFont_72);
-   else if(ds->ID == ID_RECORD_bPOWER)
-      SetFont(hdc_mem, controlFont_48);
+      SetFont(hdc_mem, controlFont_32);
+//   else if(ds->ID == ID_RECORD_bPOWER)
+//      SetFont(hdc_mem, controlFont_48);
    else
-      SetFont(hdc_mem, controlFont_64);
+      SetFont(hdc_mem, controlFont_24);
 
 	//设置按键的颜色
 	if (ds->Style & WS_DISABLED)    // 窗口是禁止的
@@ -441,11 +442,13 @@ static void draw_scrollbar(HWND hwnd, HDC hdc, COLOR_RGB32 back_c, COLOR_RGB32 P
 	//rc.h -= (rc.h >> 2);
 	/* 边框 */
 	//FillRoundRect(hdc, &rc, MIN(rc.w, rc.h) >> 2);
+   EnableAntiAlias(hdc, ENABLE);
 	FillCircle(hdc, rc.x + rc.w / 2, rc.y + rc.h / 2, rc.h / 2 - 1);
    InflateRect(&rc, -2, -2);
 
 	SetBrushColor(hdc, MapRGB888(hdc, fore_c));
 	FillCircle(hdc, rc.x + rc.w / 2, rc.y + rc.h / 2, rc.h / 2 - 1);
+  EnableAntiAlias(hdc, DISABLE);
    //FillRoundRect(hdc, &rc, MIN(rc.w, rc.h) >> 2);
 }
 
@@ -660,7 +663,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
          sif.nMin = 0;
          sif.nMax = 255;
          sif.nValue = 0;//初始值
-         sif.TrackSize = 30;//滑块值
+         sif.TrackSize = 22;//滑块值
          sif.ArrowSize = 0;//两端宽度为0（水平滑动条）          
          music_wnd_time = CreateWindow(SCROLLBAR, record_icon[14].icon_name, WS_OWNERDRAW | WS_VISIBLE,
                            record_icon[14].rc.x, record_icon[14].rc.y, record_icon[14].rc.w,
@@ -674,7 +677,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
          sif_power.nMin = 0;
          sif_power.nMax = 63;//音量最大值为63
          sif_power.nValue = 20;//初始音量值
-         sif_power.TrackSize = 30;//滑块值
+         sif_power.TrackSize = 22;//滑块值
          sif_power.ArrowSize = 0;//两端宽度为0（水平滑动条）
          
          HWND wnd;
@@ -686,9 +689,9 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
          BaseType_t xReturn = pdPASS;/* 定义一个创建信息返回值，默认为pdPASS */
          xReturn = xTaskCreate((TaskFunction_t )(void(*)(void*))App_PlayRecord,  /* 任务入口函数 */
                             (const char*    )"App_PlayMusic",          /* 任务名字 */
-                            (uint16_t       )5*1024/4,                   /* 任务栈大小FreeRTOS的任务栈以字为单位 */
+                            (uint16_t       )1024 * 2,                   /* 任务栈大小FreeRTOS的任务栈以字为单位 */
                             (void*          )hwnd,                     /* 任务入口函数参数 */
-                            (UBaseType_t    )5,                        /* 任务的优先级 */
+                            (UBaseType_t    )7,                        /* 任务的优先级 */
                             (TaskHandle_t  )&h_play_record);           /* 任务控制块指针 */
 
 				if(xReturn != pdPASS )
@@ -698,9 +701,9 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                             
         xReturn = xTaskCreate((TaskFunction_t )(void(*)(void*))App_Record,  /* 任务入口函数 */
                             (const char*    )"Record Task",       /* 任务名字 */
-                            (uint16_t       )4*1024/4,              /* 任务栈大小FreeRTOS的任务栈以字为单位 */
+                            (uint16_t       )1024,              /* 任务栈大小FreeRTOS的任务栈以字为单位 */
                             (void*          )NULL,                /* 任务入口函数参数 */
-                            (UBaseType_t    )5,                   /* 任务的优先级 */
+                            (UBaseType_t    )7,                   /* 任务的优先级 */
                             (TaskHandle_t  )&h_record);           /* 任务控制块指针 */
 
 				if(xReturn != pdPASS )
@@ -785,7 +788,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 EnableWindow(GetDlgItem(hwnd, ID_RECORD_START), DISABLE);     // 禁用开始录音按钮
               }
                 
-              SAI_Play_Start();
+              I2S_Play_Start();
               play_index = SendMessage(GetDlgItem(hwnd, ID_RECORD_LIST), LB_GETCURSEL,0,0);    // 获得当前选中项
               mp3player.ucStatus = STA_SWITCH;
             }
@@ -810,7 +813,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 EnableWindow(GetDlgItem(hwnd, ID_RECORD_START), DISABLE);     // 禁用开始录音按钮
               }
                 
-              SAI_Play_Start();
+              I2S_Play_Start();
               play_index = SendMessage(GetDlgItem(hwnd, ID_RECORD_LIST), LB_GETCURSEL,0,0);    // 获得当前选中项
               mp3player.ucStatus = STA_SWITCH;
             }
@@ -827,14 +830,14 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 							if (wbuf[0] == L'U')
 							{
                 vTaskSuspend(h_play_record);
-                SAI_Play_Stop(); 
+                I2S_Play_Stop(); 
 								SetWindowText(wnd, L"T");
 								EnableWindow(GetDlgItem(hwnd, ID_RECORD_START), ENABLE);      // 使能开始录音按钮
 							}
 							else
 							{
                 vTaskResume(h_play_record);
-                SAI_Play_Start();
+                I2S_Play_Start();
 								SetWindowText(wnd, L"U");
 								EnableWindow(GetDlgItem(hwnd, ID_RECORD_START), DISABLE);     // 禁用开始录音按钮
 							}
@@ -862,10 +865,10 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                   ops.Flag = MB_ICONERROR;
                   ops.pButtonText = btn;
                   ops.ButtonCount = 2;
-                  RC.w = 300;
-                  RC.h = 200;
+                  RC.w = 180;
+                  RC.h = 120;
                   RC.x = (GUI_XSIZE - RC.w) >> 1;
-                  RC.y = (GUI_YSIZE - RC.h) >> 1;
+                  RC.y = (GUI_YSIZE - RC.h) >> 1; 
                   SelectDialogBox(hwnd, RC, L"没有检测到SD卡\n请确认SD已插入。", L"错误", &ops);    // 显示错误提示框
                   break;
                 }
@@ -923,8 +926,8 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
               /* 对于录音，需要把WAV文件内容填充完整 */
               if(Recorder.ucStatus == STA_RECORDING)
               {
-                SAI_Rec_Stop();
-                SAI_Play_Stop();
+                I2Sxext_Recorde_Start();
+                I2S_Play_Stop();
                 rec_wav.size_8=wavsize+36;
                 rec_wav.datasize=wavsize;
                 result=f_lseek(&record_file,0);
@@ -934,7 +937,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
               }
               //ucRefresh = 1;
               Recorder.ucStatus = STA_IDLE;		/* 待机状态 */
-              SAI_Play_Stop();		/* 停止SAI录音和放音 */
+              I2S_Play_Stop();		/* 停止SAI录音和放音 */
               wm8978_Reset();	/* 复位WM8978到复位状态 */
               
               /* 文件记录处理 */		
@@ -978,7 +981,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 							{
 								KillTimer(hwnd, ID_Record_Timer);       // 删除录音计时定时器
                 vTaskSuspend(h_record);    // 挂起录音任务
-                SAI_Rec_Stop();    // 停止录音
+                I2Sxext_Recorde_Stop();    // 停止录音
 								SetWindowText(GetDlgItem(hwnd, ID_RECORD_STATE), L"已暂停");          // 设置录音机状态
 								SetWindowText(wnd, L"T");
 							}
@@ -986,7 +989,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 							{
 								SetTimer(hwnd, ID_Record_Timer, 1000, TMR_START, NULL);               // 继续录音计时定时器
                 vTaskResume(h_record);      // 恢复录音任务
-                SAI_Rec_Start();    // 继续录音
+                I2Sxext_Recorde_Start();    // 继续录音
 								SetWindowText(GetDlgItem(hwnd, ID_RECORD_STATE), L"正在录音");         // 设置录音机状态
 								SetWindowText(wnd, L"U");
 							}
@@ -1047,7 +1050,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 						  EnableWindow(GetDlgItem(hwnd, ID_RECORD_START), DISABLE);     // 禁用开始录音按钮
             }
               
-            SAI_Play_Start();
+            I2S_Play_Start();
             play_index = SendMessage(GetDlgItem(hwnd, ID_RECORD_LIST), LB_GETCURSEL,0,0);    // 获得当前选中项
             mp3player.ucStatus = STA_SWITCH;
           }
@@ -1065,7 +1068,6 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
              {
                 case SBN_THUMBTRACK: //R滑块移动
                 {
-                   uint16_t power;
                    power= sb_nr->nTrackValue; //得到当前的音量值
                    if(power == 0) 
                    {
@@ -1104,6 +1106,11 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                    //置位进度条变更位置
                    chgsch = 1;
                 }
+                break;								
+								case SBN_CLICKED://松手检测,调整进度条使用
+								 {
+										chgsch_TouchUp = 1;
+								 }
                 break;
              }
           }         
@@ -1159,7 +1166,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       {
         PAINTSTRUCT ps;
         HDC hdc;//屏幕hdc
-        RECT rc = {471, 13, 115, 34};
+        RECT rc = {283, 3, 69, 20};
 
         //开始绘制
         hdc = BeginPaint(hwnd, &ps); 
@@ -1214,19 +1221,19 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					NoSource_flag = 0;//NoSource_flag为1,因为没有找到资源,任务被挂起,清空标志位并退出
 				}
 				
-				thread = 0;  //线程结束,不继续播放   				
+				thread = 0;  //线程结束,不继续播放
+				while(thread != 0xff ){vTaskDelay(1);}
         DeleteDC(hdc_bk);
 				
         vTaskDelete(h_record);
         vTaskDelete(h_play_record);//回收任务
-				
 				GUI_SemDelete(exit_sem);
 				
 				BUGLE_STATE = 0;
         music_file_num = 0;   // 复位文件记录
 				
-        SAI_Rec_Stop();		        /* 停止SAI录音和放音 */
-				SAI_Play_Stop();
+        I2Sxext_Recorde_Stop();		        /* 停止SAI录音和放音 */
+				I2S_Play_Stop();
         wm8978_Reset();	      /* 复位WM8978到复位状态 */ 
 
         return PostQuitMessage(hwnd);		

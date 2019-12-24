@@ -8,16 +8,16 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火 STM32F767 开发板 
+  * 实验平台:秉火  STM32 F767 开发板 
   * 论坛    :http://www.firebbs.cn
-  * 淘宝    :https://fire-stm32.taobao.com
+  * 淘宝    :http://firestm32.taobao.com
   *
   ******************************************************************************
   */ 
-#include "./MPU6050_i2c.h"
+#include "./mp3_i2c/mp3_i2c.h"
 
   
-static I2C_HandleTypeDef I2C_Handle;					
+extern I2C_HandleTypeDef I2C_Handle;					
 /*******************************  Function ************************************/
 
 /**
@@ -25,7 +25,7 @@ static I2C_HandleTypeDef I2C_Handle;
   * @param  无
   * @retval 无
   */
-void MPU6050_I2cMaster_Init(void) 
+void MP3_I2cMaster_Init(void) 
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -58,7 +58,7 @@ void MPU6050_I2cMaster_Init(void)
 		
 		/* I2C 配置 */
 		I2C_Handle.Instance = SENSORS_I2C;
-		I2C_Handle.Init.Timing           = 0x60201E2B;//100KHz
+		I2C_Handle.Init.Timing           = 0x40604E73;//100KHz
 		I2C_Handle.Init.OwnAddress1      = 0;
 		I2C_Handle.Init.AddressingMode   = I2C_ADDRESSINGMODE_7BIT;
 		I2C_Handle.Init.DualAddressMode  = I2C_DUALADDRESS_DISABLE;
@@ -78,12 +78,12 @@ void MPU6050_I2cMaster_Init(void)
   * @param  Addr: I2C Address
   * @retval None
   */
-static void MPU6050_I2C_Error_Error(uint8_t Addr)
+static void MP3_I2C_Error(uint8_t Addr)
 {
 	/* 恢复I2C寄存器为默认值 */
 	HAL_I2C_DeInit(&I2C_Handle); 
 	/* 重新初始化I2C外设 */
-	MPU6050_I2cMaster_Init();
+	MP3_I2cMaster_Init();
 }
 /**
   * @brief  写寄存器，这是提供给上层的接口
@@ -93,7 +93,7 @@ static void MPU6050_I2C_Error_Error(uint8_t Addr)
 	*	@param data_ptr:指向要写入的数据
   * @retval 正常为0，不正常为非0
   */
-int MPU6050_Sensors_I2C_WriteRegister(unsigned char slave_addr,
+int MP3_Sensors_I2C_WriteRegister(unsigned char slave_addr,
                                         unsigned char reg_addr,
                                         unsigned short len, 
                                         unsigned char *data_ptr)
@@ -104,7 +104,7 @@ int MPU6050_Sensors_I2C_WriteRegister(unsigned char slave_addr,
 	if(status != HAL_OK)
 	{
 		/* 总线出错处理 */
-		MPU6050_I2C_Error_Error(slave_addr);
+		MP3_I2C_Error(slave_addr);
 	}
 	while (HAL_I2C_GetState(&I2C_Handle) != HAL_I2C_STATE_READY)
 	{
@@ -128,7 +128,7 @@ int MPU6050_Sensors_I2C_WriteRegister(unsigned char slave_addr,
 	*	@param data_ptr:指向要存储数据的指针
   * @retval 正常为0，不正常为非0
   */
-int MPU6050_Sensors_I2C_ReadRegister(unsigned char slave_addr,
+int MP3_Sensors_I2C_ReadRegister(unsigned char slave_addr,
                                        unsigned char reg_addr,
                                        unsigned short len, 
                                        unsigned char *data_ptr)
@@ -139,7 +139,7 @@ int MPU6050_Sensors_I2C_ReadRegister(unsigned char slave_addr,
 	if(status != HAL_OK)
 	{
 		/* 总线出错处理 */
-		MPU6050_I2C_Error_Error(slave_addr);
+		MP3_I2C_Error(slave_addr);
 	}
 	while (HAL_I2C_GetState(&I2C_Handle) != HAL_I2C_STATE_READY)
 	{
