@@ -38,7 +38,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "board.h"
-
+#include "./wm8978/bsp_wm8978.h"  
 
 /* External variables --------------------------------------------------------*/
 
@@ -210,8 +210,7 @@ void DMA1_Stream4_IRQHandler(void)
 /**
 * @brief This function handles DMA1 stream3 global interrupt.
 */
-void DMA1_Stream3_IRQHandler(void)
+void DMA1_Stream0_IRQHandler(void)
 {
   I2Sxext_RX_DMA_STREAM_IRQFUN();
 }
-

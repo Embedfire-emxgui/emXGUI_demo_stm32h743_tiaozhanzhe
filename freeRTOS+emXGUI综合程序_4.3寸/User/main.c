@@ -25,7 +25,7 @@
 #include "task.h"
 /* 开发板硬件bsp头文件 */
 #include "board.h"
-
+#include "./wm8978/bsp_wm8978.h"  
 /* hardfault跟踪器需要的定义 */
 #define HARDWARE_VERSION               "V1.0.0"
 #define SOFTWARE_VERSION               "V0.1.0"
@@ -75,6 +75,7 @@ static void BSP_Init(void);/* 用于初始化板载相关资源 */
   *********************************************************************/
 static void BSP_Init(void)
 {
+
 	/* 设置RAM、FLASH为Normal类型,禁用共享, 直写模式*/  
 	Board_MPU_Config(0,MPU_Normal_WT,0xD0000000,MPU_16MB);
 	Board_MPU_Config(5,MPU_Normal_WT,0xD1000000,MPU_8MB);

@@ -17,12 +17,10 @@
 #include "./wm8978/bsp_wm8978.h"  
 #include "./usart/bsp_usart.h"
 #include "main.h"
-#include "./mp3_i2c/mp3_i2c.h"
+#include "./i2c/i2c.h"
 #include "./mp3_player/Backend_mp3Player.h"
 
-
-extern I2C_HandleTypeDef I2C_Handle;
-I2C_HandleTypeDef WM8978_I2C_Handle;
+extern I2C_HandleTypeDef WM8978_I2C_Handle;
 uint32_t AudioTotalSize ;         /* 音频文件的总大小 */
 uint32_t AudioRemSize;            /* 将剩余的数据保存在音频文件中 */
 uint16_t *CurrentPos;             /* 音频数据指针的当前位置 */
@@ -62,20 +60,17 @@ static uint16_t wm8978_RegCash[] = {
   * @retval 通信成功返回1，失败返回0
   */
 static uint8_t WM8978_I2C_WriteRegister(uint8_t RegisterAddr, uint16_t RegisterValue)
-{	 
-  uint8_t tmp[2];
-  
-	tmp[0] = ((RegisterAddr << 1) & 0xFE) | ((RegisterValue >> 8) & 0x1);
-  tmp[1] = RegisterValue & 0xFF;
-  
-  if(HAL_I2C_Master_Transmit(&I2C_Handle, WM8978_SLAVE_ADDRESS, tmp, 2, WM8978_I2C_FLAG_TIMEOUT) == HAL_OK)
+{	
+	uint16_t tmp;
+
+	tmp  = (RegisterValue&0xff) << 8;
+	tmp |= ((RegisterAddr << 1) & 0xFE) | ((RegisterValue >> 8) & 0x1);
+	if(HAL_I2C_Master_Transmit(&WM8978_I2C_Handle,WM8978_SLAVE_ADDRESS,(uint8_t *)&tmp,2,WM8978_I2C_FLAG_TIMEOUT)==HAL_OK)
 	{
 		return 1; 
 	}
 	else 		
-  {
-    return 0;  
-  }
+	return 0;  
 }
 
 /**
@@ -113,7 +108,7 @@ uint8_t wm8978_Init(void)
 {
 	uint8_t res;
 	
-	MP3_I2cMaster_Init();		/* 初始化I2C接口 */
+	WM8978_I2cMaster_Init();		/* 初始化I2C接口 */
 	res=wm8978_Reset();		/* 硬件复位WM8978所有寄存器到缺省状态 */
 	wm8978_CtrlGPIO1(1);	/* 控制WM8978的一个GPIO接口控制其为放音状态 */
 	return res;
@@ -923,8 +918,8 @@ void BSP_AUDIO_OUT_ClockConfig(I2S_HandleTypeDef *hi2s, uint32_t AudioFreq, void
 {
   RCC_PeriphCLKInitTypeDef RCC_ExCLKInitStruct;
 
-//  HAL_RCCEx_GetPeriphCLKConfig(&RCC_ExCLKInitStruct);
-//  
+  HAL_RCCEx_GetPeriphCLKConfig(&RCC_ExCLKInitStruct);
+
   /* 根据音频频率设置PLL配置 */
   if((AudioFreq == I2S_AUDIOFREQ_11K) || (AudioFreq == I2S_AUDIOFREQ_22K) || (AudioFreq == I2S_AUDIOFREQ_44K))
   {
@@ -945,6 +940,7 @@ void BSP_AUDIO_OUT_ClockConfig(I2S_HandleTypeDef *hi2s, uint32_t AudioFreq, void
   }
 }
 
+
 /*--------------------------   音频播放部分   --------------------------------*/
 /**
 	* @brief  配置STM32的I2S外设工作模式
@@ -956,7 +952,6 @@ void BSP_AUDIO_OUT_ClockConfig(I2S_HandleTypeDef *hi2s, uint32_t AudioFreq, void
 	*/
 void I2Sx_Mode_Config(const uint16_t _usStandard,const uint16_t _usWordLen,const uint32_t _usAudioFreq)
 {
-	
 	/* PLL时钟根据AudioFreq设置 (44.1khz vs 48khz groups) */
   BSP_AUDIO_OUT_ClockConfig(&I2S_InitStructure,_usAudioFreq, NULL); /* Clock config is shared between AUDIO IN and OUT */
 
@@ -974,17 +969,10 @@ void I2Sx_Mode_Config(const uint16_t _usStandard,const uint16_t _usWordLen,const
 	I2S_InitStructure.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;	/* 主时钟模式 */
 	I2S_InitStructure.Init.AudioFreq = _usAudioFreq;			/* 音频采样频率 */
 	I2S_InitStructure.Init.CPOL = I2S_CPOL_LOW;
-  I2S_InitStructure.Init.FirstBit = I2S_FIRSTBIT_MSB;
-  I2S_InitStructure.Init.WSInversion = I2S_WS_INVERSION_DISABLE;
-  I2S_InitStructure.Init.IOSwap = I2S_IO_SWAP_DISABLE;
-  I2S_InitStructure.Init.Data24BitAlignment = I2S_DATA_24BIT_ALIGNMENT_RIGHT;
-  I2S_InitStructure.Init.FifoThreshold = I2S_FIFO_THRESHOLD_01DATA;
-  I2S_InitStructure.Init.MasterKeepIOState = I2S_MASTER_KEEP_IO_STATE_DISABLE;
-  I2S_InitStructure.Init.SlaveExtendFREDetection = I2S_SLAVE_EXTEND_FRE_DETECTION_DISABLE;  
-	if(HAL_I2S_Init(&I2S_InitStructure) != HAL_OK)
-  {
-      printf("I2S初始化失败\r\n");
-  }
+	HAL_I2S_Init(&I2S_InitStructure);
+		
+	/* 使能 SPI2/I2S2 外设 */
+	__HAL_I2S_ENABLE(&I2S_InitStructure);
 }
 
 /**
@@ -1013,7 +1001,8 @@ void I2Sx_TX_DMA_Init(const uint32_t buffer0,const uint32_t buffer1,const uint32
 	hdma_spi2_tx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;//存储器数据长度：16位 
 	hdma_spi2_tx.Init.Mode = DMA_CIRCULAR;// 使用循环模式 
 	hdma_spi2_tx.Init.Priority = DMA_PRIORITY_VERY_HIGH;//高优先级
-	hdma_spi2_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE; //不使用FIFO模式        
+	hdma_spi2_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE; //不使用FIFO模式
+
 	HAL_DMA_Init(&hdma_spi2_tx);//初始化DMA Stream
 		
 	HAL_DMAEx_MultiBufferStart_IT(&hdma_spi2_tx,(uint32_t)buffer0,(uint32_t)&(WM8978_I2Sx_SPI->TXDR),(uint32_t)buffer1,num);
@@ -1021,10 +1010,10 @@ void I2Sx_TX_DMA_Init(const uint32_t buffer0,const uint32_t buffer1,const uint32
 	__HAL_LINKDMA(&I2S_InitStructure,hdmatx,hdma_spi2_tx);
 
 	  /* I2S中断的NVIC配置 */
-	HAL_NVIC_SetPriority(SPI2_IRQn, 7, 0);
+	HAL_NVIC_SetPriority(SPI2_IRQn, 3, 0);
 	HAL_NVIC_EnableIRQ(SPI2_IRQn);
 
-	HAL_NVIC_SetPriority(I2Sx_TX_DMA_STREAM_IRQn,6,0);
+	HAL_NVIC_SetPriority(I2Sx_TX_DMA_STREAM_IRQn,2,0);
 	HAL_NVIC_EnableIRQ(I2Sx_TX_DMA_STREAM_IRQn);
 
 }
@@ -1051,13 +1040,12 @@ void I2Sxext_Mode_Config(const uint16_t _usStandard, const uint16_t _usWordLen,c
 
 	/* I2S2 外设配置 */
 	I2Sext_InitStructure.Instance = WM8978_I2Sx_SPI;
-//*	I2Sext_InitStructure.Init.ClockSource=RCC_I2SCLKSOURCE_PLLI2S;
 	I2Sext_InitStructure.Init.Mode = I2S_MODE_MASTER_RX;			/* 配置I2S工作模式 */
 	I2Sext_InitStructure.Init.Standard = _usStandard;				/* 接口标准 */
 	I2Sext_InitStructure.Init.DataFormat = _usWordLen;				/* 数据格式，16bit */
 	I2Sext_InitStructure.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;	/* 主时钟模式 */
-	I2Sext_InitStructure.Init.AudioFreq = _usAudioFreq;				/* 音频采样频率 */
-	I2Sext_InitStructure.Init.CPOL = I2S_CPOL_LOW;
+	I2Sext_InitStructure.Init.AudioFreq = _usAudioFreq;			/* 音频采样频率 */
+	I2Sext_InitStructure.Init.CPOL = I2S_CPOL_LOW;  
 	HAL_I2S_Init(&I2Sext_InitStructure);
 	
 	/* PLL clock is set depending on the AudioFreq (44.1khz vs 48khz groups) */
@@ -1083,30 +1071,27 @@ void I2Sxext_RX_DMA_Init(const uint16_t *buffer0,const uint16_t *buffer1,const u
 	
 	/* 配置 DMA Stream */
 	hdma_spi2_rx.Instance =I2Sxext_RX_DMA_STREAM;
-//*	hdma_spi2_rx.Init.Channel = I2Sxext_RX_DMA_CHANNEL;  //通道3 SPIx_RX通道 
+  hdma_spi2_rx.Init.Request = DMA_REQUEST_SPI2_RX;
 	hdma_spi2_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;//存储器到外设模式
 	hdma_spi2_rx.Init.PeriphInc = DMA_PINC_DISABLE;//外设非增量模式
 	hdma_spi2_rx.Init.MemInc = DMA_MINC_ENABLE;//存储器增量模式
 	hdma_spi2_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;//外设数据长度:16位
 	hdma_spi2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;//存储器数据长度：16位 
 	hdma_spi2_rx.Init.Mode = DMA_CIRCULAR;// 使用循环模式 
-	hdma_spi2_rx.Init.Priority = DMA_PRIORITY_LOW;//高优先级
-	hdma_spi2_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE; //不使用FIFO模式        
-	hdma_spi2_rx.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
-	hdma_spi2_rx.Init.MemBurst = DMA_MBURST_SINGLE;//外设突发单次传输
-	hdma_spi2_rx.Init.PeriphBurst = DMA_PBURST_SINGLE;//存储器突发单次传输
+	hdma_spi2_rx.Init.Priority = DMA_PRIORITY_VERY_HIGH;//高优先级
+	hdma_spi2_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE; //不使用FIFO模式 
 	__HAL_DMA_CLEAR_FLAG(&DMA_RXInitStructure,DMA_FLAG_FEIF3_7 | DMA_FLAG_DMEIF3_7 | DMA_FLAG_TEIF3_7 | DMA_FLAG_HTIF3_7 | DMA_FLAG_TCIF3_7);
 	HAL_DMA_Init(&hdma_spi2_rx);//初始化DMA Stream
 		
-	HAL_DMAEx_MultiBufferStart_IT(&hdma_spi2_rx,(uint32_t)&(WM8978_I2Sx_SPI->TXDR),(uint32_t)buffer0,(uint32_t)buffer1,num);
+	HAL_DMAEx_MultiBufferStart_IT(&hdma_spi2_rx,(uint32_t)&(WM8978_I2Sx_SPI->RXDR),(uint32_t)buffer0,(uint32_t)buffer1,num);
 	
 	__HAL_LINKDMA(&I2Sext_InitStructure,hdmarx,hdma_spi2_rx);
 
 	/* NVIC configuration for I2S interrupts */
-	HAL_NVIC_SetPriority(SPI2_IRQn, 7, 0);
+	HAL_NVIC_SetPriority(SPI2_IRQn, 3, 0);
 	HAL_NVIC_EnableIRQ(SPI2_IRQn);
 
-	HAL_NVIC_SetPriority(I2Sxext_RX_DMA_STREAM_IRQn,6,0);
+	HAL_NVIC_SetPriority(I2Sxext_RX_DMA_STREAM_IRQn,2,0);
 	HAL_NVIC_EnableIRQ(I2Sxext_RX_DMA_STREAM_IRQn);
 }
 
@@ -1141,43 +1126,41 @@ void I2S_DMAConvCplt(DMA_HandleTypeDef *hdma)
 	* @param  无
 	* @retval 无
 	*/
-void I2S_Play_Start(void)
-{   	  
-  //开启DMA TX发送请求,开始播放
+//void I2S_Play_Start(void)
+//{   	  
+//  //开启DMA TX发送请求,开始播放
 //	HAL_I2S_DMAResume(&I2S_InitStructure);
 //	wm8978_OutMute(0);
-	  /* Check if the I2S Tx request is already enabled */ 
+//}
+void I2S_Play_Start(void)
+{   	  
   if(HAL_IS_BIT_CLR(I2S_InitStructure.Instance->CFG1, SPI_CFG1_TXDMAEN))
   {
-    /* Check if the SPI2S is disabled to edit CFG1 register */
     if ((I2S_InitStructure.Instance->CR1 & SPI_CR1_SPE) == SPI_CR1_SPE)
     {
-      /* Enable Tx DMA Request */
+      /*开启DMA请求*/
       SET_BIT(I2S_InitStructure.Instance->CFG1, SPI_CFG1_TXDMAEN);
     }
     else
     {
-      /* Disable SPI peripheral */
       __HAL_I2S_DISABLE(&I2S_InitStructure);
   
-      /* Enable Tx DMA Request */
+      /*开启DMA请求*/
       SET_BIT(I2S_InitStructure.Instance->CFG1, SPI_CFG1_TXDMAEN);
   
-      /* Enable SPI peripheral */
-      __HAL_I2S_ENABLE(&I2S_InitStructure);
-            
-          /* Master transfer start */
-      SET_BIT(I2S_InitStructure.Instance->CR1, SPI_CR1_CSTART);
+      /* 使能I2S */
+      __HAL_I2S_ENABLE(&I2S_InitStructure);            
     }
-  }
-	
+  }      
+  /* 开始传输 */
+  SET_BIT(I2S_InitStructure.Instance->CR1, SPI_CR1_CSTART);
 }
 
-void I2S_Start(void)
-{
-    //开启DMA TX发送请求,开始播放
-//*    I2S_InitStructure.Instance->CR2 |= SPI_CR2_TXDMAEN;
-}
+//void I2S_Start(void)
+//{
+//    //开启DMA TX发送请求,开始播放
+//    I2S_InitStructure.Instance->CR2 |= SPI_CR2_TXDMAEN;
+//}
 /**
 	* @brief  关闭I2S播放
 	* @param  无
@@ -1210,8 +1193,30 @@ void I2Sxext_RX_DMA_STREAM_IRQFUN(void)
 	*/
 void I2Sxext_Recorde_Start(void)
 {   	  
-	//开启DMA RX传输,开始录音
-//*	I2Sext_InitStructure.Instance->CR2 |= SPI_CR2_RXDMAEN;
+//	//开启DMA RX传输,开始录音
+//	I2Sext_InitStructure.Instance->CR2 |= SPI_CR2_RXDMAEN; 	  
+    /* Check if the I2S Tx request is already enabled */ 
+  if(HAL_IS_BIT_CLR(I2Sext_InitStructure.Instance->CFG1, SPI_CFG1_RXDMAEN))
+  {
+    /* Check if the SPI2S is disabled to edit CFG1 register */
+    if ((I2Sext_InitStructure.Instance->CR1 & SPI_CR1_SPE) == SPI_CR1_SPE)
+    {
+      /* Enable Tx DMA Request */
+      SET_BIT(I2Sext_InitStructure.Instance->CFG1, SPI_CFG1_RXDMAEN);
+    }
+    else
+    {
+      /* Disable SPI peripheral */
+      __HAL_I2S_DISABLE(&I2Sext_InitStructure);
+  
+      /* Enable Tx DMA Request */
+      SET_BIT(I2Sext_InitStructure.Instance->CFG1, SPI_CFG1_RXDMAEN);
+      /* Enable SPI peripheral */
+      __HAL_I2S_ENABLE(&I2Sext_InitStructure);        
+    } 
+    /* Master transfer start */
+    SET_BIT(I2Sext_InitStructure.Instance->CR1, SPI_CR1_CSTART);
+  }
 }
 
 /**

@@ -64,7 +64,7 @@ void SAI_GPIO_Config(void)
   HAL_GPIO_Init(SAI_MCLK_PORT, &GPIO_InitStruct);     
 	
 }
-
+#if 0
 void BSP_AUDIO_OUT_ClockConfig(uint32_t AudioFreq)
 {
   RCC_PeriphCLKInitTypeDef RCC_ExCLKInitStruct;
@@ -117,7 +117,7 @@ void BSP_AUDIO_OUT_ClockConfig(uint32_t AudioFreq)
   HAL_RCCEx_PeriphCLKConfig(&RCC_ExCLKInitStruct);
   
 }
-
+#endif
 
 /**
   * @brief  SAI_BlockA_Init
@@ -201,8 +201,8 @@ void SAIA_TX_DMA_Init(uint32_t buffer0,uint32_t buffer1,const uint32_t num)
 {
   DMA_CLK_ENABLE();
   
-  h_txdma.Instance = DMA_Instance;
-  h_txdma.Init.Request = DMA_REQUEST_SAI1_A;
+  h_txdma.Instance = DMA2_Stream1;
+  h_txdma.Init.Channel = DMA_CHANNEL_1;
   h_txdma.Init.Direction = DMA_MEMORY_TO_PERIPH;
   h_txdma.Init.PeriphInc = DMA_PINC_DISABLE;
   h_txdma.Init.MemInc = DMA_MINC_ENABLE;
@@ -220,8 +220,8 @@ void SAIA_TX_DMA_Init(uint32_t buffer0,uint32_t buffer1,const uint32_t num)
   __HAL_DMA_ENABLE_IT(&h_txdma,DMA_IT_TC);
   HAL_DMAEx_MultiBufferStart(&h_txdma,(uint32_t)buffer0,(uint32_t)&SAI1_Block_A->DR,(uint32_t)buffer1,num);//开启双缓冲
   
-  HAL_NVIC_SetPriority(DMA_IRQn,0,0);                    //DMA中断优先级
-  HAL_NVIC_EnableIRQ(DMA_IRQn);
+  HAL_NVIC_SetPriority(DMA2_Stream1_IRQn,0,0);                    //DMA中断优先级
+  HAL_NVIC_EnableIRQ(DMA2_Stream1_IRQn);
 
 }
 
@@ -229,8 +229,8 @@ void SAIB_RX_DMA_Init(uint32_t buffer0,uint32_t buffer1,const uint32_t num)
 {
   DMA_CLK_ENABLE();
   
-  h_rxdma.Instance = DMA1_Stream3;
-  h_rxdma.Init.Request = DMA_REQUEST_SAI1_B;
+  h_rxdma.Instance = DMA2_Stream0;
+  h_rxdma.Init.Channel = DMA_CHANNEL_0;
   h_rxdma.Init.Direction = DMA_PERIPH_TO_MEMORY;
   h_rxdma.Init.PeriphInc = DMA_PINC_DISABLE;
   h_rxdma.Init.MemInc = DMA_MINC_ENABLE;
@@ -248,8 +248,8 @@ void SAIB_RX_DMA_Init(uint32_t buffer0,uint32_t buffer1,const uint32_t num)
   __HAL_DMA_ENABLE_IT(&h_rxdma,DMA_IT_TC);
   HAL_DMAEx_MultiBufferStart(&h_rxdma,(uint32_t)&SAI1_Block_B->DR,(uint32_t)buffer0,(uint32_t)buffer1,num);//开启双缓冲
   
-  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn,0,0);                    //DMA中断优先级
-  HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn,0,0);                    //DMA中断优先级
+  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 }
 
 void SAI_Play_Stop(void)

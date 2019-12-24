@@ -2,7 +2,7 @@
 #define	_BSP_SAI_H
 
 
-#include "stm32h7xx.h"
+#include "stm32f7xx.h"
 /**SAI1_A_Block_A GPIO Configuration    
   PE5     ------>       SAI1_SCK_A/WM8978_BCLK
   PE4     ------>       SAI1_FS_A/WM8978_LRC

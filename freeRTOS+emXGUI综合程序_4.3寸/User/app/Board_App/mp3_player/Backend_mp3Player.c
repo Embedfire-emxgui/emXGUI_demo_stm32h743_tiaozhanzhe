@@ -51,14 +51,14 @@ static uint8_t bufflag=0;          /* 数据缓存区选择标志 */
 extern HFONT DEFAULT_FONT;
 uint32_t led_delay=0;
 
- uint8_t inputbuf[INPUTBUF_SIZE]	 ;        /*__EXRAM 解码输入缓冲区，1940字节为最大MP3帧大小  */
- short outbuffer[2][MP3BUFFER_SIZE]  ;  /*__EXRAM 解码输出缓冲区，也是I2S输入数据，实际占用字节数：RECBUFFER_SIZE*2 */
+ uint8_t inputbuf[INPUTBUF_SIZE]	__EXRAM ;        /*__EXRAM 解码输入缓冲区，1940字节为最大MP3帧大小  */
+ short outbuffer[2][MP3BUFFER_SIZE] __EXRAM ;  /*__EXRAM 解码输出缓冲区，也是I2S输入数据，实际占用字节数：RECBUFFER_SIZE*2 */
 
 
 /*wav播放器*/
 REC_TYPE Recorder;          /* 录音设备 */
-uint16_t buffer0[RECBUFFER_SIZE] ;  /*__EXRAM 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 */
-uint16_t buffer1[RECBUFFER_SIZE] ;  /*__EXRAM 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
+uint16_t buffer0[RECBUFFER_SIZE] __EXRAM ;  /*__EXRAM 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 */
+uint16_t buffer1[RECBUFFER_SIZE] __EXRAM ;  /*__EXRAM 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
 static WavHead rec_wav;            /* WAV设备  */
 
 static FIL MP3_file;											/* file objects */
@@ -361,7 +361,8 @@ void mp3PlayerDemo(HWND hwnd,const char *mp3file, uint8_t vol,uint8_t vol_horn, 
 					I2Sx_Mode_Config(I2S_STANDARD_PHILIPS,I2S_DATAFORMAT_16B,mp3player.ucFreq);						//根据采样率修改iis速率
 					I2Sx_TX_DMA_Init((uint32_t)&outbuffer[0],(uint32_t)&outbuffer[1],outputSamps);//MP3BUFFER_SIZE);
 				}
-				I2S_Start();
+//*				I2S_Start();
+				I2S_Play_Start();
 			}
 		}//else 解码正常
 		
@@ -611,7 +612,8 @@ void wavplayer(const char *wavfile, uint8_t vol, HDC hdc, HWND hwnd)
       
 			I2Sx_Mode_Config(g_FmtList[Recorder.ucFmtIdx][0],g_FmtList[Recorder.ucFmtIdx][1],g_FmtList[Recorder.ucFmtIdx][2]);
       I2Sx_TX_DMA_Init((uint32_t)buffer0,(uint32_t)buffer1,RECBUFFER_SIZE);		
-	    I2S_Start();
+//*	    I2S_Start();
+			I2S_Play_Start();
    }
    /* 进入主程序循环体 */
    while(mp3player.ucStatus == STA_PLAYING){

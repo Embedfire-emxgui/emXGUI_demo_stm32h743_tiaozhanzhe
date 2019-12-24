@@ -30,9 +30,7 @@
 #include "./app/Board_App/clock/RTC/bsp_rtc.h"
 #include "./app/Board_App/gyro/i2c_for_mpu6050/MPU6050_i2c.h"
 #include "./app/Board_App/gyro/mpu6050/bsp_mpu_exti.h"
-#include "./wm8978/bsp_wm8978.h"  
-#include "./mp3_i2c/mp3_i2c.h"
-#include "./sai/bsp_sai.h" 
+
 
 /*
 *************************************************************************

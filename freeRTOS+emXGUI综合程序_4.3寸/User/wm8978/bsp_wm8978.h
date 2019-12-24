@@ -1,7 +1,7 @@
 #ifndef __WM8978_H__
 #define	__WM8978_H__
 
-#include "stm32H7xx.h"
+#include "stm32h7xx.h"
 /*---------------------------------------------------------------------------------------------*/
 /*------------------------   I2C控制WM8978配置部分  -------------------------------------------*/
 #define WM8978_SLAVE_ADDRESS    0x34	/* WM8978 I2C从机地址 */
@@ -106,15 +106,13 @@ void wm8978_NotchFilter(uint16_t _NFA0, uint16_t _NFA1);
 
 #define I2Sx_DMA                       DMA1
 #define I2Sx_DMA_CLK_ENABLE()          __DMA1_CLK_ENABLE()
-#define I2Sx_TX_DMA_CHANNEL            DMA_CHANNEL_0
 #define I2Sx_TX_DMA_STREAM             DMA1_Stream4
 #define I2Sx_TX_DMA_STREAM_IRQn        DMA1_Stream4_IRQn 
-//#define I2Sx_TX_DMA_STREAM_IRQFUN			 DMA1_Stream4_IRQHandler
 
-#define I2Sxext_RX_DMA_CHANNEL         DMA_CHANNEL_0
-#define I2Sxext_RX_DMA_STREAM          DMA1_Stream3
-#define I2Sxext_RX_DMA_STREAM_IRQn     DMA1_Stream3_IRQn 
-//#define I2Sxext_RX_DMA_STREAM_IRQFUN	 DMA1_Stream3_IRQHandler
+
+#define I2Sxext_RX_DMA_STREAM          DMA1_Stream0
+#define I2Sxext_RX_DMA_STREAM_IRQn     DMA1_Stream0_IRQn 
+
 extern DMA_HandleTypeDef hdma_spi2_tx;
 extern DMA_HandleTypeDef hdma_spi2_rx;
 
