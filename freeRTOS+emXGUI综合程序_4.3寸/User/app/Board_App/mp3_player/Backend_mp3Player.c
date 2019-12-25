@@ -42,23 +42,21 @@
 
 static HMP3Decoder		Mp3Decoder;			/* mp3解码器指针	*/
 static MP3FrameInfo		Mp3_Frame_Info;		/* mP3帧信息  */
-
 MP3_TYPE mp3player;/* mp3播放设备 */
-
 static uint8_t Isread=0;           /* DMA传输完成标志 */
 static uint8_t bufflag=0;          /* 数据缓存区选择标志 */
 
 extern HFONT DEFAULT_FONT;
 uint32_t led_delay=0;
 
- uint8_t inputbuf[INPUTBUF_SIZE]	__EXRAM ;        /*__EXRAM 解码输入缓冲区，1940字节为最大MP3帧大小  */
- short outbuffer[2][MP3BUFFER_SIZE] __EXRAM ;  /*__EXRAM 解码输出缓冲区，也是I2S输入数据，实际占用字节数：RECBUFFER_SIZE*2 */
+ uint8_t inputbuf[INPUTBUF_SIZE]	;//__EXRAM ;        /*__EXRAM 解码输入缓冲区，1940字节为最大MP3帧大小  */
+ short outbuffer[2][MP3BUFFER_SIZE] ;//__EXRAM ;  /*__EXRAM 解码输出缓冲区，也是I2S输入数据，实际占用字节数：RECBUFFER_SIZE*2 */
 
 
 /*wav播放器*/
 REC_TYPE Recorder;          /* 录音设备 */
-uint16_t buffer0[RECBUFFER_SIZE] __EXRAM ;  /*__EXRAM 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 */
-uint16_t buffer1[RECBUFFER_SIZE] __EXRAM ;  /*__EXRAM 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
+uint16_t buffer0[RECBUFFER_SIZE] ;//__EXRAM ;  /*__EXRAM 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 */
+uint16_t buffer1[RECBUFFER_SIZE] ;//__EXRAM ;  /*__EXRAM 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
 static WavHead rec_wav;            /* WAV设备  */
 
 static FIL MP3_file;											/* file objects */
@@ -612,7 +610,7 @@ void wavplayer(const char *wavfile, uint8_t vol, HDC hdc, HWND hwnd)
       
 			I2Sx_Mode_Config(g_FmtList[Recorder.ucFmtIdx][0],g_FmtList[Recorder.ucFmtIdx][1],g_FmtList[Recorder.ucFmtIdx][2]);
       I2Sx_TX_DMA_Init((uint32_t)buffer0,(uint32_t)buffer1,RECBUFFER_SIZE);		
-//*	    I2S_Start();
+//*      I2S_Start();
 			I2S_Play_Start();
    }
    /* 进入主程序循环体 */

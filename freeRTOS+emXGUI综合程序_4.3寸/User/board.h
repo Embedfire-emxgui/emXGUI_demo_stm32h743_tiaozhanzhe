@@ -30,7 +30,8 @@
 #include "./app/Board_App/clock/RTC/bsp_rtc.h"
 #include "./app/Board_App/gyro/i2c_for_mpu6050/MPU6050_i2c.h"
 #include "./app/Board_App/gyro/mpu6050/bsp_mpu_exti.h"
-
+#include "./app/Board_App/camera/ov5640_AF.h"
+#include "./app/Board_App/camera/bsp_ov5640.h"
 
 /*
 *************************************************************************
