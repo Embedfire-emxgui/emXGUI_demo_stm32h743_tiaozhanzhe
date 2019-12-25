@@ -19,7 +19,7 @@ LR_IROM1 0x08000000 0x00200000  {    ; load region size_region
    fatfs_sd_sdio.o (+RW +ZI);
   }
   
-  RW_ERAM1 (0xd1cbb800) 0x00300000 {  ; 外部SDRAM 4M
+  RW_ERAM1 (0xd1c00000) 0x00400000 {  ; 外部SDRAM 4M
    *.o (HEAP)        		 ;选择堆区
    .ANY (EXRAM)				;选择EXRAM节区
 

@@ -182,9 +182,6 @@ TIM3_Config((avihChunk->SecPerFrame/100)-1,20000-1);
       continue;
     }    
 		int t1;
-    if(!VideoDialog.avi_chl)
-    {
-
         
   //fptr存放着文件指针的位置，fsize是文件的总大小，两者之间的比例和当前时间与总时长的比例相同（fptr/fsize = cur/all）     
    VideoDialog.curtime=((double)fileR.fptr/fileR.fsize)*VideoDialog.alltime;
@@ -282,7 +279,7 @@ TIM3_Config((avihChunk->SecPerFrame/100)-1,20000-1);
     else 
 		{
       break;		   	
-    }}
+    }
 		
 		/* 松手调整进度条 */
 		if(chgsch_TouchUp == 1)

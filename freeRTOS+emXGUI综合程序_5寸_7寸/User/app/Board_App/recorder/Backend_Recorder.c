@@ -19,7 +19,7 @@
 #include "Bsp/wm8978/bsp_wm8978.h"
 #include "ff.h" 
 #include "Backend_Recorder.h"
-#include "./mp3_player/Backend_mp3Player.h"
+#include "./app/Board_App/mp3_player/Backend_mp3Player.h"
 #include "./sai/bsp_sai.h"
 
 /* 音频格式切换列表(可以自定义) */

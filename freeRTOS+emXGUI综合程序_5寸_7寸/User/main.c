@@ -76,8 +76,8 @@ static void BSP_Init(void);/* 用于初始化板载相关资源 */
 static void BSP_Init(void)
 {
 	/* 设置RAM、FLASH为Normal类型,禁用共享, 直写模式*/  
-	Board_MPU_Config(0,MPU_Normal_WT,0xD0000000,MPU_16MB);
-	Board_MPU_Config(5,MPU_Normal_WT,0xD1000000,MPU_8MB);
+	Board_MPU_Config(0,MPU_Normal_WT,0xD0000000,MPU_32MB);
+//	Board_MPU_Config(5,MPU_Normal_WT,0xD1000000,MPU_8MB);
 	Board_MPU_Config(1,MPU_Normal_WT,0x20000000,MPU_128KB);
   Board_MPU_Config(2,MPU_Normal_WT,0x00000000,MPU_64KB);
   Board_MPU_Config(3,MPU_Normal_WT,0x24000000,MPU_512KB);

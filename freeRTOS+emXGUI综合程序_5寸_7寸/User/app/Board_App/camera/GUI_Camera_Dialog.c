@@ -354,14 +354,14 @@ static void Set_AutoFocus(void *param)
 	while(1){GUI_Yield();}
 }
 
-
+__IO uint16_t * TMPADDR = (uint16_t *)0xd0000000 ;
 static void Update_Dialog(void *param)
 {
 	while(CamDialog.Update_Thread) //线程已创建了
 	{
 			if(GUI_SemWait(cam_sem, 0x1))
 			{
-       InvalidateRect(CamDialog.Cam_Hwnd,NULL,TRUE);
+       InvalidateRect(CamDialog.Cam_Hwnd,NULL,FALSE);
 			}
 			GUI_Yield();
 	}
@@ -1589,7 +1589,7 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 														(const char*    )"Update_Dialog",    /* 任务名字 */
 														(uint16_t       )512,                  /* 任务栈大小FreeRTOS的任务栈以字为单位 */
 														(void*          )NULL,                      /* 任务入口函数参数 */
-														(UBaseType_t    )6,                         /* 任务的优先级 */
+														(UBaseType_t    )4,                         /* 任务的优先级 */
 														(TaskHandle_t*  )&Update_Dialog_Handle);     /* 任务控制块指针 */
       if(xReturn != pdPASS)  
 			{
@@ -1680,24 +1680,35 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
         DrawText(hdc,L"正在初始化摄像头\r\n\n请等待...",-1,&rc,DT_VCENTER|DT_CENTER|DT_BKGND);
 
-      }   
+      }
       if(state == 2)
-      {     
+      {
+				HAL_DCMI_Stop(&DCMI_Handle);
+				GUI_msleep(10);
+			  if(cur_index) 
+				{
+					OV5640_DMA_Config((uint32_t)CamDialog.cam_buff0,cam_mode.cam_out_width * cam_mode.cam_out_height/2);	
+				}else
+				{
+					OV5640_DMA_Config((uint32_t)CamDialog.cam_buff1,cam_mode.cam_out_width * cam_mode.cam_out_height/2);	
+				}
         U16 *ptmp;
         switch(cur_index)//DMA使用的内存块，不能被CPU使用
         {
-          case 0:
+          case 1:
           {
             SCB_InvalidateDCache_by_Addr((uint32_t *)CamDialog.cam_buff1, cam_mode.cam_out_height*cam_mode.cam_out_width / 2);
             pSurf =CreateSurface(SURF_RGB565,cam_mode.cam_out_width, cam_mode.cam_out_height, 0, (U16*)CamDialog.cam_buff1);     
             ptmp = CamDialog.cam_buff1;
+						cur_index = 0;
             break;
           }
-          case 1:
-          {                       
+          case 0:
+          {
             SCB_InvalidateDCache_by_Addr((uint32_t *)CamDialog.cam_buff0, cam_mode.cam_out_height*cam_mode.cam_out_width / 2);
-            pSurf =CreateSurface(SURF_RGB565,cam_mode.cam_out_width, cam_mode.cam_out_height, 0, (U16*)CamDialog.cam_buff0);  
-            ptmp = CamDialog.cam_buff0;
+            pSurf =CreateSurface(SURF_RGB565,cam_mode.cam_out_width, cam_mode.cam_out_height, 0, (U16*)CamDialog.cam_buff0);     
+						ptmp = CamDialog.cam_buff0;
+						cur_index = 1;
             break;
           }
         }
@@ -1709,12 +1720,11 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
           FillRect(hdc, &rc);
         }
         hdc_mem =CreateDC(pSurf,NULL);
-
-        
-        BitBlt(hdc, cam_mode.lcd_sx , cam_mode.lcd_sy, cam_mode.cam_out_width,  cam_mode.cam_out_height, hdc_mem, 0 , 0, SRCCOPY);          
+        BitBlt(hdc, cam_mode.lcd_sx , cam_mode.lcd_sy, cam_mode.cam_out_width, cam_mode.cam_out_height, hdc_mem, 0 , 0, SRCCOPY);          
         DeleteSurface(pSurf);
         DeleteDC(hdc_mem);
-        
+
+				tick_record = xTaskGetTickCount() ;
       }
       if(state == 3)
       {
@@ -1752,7 +1762,6 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             RECT rc;
 
             GetClientRect(hwnd,&rc);
-           
 
             win_rc.w =400;
             win_rc.h =400;
