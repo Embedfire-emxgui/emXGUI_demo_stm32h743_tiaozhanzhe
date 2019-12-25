@@ -37,7 +37,7 @@
 
 /*ÐÅÏ¢Êä³ö*/
 #define I2C_DEBUG_ON         1
-#define I2C_DEBUG_FUNC_ON    0
+#define I2C_DEBUG_FUNC_ON    1
 
 #define I2C_INFO(fmt,arg...)           printf("<<-I2C-INFO->> "fmt"\n",##arg)
 #define I2C_ERROR(fmt,arg...)          printf("<<-I2C-ERROR->> "fmt"\n",##arg)

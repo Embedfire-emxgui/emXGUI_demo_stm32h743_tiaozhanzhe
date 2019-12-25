@@ -22,7 +22,8 @@
 #include "semphr.h"
 
 #include "./led/bsp_led.h" 
-#include "emXGUI.h"
+#include "lwip/debug.h"
+
 extern ETH_HandleTypeDef EthHandle;
 
 /**
@@ -182,7 +183,7 @@ void ETH_IRQHandler(void)
 extern xSemaphoreHandle s_xSemaphore;
 void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
 {
-  LED2_TOGGLE;
+//  LED2_TOGGLE;
   portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
   xSemaphoreGiveFromISR( s_xSemaphore, &xHigherPriorityTaskWoken );
   portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
@@ -190,12 +191,12 @@ void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
 
 void HAL_ETH_TxCpltCallback(ETH_HandleTypeDef *heth)
 {
-  GUI_ERROR("HAL_ETH_TxCpltCallback\n");;
+  printf("HAL_ETH_TxCpltCallback\n");
 }
 
 void HAL_ETH_ErrorCallback(ETH_HandleTypeDef *heth)
 {
-    GUI_ERROR("eth err\n");
+  printf("eth err\n");
 }
 
 

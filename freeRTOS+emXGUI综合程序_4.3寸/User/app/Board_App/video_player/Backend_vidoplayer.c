@@ -16,7 +16,7 @@ FIL       fileR ;
 UINT      BytesRD;
 #define   Frame_Buf_Size    (1024*30)
 uint8_t   *Frame_buf;
-extern uint8_t video_chgsch_TouchUp;
+extern uint8_t chgsch_TouchUp;
 static volatile uint8_t audiobufflag=0;
 //__align(4) uint8_t   Sound_buf[4][1024*5]	__attribute__((at(0xd1bc0000)));
 __align(4) uint8_t   Sound_buf[4][1024*5]	__EXRAM;
@@ -285,7 +285,7 @@ TIM3_Config((avihChunk->SecPerFrame/100)-1,20000-1);
     }}
 		
 		/* 松手调整进度条 */
-		if(video_chgsch_TouchUp == 1)
+		if(chgsch_TouchUp == 1)
 		{
 		 pos = fileR.fptr;
 		 //根据进度条调整播放位置				
@@ -319,7 +319,7 @@ TIM3_Config((avihChunk->SecPerFrame/100)-1,20000-1);
 		 f_read(&fileR,Frame_buf,Strsize+8,&BytesRD);//读入整帧+下一数据流ID信息 
 		 
 		 VideoDialog.avi_chl = 0;    
-		 video_chgsch_TouchUp = 0;
+		 chgsch_TouchUp = 0;
 		}
 	 //判断下一帧的帧内容 
 	 Strtype=MAKEWORD(pbuffer+Strsize+2);//流类型
@@ -337,9 +337,9 @@ TIM3_Config((avihChunk->SecPerFrame/100)-1,20000-1);
   }
   else
     VideoDialog.SWITCH_STATE = 0;
-//  I2S_Play_Stop();
-//  I2S_Stop();		/* 停止I2S录音和放音 */
-//	wm8978_Reset();	/* 复位WM8978到复位状态 */
+  I2S_Play_Stop();
+  I2S_Stop();		/* 停止I2S录音和放音 */
+	wm8978_Reset();	/* 复位WM8978到复位状态 */
   HAL_TIM_Base_Stop_IT(&TIM3_Handle); //停止定时器3更新中断
   f_close(&fileR);
 	GUI_SemPost(Delete_VideoTask_Sem);

@@ -22,9 +22,9 @@ int		number_input_box(int x, int y, int w, int h,
 
 TaskHandle_t Network_Task_Handle=NULL;
 TaskHandle_t TCPIP_Init_Task_Handle=NULL;
-SemaphoreHandle_t Wait_TCPIP_Init_Sem;
+GUI_SEM *Wait_TCPIP_Init_Sem;
 extern void My_TCPIP_initialization(uint8_t *ipaddr_test);
-int8_t NetworkTypeSelection = 0;
+int8_t NetworkTypeSelection = 1;
 
 HWND Send_Handle;
 HWND Receive_Handle;
@@ -69,10 +69,10 @@ void Network_Dispose_Task(void *p)
 	
 	if(network_start_flag == 0)
 	{
-	if(xSemaphoreTake( Wait_TCPIP_Init_Sem,5000) != pdTRUE)
+	if(GUI_SemWait( Wait_TCPIP_Init_Sem,5000) != pdTRUE)
 		{
       network_start_flag=0;
-      bsp_result |=1;
+      bsp_result =0;
       /* 初始化出错 */
       SetTimer(Network_Main_Handle, 10, 100, TMR_SINGLE|TMR_START, NULL);
       vTaskSuspend(Network_Task_Handle);    // 挂起自己 不在执行 
@@ -80,15 +80,14 @@ void Network_Dispose_Task(void *p)
     else
     {
       network_start_flag=1;
-      bsp_result &=~ 1;  
+      bsp_result = 1;  
     }
 	}
 	DestroyWindow(Message_Hwnd);
 	EnableWindow(GetDlgItem(Network_Main_Handle, eID_Network_EXIT), ENABLE);
 	EnableWindow(GetDlgItem(Network_Main_Handle, eID_LINK_STATE), ENABLE);
 	
-#if 1
-  if((drv_network.net_init==0)&&((bsp_result&1)==0))
+  if((drv_network.net_init==0)&&(bsp_result==1))
   {
     /* Initilaize the LwIP stack */
 		/* Config TCP Server IP and Local IP*/
@@ -113,18 +112,13 @@ void Network_Dispose_Task(void *p)
     
     drv_network.net_init=1;
   }
- #endif 
-//  PostCloseMessage(GetDlgItem(Network_Main_Handle, ID_Hint_Win));
 
   InvalidateRect(Network_Main_Handle, NULL, TRUE);
   drv_network.net_connect=0;
-  drv_network.net_type=0; 
-//  TIM3_Config(999,899);//10ms定时器 
+  drv_network.net_type=1; 
   LocalTime=0;
-//  TIM_SetCounter(TIM3,0);
-//  HAL_TIM_Base_Start_IT(&TIM3_Handle); 
   EthLinkStatus=0;
-		/* 由中断处理接受到的数据 ---> HAL_ETH_RxCpltCallback */
+	/* 由中断处理接受到的数据 ---> HAL_ETH_RxCpltCallback */
 	GUI_Thread_Delete(Network_Task_Handle);    // 删除网络处理任务
 	GUI_Thread_Delete(TCPIP_Init_Task_Handle); //删除初始化任务		
 	while(1){GUI_Yield();}
@@ -156,17 +150,18 @@ static void Ent_ExitButton_OwnerDraw(DRAWITEM_HDR *ds)
 		SetPenColor(hdc, MapRGB(hdc, 250, 250, 250));      //设置画笔色
 	}
 
-  SetPenSize(hdc, 2);
+  rc.w = 25;
 
-  OffsetRect(&rc,15,5);
-	
+  OffsetRect(&rc, 0, 3);
+  
   for(int i=0; i<4; i++)
-  {	
-    HLine(hdc, rc.x, rc.y ,58);//rc.w
-    rc.y += 9;
+  {
+    HLine(hdc, rc.x, rc.y, rc.w);
+    rc.y += 6;
   }
 
 }
+
 
 // 重绘普通按钮
 static void Ent_Button_OwnerDraw(DRAWITEM_HDR *ds)
@@ -300,13 +295,13 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			}		
 														
       CreateWindow(BUTTON, L"O", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY |WS_OWNERDRAW|WS_VISIBLE,
-                  720, 5, 80, 80, hwnd, eID_Network_EXIT, NULL, NULL); 
+                  444, 0, 36, 30, hwnd, eID_Network_EXIT, NULL, NULL); 
 
       /* 创建一组单选宽 */
-      rc.x = 415;
-      rc.y = 86;
-      rc.w = 155;
-      rc.h = 28;
+      rc.x = 232;
+      rc.y = 51;
+      rc.w = 100;
+      rc.h = 18;
       CreateWindow(BUTTON,L"TCP Server",BS_RADIOBOX|WS_VISIBLE,
       rc.x,rc.y,rc.w,rc.h,hwnd,ID_RB1,NULL,NULL);
       
@@ -316,63 +311,63 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			SendMessage(GetDlgItem(hwnd, ID_RB2&0xFFFF), BM_SETSTATE, BST_CHECKED, 0);    // 默认选中
 
       OffsetRect(&rc, rc.w, 0);
-      rc.w = 80;
+      rc.w = 52;
       CreateWindow(BUTTON,L"UDP",BS_RADIOBOX|WS_VISIBLE,
       rc.x,rc.y,rc.w,rc.h,hwnd,ID_RB3,NULL,NULL);
       
-      CreateWindow(BUTTON, L"未连接", WS_TRANSPARENT | BS_NOTIFY|WS_VISIBLE|WS_OWNERDRAW|WS_DISABLED,
-                  702, 218, 95, 30, hwnd, eID_LINK_STATE, NULL, NULL);
+      CreateWindow(BUTTON, L"未连接", WS_TRANSPARENT | BS_NOTIFY|WS_VISIBLE|WS_OWNERDRAW,
+                  415, 131, 64, 20, hwnd, eID_LINK_STATE, NULL, NULL);
       
       /* 数据发送文本窗口 */
-      rc.w = 384;
-      rc.h = 224;
-      rc.x = 412;
-      rc.y = 251;
+      rc.w = 245;
+      rc.h = 116;
+      rc.x = 232;
+      rc.y = 154;
       Send_Handle = CreateWindow(TEXTBOX, L"你好！这里是野火开发板 ^_^",WS_VISIBLE|WS_OWNERDRAW, rc.x, rc.y, rc.w, rc.h, hwnd, ID_TEXTBOX_Send, NULL, NULL);
 
       /* 创建接收窗口 */
-      rc.w = 400;
-      rc.h = 380;
-      rc.x = 5;
-      rc.y = 55;
+      rc.w = 226;
+      rc.h = 214;
+      rc.x = 3;
+      rc.y = 31;
       Receive_Handle = CreateWindow(TEXTBOX, L"", WS_TRANSPARENT|WS_VISIBLE|WS_OWNERDRAW, rc.x, rc.y, rc.w, rc.h, hwnd, ID_TEXTBOX_Receive, NULL, NULL);
       
-      rc.x = 720;
-      rc.y = 440;
-      rc.w = 71;
-      rc.h = 30;
+      rc.x = 431;
+      rc.y = 247;
+      rc.w = 43;
+      rc.h = 20;
       CreateWindow(BUTTON, L"发送", WS_TRANSPARENT | BS_NOTIFY|WS_VISIBLE|WS_OWNERDRAW,
                          rc.x,rc.y,rc.w,rc.h, hwnd, eID_Network_Send, NULL, NULL); 
                          
-      rc.x = 289;
-      rc.h = 30;
-      rc.w = 111;
-      rc.y = 440;
+      rc.x = 156;
+      rc.h = 20;
+      rc.w = 68;
+      rc.y = 247;
       CreateWindow(BUTTON, L"清空接收", WS_TRANSPARENT | BS_NOTIFY|WS_VISIBLE|WS_OWNERDRAW,
                          rc.x,rc.y,rc.w,rc.h, hwnd, eID_Receive_Clear,       NULL, NULL); 
 
       /* 数据发送文本窗口 */
-      rc.w = 48;
-      rc.h = 28;
-      rc.x = 414;
-      rc.y = 219;
+      rc.w = 31;
+      rc.h = 20;
+      rc.x = 232;
+      rc.y = 131;
       Temp_Handle = CreateWindow(TEXTBOX, L"192", WS_VISIBLE|WS_BORDER, rc.x, rc.y, rc.w, rc.h, hwnd, ID_TEXTBOX_RemoteIP1, NULL, NULL);//
       SendMessage(Temp_Handle, TBM_SET_TEXTFLAG, 0, DT_VCENTER | DT_CENTER | DT_BKGND);
 
-      OffsetRect(&rc, rc.w+9, 0);
+      OffsetRect(&rc, rc.w+3, 0);
       Temp_Handle = CreateWindow(TEXTBOX, L"168", WS_VISIBLE|WS_BORDER, rc.x, rc.y, rc.w, rc.h, hwnd, ID_TEXTBOX_RemoteIP2, NULL, NULL);//
       SendMessage(Temp_Handle, TBM_SET_TEXTFLAG, 0, DT_VCENTER | DT_CENTER | DT_BKGND);
 
-      OffsetRect(&rc, rc.w+9, 0);
-      Temp_Handle = CreateWindow(TEXTBOX, L"000", WS_VISIBLE|WS_BORDER, rc.x, rc.y, rc.w, rc.h, hwnd, ID_TEXTBOX_RemoteIP3, NULL, NULL);//
+      OffsetRect(&rc, rc.w+3, 0);
+      Temp_Handle = CreateWindow(TEXTBOX, L"0", WS_VISIBLE|WS_BORDER, rc.x, rc.y, rc.w, rc.h, hwnd, ID_TEXTBOX_RemoteIP3, NULL, NULL);//
       SendMessage(Temp_Handle, TBM_SET_TEXTFLAG, 0, DT_VCENTER | DT_CENTER | DT_BKGND);
 
-      OffsetRect(&rc, rc.w+9, 0);
-      Temp_Handle = CreateWindow(TEXTBOX, L"138", WS_VISIBLE|WS_BORDER, rc.x, rc.y, rc.w, rc.h, hwnd, ID_TEXTBOX_RemoteIP4, NULL, NULL);//
+      OffsetRect(&rc, rc.w+3, 0);
+      Temp_Handle = CreateWindow(TEXTBOX, L"115", WS_VISIBLE|WS_BORDER, rc.x, rc.y, rc.w, rc.h, hwnd, ID_TEXTBOX_RemoteIP4, NULL, NULL);//
       SendMessage(Temp_Handle, TBM_SET_TEXTFLAG, 0, DT_VCENTER | DT_CENTER | DT_BKGND);
 
-      OffsetRect(&rc, rc.w+9 , 0);
-      rc.w = 69;
+      OffsetRect(&rc, rc.w+3 , 0);
+      rc.w = 48;
       Temp_Handle = CreateWindow(TEXTBOX, L"8080", WS_VISIBLE|WS_BORDER, rc.x, rc.y, rc.w-12, rc.h, hwnd, ID_TEXTBOX_RemotePort, NULL, NULL);//
       SendMessage(Temp_Handle, TBM_SET_TEXTFLAG, 0, DT_VCENTER | DT_CENTER | DT_BKGND);
 
@@ -380,8 +375,8 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			{
 				LWIP_Init_Start = 1;
 				RECT RC;
-				RC.w = 280;
-				RC.h = 170;
+				RC.w = 180;
+				RC.h = 80;
 				RC.x = (GUI_XSIZE - RC.w) >> 1;
 				RC.y = (GUI_YSIZE - RC.h) >> 1;
 				Message_Hwnd = CreateWindow(TEXTBOX, L"正在初始化\r\n\n请等待...", WS_VISIBLE|WS_BORDER|WS_OVERLAPPED, RC.x, RC.y-20, RC.w, RC.h, hwnd, ID_TEXTBOX_Wait, NULL, NULL);//
@@ -405,8 +400,8 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         ops.Flag =MB_ICONERROR;
         ops.pButtonText =btn;
         ops.ButtonCount =2;
-        RC.w = 300;
-        RC.h = 200;
+        RC.w = 200;
+        RC.h = 100;
         RC.x = (GUI_XSIZE - RC.w) >> 1;
         RC.y = (GUI_YSIZE - RC.h - 36) >> 1;
         SelectDialogBox(hwnd, RC, L"以太网初始化失败\n请重新检查连接\r\n并复位开发板。", L"错误", &ops);    // 显示错误提示框
@@ -429,17 +424,17 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       SetBrushColor(hdc, MapRGB(hdc, 255, 255, 255));
       FillRect(hdc, &rc);
 
-      rc.h = 50;
+      rc.h = 28;
       GradientFillRect(hdc, &rc, MapRGB(hdc, 1, 218, 254), MapRGB(hdc, 1, 168, 255), FALSE);
       SetTextColor(hdc, MapRGB(hdc, 255, 255, 255));
       DrawText(hdc, L"以太网", -1, &rc, DT_VCENTER|DT_CENTER);
 
       SetPenColor(hdc, MapRGB(hdc, 121, 121, 121));
 
-      rc.x = 5;
-      rc.y = 55;
-      rc.w = 400;
-      rc.h = 420;
+      rc.x = 3;
+      rc.y = 31;
+      rc.w = 226;
+      rc.h = 239;
       EnableAntiAlias(hdc, ENABLE);
       DrawRoundRect(hdc, &rc, 7);     // 绘制接收区的外框
       EnableAntiAlias(hdc, DISABLE);
@@ -447,10 +442,10 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       SetFont(hdc, defaultFont);
       SetTextColor(hdc, MapRGB(hdc, 0x16, 0x9B, 0xD5));
 
-      rc.x = 412;
-      rc.y = 57;
-      rc.w = 120;
-      rc.h = 28;
+      rc.x = 232;
+      rc.y = 32;
+      rc.w = 91;
+      rc.h = 20;
       DrawText(hdc, L"通讯协议：", -1, &rc, DT_LEFT|DT_TOP);
 
       // rc.x = 550;
@@ -459,13 +454,13 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       // rc.h = 30;
       // DrawText(hdc, L"数据发送：", -1, &rc, DT_LEFT|DT_TOP);
       
-      rc.w = 207;
-      rc.h = 28;
-      rc.x = 412;
-      rc.y = 120;
+      rc.w = 143;
+      rc.h = 20;
+      rc.x = 232;
+      rc.y = 71;
       DrawText(hdc, L"本地IP地址&端口：", -1, &rc, DT_LEFT|DT_TOP);
       
-      rc.y = 188;
+      rc.y = 111;
       DrawText(hdc, L"远端IP地址&端口：", -1, &rc, DT_LEFT|DT_TOP);
       
       SetTextColor(hdc, MapRGB(hdc, 10, 10, 10));
@@ -473,10 +468,10 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 //                                       drv_network.net_local_ip3,drv_network.net_local_ip4,\
 //                                       drv_network.net_local_port);
       x_wsprintf(tempstr, L"[%d.%d.%d.%d:%d]",IP_ADDRESS[0],IP_ADDRESS[1],IP_ADDRESS[2],IP_ADDRESS[3],LOCAL_PORT);
-      rc.w = 300;
-      rc.h = 30;
-      rc.x = 412;
-      rc.y = 152;
+      rc.w = 184;
+      rc.h = 20;
+      rc.x = 232;
+      rc.y = 91;
       DrawText(hdc, tempstr, -1, &rc, DT_LEFT|DT_TOP);
       
       SetTextColor(hdc, MapRGB(hdc, 0x16, 0x9B, 0xD5));
@@ -487,19 +482,19 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       // rc.y = 210;
       // DrawText(hdc, L"数据接收：", -1, &rc, DT_LEFT|DT_TOP);
 
-      rc.w = 7;
-      rc.h = 28;
-      rc.x = 463-4;
-      rc.y = 223;
+      rc.w = 16;
+      rc.h = 20;
+      rc.x = 259;
+      rc.y = 133;
       DrawText(hdc, L".", -1, &rc, DT_LEFT|DT_BOTTOM);
       
-      rc.x = 520-4;
+      rc.x = 293;
       DrawText(hdc, L".", -1, &rc, DT_LEFT|DT_BOTTOM);
       
-      rc.x = 577-4;
+      rc.x = 327;
       DrawText(hdc, L".", -1, &rc, DT_LEFT|DT_BOTTOM);
       
-      rc.x = 634-4;
+      rc.x = 360;
       DrawText(hdc, L":", -1, &rc, DT_LEFT|DT_BOTTOM);
       
       EndPaint(hwnd, &ps);
@@ -624,7 +619,7 @@ static LRESULT	win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       
       if(code == BN_CLICKED && id == eID_LINK_STATE)
       {
-        if((bsp_result&1)||EthLinkStatus)
+        if((bsp_result==0)||EthLinkStatus)
           {
             break;
           }

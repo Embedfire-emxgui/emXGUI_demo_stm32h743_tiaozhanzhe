@@ -352,7 +352,7 @@ void GUI_LED_KEY_Dialog(void)
 	MSG msg;
   HWND MAIN_Handle;
 	wcex.Tag = WNDCLASS_TAG;
-
+	LED_GPIO_Config();//初始化LED
 	wcex.Style = CS_HREDRAW | CS_VREDRAW;
 	wcex.lpfnWndProc = win_proc; //设置主窗口消息处理的回调函数.
 	wcex.cbClsExtra = 0;

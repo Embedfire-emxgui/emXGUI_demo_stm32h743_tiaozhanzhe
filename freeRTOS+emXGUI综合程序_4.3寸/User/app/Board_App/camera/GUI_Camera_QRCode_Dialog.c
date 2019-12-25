@@ -1,12 +1,13 @@
 #include <emXGUI.h>
 #include <string.h>
 #include "Widget.h"
+#include "./camera/bsp_ov5640.h"
 #include "x_libc.h"
-#include "board.h"
-#include "./QR_Decoder/qr_decoder_user.h"
+#include "./camera/ov5640_AF.h"
+#include "qr_decoder_user.h"
 #include "GUI_AppDef.h"
 #include "GUI_CAMERA_DIALOG.h"
-#include "./bsp_ov5640.h"
+#include "./board.h"
 
 extern BOOL g_dma2d_en;//DMA2D使能标志位，摄像头DMEO必须禁止
 extern OV5640_IDTypeDef OV5640_Camera_ID;
@@ -54,10 +55,10 @@ static void Update_Dialog(void *p)
 {
   RECT rc;
   
-  rc.x = GUI_XSIZE/2 - 320/2;
-  rc.y = GUI_YSIZE/2 - 320/2;
-  rc.w = 320;
-  rc.h = 320;
+  rc.x = GUI_XSIZE/2 - 195/2;
+  rc.y = GUI_YSIZE/2 - 195/2;
+  rc.w = 195;
+  rc.h = 195;
   
 	while(QR_Task) //线程已创建了
 	{
@@ -72,6 +73,7 @@ static void Update_Dialog(void *p)
 			
 			GUI_SemPost(QR_decode);  
 			/*重新开始采集*/
+//			
 			
 			OV5640_DMA_Config((uint32_t)CamDialog.cam_buff0,
 														cam_mode.cam_out_height*cam_mode.cam_out_width/2); 
@@ -101,60 +103,60 @@ static void QR_decoder_Task(void *p)
 	
 	while(QR_Task) //线程已创建了
 	{
-		if( GUI_SemWait(QR_decode, 1) == TRUE )
-		{
+			if( GUI_SemWait(QR_decode, 1) == TRUE )
+			{
+				qr_num = QR_decoder();
 
-			qr_num = QR_decoder();
+				if(qr_num)
+				{ 
+					BEEP_ON;
+					GUI_msleep(50);
+					//解码的数据是按照识别条码的个数封装好的二维数组，这些数据需要
+					//根据识别条码的个数，按组解包并通过串口发送到上位机串口终端
+					qr_type_len = decoded_buf[i][addr++];//获取解码类型长度
+					 
+					for(j=0;j < qr_type_len;j++)
+						qr_type_buf[j]=decoded_buf[i][addr++];//获取解码类型名称
+					
+					qr_type_buf[j] = '\0';
+					 
+					qr_data_len  = decoded_buf[i][addr++]<<8; //获取解码数据长度高8位
+					qr_data_len |= decoded_buf[i][addr++];    //获取解码数据长度低8位
+					 
+					for(j=0;j < qr_data_len;j++)
+						qr_data_buf[j]=decoded_buf[i][addr++];//获取解码数据
+					
+					qr_data_buf[j] = '\0';
 
-			if(qr_num)
-			{ 
-				BEEP_ON;
-				GUI_msleep(50);
-				//解码的数据是按照识别条码的个数封装好的二维数组，这些数据需要
-				//根据识别条码的个数，按组解包并通过串口发送到上位机串口终端
-				qr_type_len = decoded_buf[i][addr++];//获取解码类型长度
-				 
-				for(j=0;j < qr_type_len;j++)
-					qr_type_buf[j]=decoded_buf[i][addr++];//获取解码类型名称
+					printf("类型：%s\n数据：%s\n", qr_type_buf, qr_data_buf);
+
+					addr =0;//清零
+					
+					
+					WCHAR *wbuf_data = (WCHAR *)GUI_VMEM_Alloc(1024 * sizeof(WCHAR));
+					x_mbstowcs_cp936(wbuf_type, qr_type_buf, sizeof(wbuf_type));
+					x_mbstowcs_cp936(wbuf_data, qr_data_buf, 1024 * sizeof(WCHAR));
+
+					PostAsyncMessage(CamDialog.Cam_Hwnd, eMSG_QRScan_OK, (WPARAM)wbuf_data, (LPARAM)wbuf_type);     // 识别完成，显示结果
+					BEEP_OFF;
+					
+					vTaskSuspend(QR_Task_Handle);    // 挂起自己 不在执行
+
+					QR_decoder();     // 退出前识别一次，清除上一帧
+
+					GUI_VMEM_Free(wbuf_data);
+					qr_num = 0;
+				}
 				
-				qr_type_buf[j] = '\0';
-				 
-				qr_data_len  = decoded_buf[i][addr++]<<8; //获取解码数据长度高8位
-				qr_data_len |= decoded_buf[i][addr++];    //获取解码数据长度低8位
-				 
-				for(j=0;j < qr_data_len;j++)
-					qr_data_buf[j]=decoded_buf[i][addr++];//获取解码数据
-				
-				qr_data_buf[j] = '\0';
-
-				printf("类型：%s\n数据：%s\n", qr_type_buf, qr_data_buf);
-
-				addr =0;//清零
-				
-				
-				WCHAR *wbuf_data = (WCHAR *)GUI_VMEM_Alloc(1024 * sizeof(WCHAR));
-				x_mbstowcs_cp936(wbuf_type, qr_type_buf, sizeof(wbuf_type));
-				x_mbstowcs_cp936(wbuf_data, qr_data_buf, 1024 * sizeof(WCHAR));
-
-				PostAsyncMessage(CamDialog.Cam_Hwnd, eMSG_QRScan_OK, (WPARAM)wbuf_data, (LPARAM)wbuf_type);     // 识别完成，显示结果
-				BEEP_OFF;
-				
-				vTaskSuspend(QR_Task_Handle);    // 挂起自己 不在执行
-
-				QR_decoder();     // 退出前识别一次，清除上一帧
-
-				GUI_VMEM_Free(wbuf_data);
-				qr_num = 0;
+				GUI_msleep(100);
 			}
-			GUI_msleep(10);
 		}
-	}
-	GUI_SemPost(QR_Exit);
-	/* 任务结束,等待线程被回收 */
-	while(1)
-	{
-		GUI_Yield();
-	}
+		GUI_SemPost(QR_Exit);
+		/* 任务结束,等待线程被回收 */
+		while(1)
+		{
+			GUI_Yield();
+		}
 }
 
 /*=========================================================================================*/
@@ -268,6 +270,7 @@ static LRESULT ScanCompleteWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
       DrawText(hdc, pCaptionInt, -1, &rc_Text, DT_VCENTER|DT_CENTER);
       
       EndPaint(hwnd,&ps);
+			OV5640_Capture_Control(ENABLE);
       break;
     }
     
@@ -356,14 +359,14 @@ static void QR_ExitButton_OwnerDraw(DRAWITEM_HDR *ds)
 		SetPenColor(hdc, MapRGB(hdc, 1, 191, 255));
 	}
 
-  SetPenSize(hdc, 2);
+  rc.w = 25;
 
-  OffsetRect(&rc,15,20);
-	
+  OffsetRect(&rc, 0, 11);
+  
   for(int i=0; i<4; i++)
-  {	
-    HLine(hdc, rc.x, rc.y ,58);//rc.w
-    rc.y += 9;
+  {
+    HLine(hdc, rc.x, rc.y, rc.w);
+    rc.y += 6;
   }
 
 }
@@ -422,8 +425,8 @@ static void Camera_ReConfig(void)
 	cam_mode.scaling = 1;     //使能自动缩放
 	cam_mode.cam_out_sx = 16;	//使能自动缩放后，一般配置成16即可
 	cam_mode.cam_out_sy = 4;	  //使能自动缩放后，一般配置成4即可
-	cam_mode.cam_out_width = 800;
-	cam_mode.cam_out_height = 480;
+	cam_mode.cam_out_width = 480;
+	cam_mode.cam_out_height = 272;
 	
 	//LCD位置
 	cam_mode.lcd_sx = 0;
@@ -453,13 +456,15 @@ static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
   {
     case WM_CREATE:
     {
+      /* 初始化蜂鸣器 */
+//			BEEP_GPIO_Config();
       /* 初始化摄像头GPIO及IIC */
       OV5640_HW_Init();  
       /* 读取摄像头芯片ID，确定摄像头正常连接 */
       OV5640_ReadID(&OV5640_Camera_ID);
       
        CreateWindow(BUTTON, L"O", WS_TRANSPARENT|BS_FLAT | BS_NOTIFY |WS_OWNERDRAW|WS_VISIBLE,
-                  720, 5, 80, 80, hwnd, eID_QR_EXIT, NULL, NULL); 
+                  444, 0, 36, 36, hwnd, eID_QR_EXIT, NULL, NULL); 
 
       if(OV5640_Camera_ID.PIDH  == 0x56)
       {
@@ -485,7 +490,7 @@ static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                             
       xTaskCreate((TaskFunction_t )QR_decoder_Task,  /* 任务入口函数 */
                             (const char*    )"QR decoder Task",     /* 任务名字 */
-                            (uint16_t       )1024/4*20,              /* 任务栈大小FreeRTOS的任务栈以字为单位 */
+                            (uint16_t       )1024*5,              /* 任务栈大小FreeRTOS的任务栈以字为单位 */
                             (void*          )NULL,                  /* 任务入口函数参数 */
                             (UBaseType_t    )6,                     /* 任务的优先级 */
                             (TaskHandle_t  )&QR_Task_Handle);        /* 任务控制块指针 */
@@ -494,10 +499,10 @@ static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       hdc_mem_temp = CreateMemoryDC((SURF_FORMAT)COLOR_FORMAT_ARGB8888, GUI_XSIZE, GUI_YSIZE);
       ClrDisplay(hdc_mem_temp, NULL, ARGB8888(100, 0, 0, 0));
         
-      hdc_mem_320 = CreateMemoryDC((SURF_FORMAT)COLOR_FORMAT_ARGB8888, 320, 320);
+      hdc_mem_320 = CreateMemoryDC((SURF_FORMAT)COLOR_FORMAT_ARGB8888, 280, 280);
       ClrDisplay(hdc_mem_320, NULL,  ARGB8888(1, 0, 0, 0));
         
-      BitBlt(hdc_mem_temp, GUI_XSIZE/2 - 320/2, GUI_YSIZE/2 - 320/2, 320, 320, hdc_mem_320, 0 , 0, SRCCOPY);
+      BitBlt(hdc_mem_temp, GUI_XSIZE/2 - 280/2, GUI_YSIZE/2 - 280/2, 280, 280, hdc_mem_320, 0 , 0, SRCCOPY);
       DeleteDC(hdc_mem_320);
       break;  
     }
@@ -556,8 +561,8 @@ static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         ops.Flag = MB_ICONERROR;
         ops.pButtonText = btn;
         ops.ButtonCount = 2;
-        RC.w = 300;
-        RC.h = 200;
+        RC.w = 180;
+        RC.h = 120;
         RC.x = (GUI_XSIZE - RC.w) >> 1;
         RC.y = (GUI_YSIZE - RC.h) >> 1;
         SelectDialogBox(hwnd, RC, L"没有检测到OV5640模块\n请重新检查连接。", L"错误", &ops);    // 显示错误提示框
@@ -575,10 +580,10 @@ static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       SetBrushColor(hdc,MapRGB(hdc,220,220,220));
       FillRect(hdc, &rc);
       
-      rc.x = GUI_XSIZE/2 - 320/2;
-      rc.y = GUI_YSIZE/2 - 320/2 - 55;
-      rc.w = 320;
-      rc.h = 30;
+      rc.x = GUI_XSIZE/2 - 195/2;
+      rc.y = GUI_YSIZE/2 - 195/2 - 40;
+      rc.w = 195;
+      rc.h = 40;
       SetTextColor(hdc,MapRGB(hdc,50,50,50));
       DrawText(hdc, L"二维码识别", -1, &rc, DT_VCENTER|DT_CENTER);
       return TRUE;
@@ -604,17 +609,16 @@ static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         DrawText(hdc,L"正在初始化摄像头\r\n\n请等待...",-1,&rc,DT_VCENTER|DT_CENTER|DT_BKGND);
       }  
       else if (state==1)
-      {   
-
+      {  
         pSurf =CreateSurface(SURF_RGB565,cam_mode.cam_out_width, cam_mode.cam_out_height, 0, (U16*)CamDialog.cam_buff0);     
         
         hdc_mem =CreateDC(pSurf,NULL);
         
         SetPenColor(hdc_mem, MapRGB(hdc,250,0,0));
-        rc.x = GUI_XSIZE/2 - 320/2;
-        rc.y = GUI_YSIZE/2 - 320/2;
-        rc.w = 320;
-        rc.h = 320;
+        rc.x = GUI_XSIZE/2 - 195/2;
+        rc.y = GUI_YSIZE/2 - 195/2;
+        rc.w = 195;
+        rc.h = 195;
         DrawRect(hdc_mem, &rc);
 
 //        BitBlt(hdc_mem, 0, 0, GUI_XSIZE, GUI_YSIZE, hdc_mem_temp, 0 , 0, SRCCOPY);
@@ -656,8 +660,8 @@ static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
       ops.pButtonText =btn;
       ops.ButtonCount =1;
-      RC.w = 400;
-      RC.h = 320;
+      RC.w = 300;
+      RC.h = 200;
       RC.x = (GUI_XSIZE - RC.w) >> 1;
       RC.y = (GUI_YSIZE - RC.h) >> 1;
       
@@ -673,17 +677,23 @@ static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       DeleteDC(hdc_mem_temp);
       OV5640_Reset();//复位摄像头
       OV5640_Capture_Control(DISABLE);//关闭摄像头采集图像
+			
 			QR_Task=0;
+			
 			GUI_SemWait(QR_Exit, 0xFFFFFFFF);
 			GUI_SemWait(QR_Exit, 0xFFFFFFFF);
+
 			GUI_Thread_Delete(Syn_Updata);
 			GUI_Thread_Delete(QR_Task_Handle);
-			GUI_SemDelete(cam_sem);
+			
+      GUI_SemDelete(cam_sem);
 			GUI_SemDelete(QR_decode);
 			GUI_SemDelete(QR_Exit);
+			
       GUI_VMEM_Free(CamDialog.cam_buff0);
       //复位摄像头配置参数
       Camera_ReConfig();
+			
       cur_index = 0;
       return PostQuitMessage(hwnd);	
     }    
@@ -729,11 +739,11 @@ void	GUI_Camera_QRCode_DIALOG(void)
 	WNDCLASS	wcex;
 	MSG msg;
 
-   g_dma2d_en = TRUE;
+  g_dma2d_en = TRUE;
 	wcex.Tag = WNDCLASS_TAG;  
   
   CamDialog.cam_buff0 = (uint16_t *)GUI_VMEM_Alloc(LCD_XSIZE*LCD_YSIZE*2);
-  
+  memset(CamDialog.cam_buff0,0,(LCD_XSIZE*LCD_YSIZE*2));
 	wcex.Style = CS_HREDRAW | CS_VREDRAW;
 	wcex.lpfnWndProc = WinProc; //设置主窗口消息处理的回调函数.
 	wcex.cbClsExtra = 0;

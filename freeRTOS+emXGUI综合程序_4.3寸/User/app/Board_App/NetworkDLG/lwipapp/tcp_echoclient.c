@@ -29,12 +29,12 @@
 #include "lwip/debug.h"
 #include "lwip/stats.h"
 #include "lwip/tcp.h"
-#include "memp.h"
+#include "lwip/memp.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "netconf.h"
-#include "./LAN8720A/LAN8720A.h"
+#include "LAN8720A.h"
 #include "tcp_echoclient.h"
 #include "x_libc.h"
 #include "emXGUI.h"

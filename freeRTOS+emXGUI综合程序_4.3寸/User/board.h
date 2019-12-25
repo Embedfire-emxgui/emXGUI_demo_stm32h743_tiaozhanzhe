@@ -32,6 +32,8 @@
 #include "./app/Board_App/gyro/mpu6050/bsp_mpu_exti.h"
 #include "./app/Board_App/camera/ov5640_AF.h"
 #include "./app/Board_App/camera/bsp_ov5640.h"
+#include "./wm8978/bsp_wm8978.h"  
+#include "./i2c/i2c.h"
 
 /*
 *************************************************************************

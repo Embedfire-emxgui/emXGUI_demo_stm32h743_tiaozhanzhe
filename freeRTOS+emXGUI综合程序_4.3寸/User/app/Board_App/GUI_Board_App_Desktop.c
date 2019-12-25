@@ -162,9 +162,9 @@ struct __obj_list menu_list_1[] = {
       L"温湿度",	      NULL,   L"O",   RGB_WHITE,				(void(*)(void *))GUI_T_RH_Dialog,//dummy,
       L"电压表",		    NULL,	  L"W",   RGB_WHITE,				(void(*)(void *))GUI_ADC_CollectVoltage_Dialog,//dummy,  
 			L"设置",        	NULL,	  L"h",   RGB_WHITE,				(void(*)(void *))GUI_Settings_DIALOG,
-//			L"以太网",	     	NULL,	  L"Q",   RGB_WHITE,				(void(*)(void *))GUI_NetworkDLG_Dialog,//dummy,
+ 			L"以太网",	     	NULL,	  L"Q",   RGB_WHITE,				(void(*)(void *))GUI_NetworkDLG_Dialog,//dummy,
 //				
-//			L"游戏",        	NULL,	  L"S",   RGB_WHITE,				(void(*)(void *))dummy,
+			L"游戏",        	NULL,	  L"S",   RGB_WHITE,				(void(*)(void *))dummy,
 //      //L"模拟U盘",   	NULL,	  L"N",   RGB_WHITE,				dummy,       
 //      //L"WiFi",	    	NULL,	  L"P",   RGB_WHITE,				dummy,
       L"电话",	        NULL, 	L"T",   RGB_WHITE,				(void(*)(void *))GUI_Phone_Dialog,
@@ -172,7 +172,7 @@ struct __obj_list menu_list_1[] = {
       L"二维码",       	NULL,	  L"V",   RGB_WHITE,				(void(*)(void *))GUI_Camera_QRCode_DIALOG,//dummy,
 //				
       L"录音机",	      NULL,	  L"Y", 	RGB_WHITE,			  (void(*)(void *))GUI_RECORDER_DIALOG,//dummy,        
-//      L"基础控件",	    NULL, 	L"D",   RGB_WHITE,				(void(*)(void *))GUI_DEMO_RadiaMenu,
+      L"基础控件",	    NULL, 	L"D",   RGB_WHITE,				(void(*)(void *))GUI_DEMO_RadiaMenu,
       L"蜂鸣器",	      NULL, 	L"i",   RGB_WHITE,				(void(*)(void *))GUI_Beeper_Dialog,
 			L"LED&KEY",       NULL,	  L"j",   RGB_WHITE,		 	  (void(*)(void *))GUI_LED_KEY_Dialog,				
 //        L"Radiobox",	NULL,   L"E", RGB_WHITE,				dummy,

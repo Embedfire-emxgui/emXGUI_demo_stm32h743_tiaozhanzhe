@@ -29,12 +29,12 @@
  * Author: Simon Goldschmidt
  *
  */
-#include "debug.h"
+#include "lwip/debug.h"
 
 #include <lwip/opt.h>
 #include <lwip/arch.h>
 
-#include "tcpip.h"
+#include "lwip/tcpip.h"
 #include "lwip/init.h"
 #include "lwip/netif.h"
 #include "lwip/sio.h"
@@ -496,8 +496,7 @@ void My_TCPIP_initialization(uint8_t *ipaddr_test)
   }
 	
 #endif
-	 
-	  xSemaphoreGive(Wait_TCPIP_Init_Sem);//初始化完成,释放信号量
+
 		printf("本地IP地址是:%d.%d.%d.%d\n\n",  \
 					((gnetif.ip_addr.addr)&0x000000ff),       \
 					(((gnetif.ip_addr.addr)&0x0000ff00)>>8),  \
@@ -508,6 +507,8 @@ void My_TCPIP_initialization(uint8_t *ipaddr_test)
 				ipaddr_test[1] = (((gnetif.ip_addr.addr)&0x0000ff00)>>8);
 				ipaddr_test[2] = (((gnetif.ip_addr.addr)&0x00ff0000)>>16);
 				ipaddr_test[3] = (((gnetif.ip_addr.addr)&0xff000000)>>24);
+	
+	 xSemaphoreGive(Wait_TCPIP_Init_Sem);//初始化完成,释放信号量
 }
 
 

@@ -1,10 +1,10 @@
 #include "emXGUI.h"
 #include "gui_drv.h"
 #include "GUI_CAMERA_DIALOG.h"
+#include "./camera/ov5640_AF.h"
 #include <string.h>
-#include "board.h"
+#include "./camera/bsp_ov5640.h"
 #include "GUI_AppDef.h"
-#include "./bsp_ov5640.h"
 extern BOOL g_dma2d_en ;
 extern int cur_index;
 static HDC hdc_bk = NULL;//背景图层，绘制透明控件
@@ -98,6 +98,7 @@ static void Checkbox_owner_draw(DRAWITEM_HDR *ds)
   EnableAntiAlias(hdc, TRUE);
 	if (CamDialog.focus_status == 1)//按钮是按下状态
 	{ 
+ 		rc.h = 15;
 		SetBrushColor(hdc, MapRGB(hdc, 119, 136, 153)); 
 		FillRoundRect(hdc, &rc, rc.h / 2);
 		InflateRect(&rc, -3, -3);
@@ -107,14 +108,15 @@ static void Checkbox_owner_draw(DRAWITEM_HDR *ds)
 
 		GetClientRect(ds->hwnd, &rc);
 		SetBrushColor(hdc, MapRGB(hdc, 119, 136, 153)); 
-		FillCircle(hdc, rc.w - 15, 15, 15);
+		FillCircle(hdc, 10, 8, 10);
 
 
 		SetBrushColor(hdc, MapRGB(hdc, 250, 250, 250)); 
-		FillCircle(hdc, rc.w - 15, 15, 12);
+		FillCircle(hdc, 10, 8, 8);
 	}
 	else//按钮是弹起状态
 	{ 
+ 		rc.h = 15;
 		SetBrushColor(hdc, MapRGB(hdc, 119, 136, 153)); 
 		FillRoundRect(hdc, &rc, rc.h/2);
 		InflateRect(&rc, -3,  -3);
@@ -124,10 +126,10 @@ static void Checkbox_owner_draw(DRAWITEM_HDR *ds)
 
 		GetClientRect(ds->hwnd, &rc);
 		SetBrushColor(hdc, MapRGB(hdc, 119, 136, 153)); //设置填充色(BrushColor用于所有Fill类型的绘图函数)
-		FillCircle(hdc, rc.x + 15, 15, 15);//用矩形填充背景
+		FillCircle(hdc, 35, 8, 10);//用矩形填充背景
 		
 		SetBrushColor(hdc, MapRGB(hdc, 250, 250, 250)); //设置填充色(BrushColor用于所有Fill类型的绘图函数)
-		FillCircle(hdc, rc.x + 15, 15, 12);
+		FillCircle(hdc, 35, 8, 8);
 
 	}
   EnableAntiAlias(hdc, FALSE);
@@ -242,13 +244,13 @@ static void home_owner_draw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 	}
 
   SetPenSize(hdc, 2);
-
-  OffsetRect(&rc,15,20);
-	
+  rc.w = 25;
+  OffsetRect(&rc, 0, 11);
+  
   for(int i=0; i<4; i++)
-  {	
-    HLine(hdc, rc.x, rc.y ,58);//rc.w
-    rc.y += 9;
+  {
+    HLine(hdc, rc.x, rc.y, rc.w);
+    rc.y += 6;
   }
 }
 
@@ -279,7 +281,7 @@ static void camera_return_ownerdraw(DRAWITEM_HDR *ds) //绘制一个按钮外观
 		SetTextColor(hdc, MapRGB(hdc, 255, 255, 255));
 	}
 	  /* 使用控制图标字体 */
-	SetFont(hdc, ctrlFont48);
+	SetFont(hdc, controlFont_32);
 
 	GetWindowText(ds->hwnd, wbuf, 128); //获得按钮控件的文字
 
@@ -362,7 +364,7 @@ static void Update_Dialog(void *param)
 	{
 			if(GUI_SemWait(cam_sem, 0x1))
 			{
-       InvalidateRect(CamDialog.Cam_Hwnd,NULL,TRUE);
+       InvalidateRect(CamDialog.Cam_Hwnd,NULL,FALSE);
 			}
 			GUI_Yield();
 	}
@@ -400,17 +402,17 @@ static LRESULT	dlg_set_Resolution_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARA
       RECT rc;
       GetClientRect(hwnd, &rc);
       rc.x =5;
-      rc.y =55;
+      rc.y =48;
       rc.w =200;
       rc.h =24;
       //多选一按键--设置分辨率
       CreateWindow(BUTTON,L"320*240",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB1,NULL,NULL);
       OffsetRect(&rc,0,rc.h+10);
-      CreateWindow(BUTTON,L"480*272",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
+      CreateWindow(BUTTON,L"320*180",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB2,NULL,NULL);         
       OffsetRect(&rc,0,rc.h+10);
-      CreateWindow(BUTTON,L"800*480(默认)",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
+      CreateWindow(BUTTON,L"480*272(默认)",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB3,NULL,NULL);   
 
       switch(CamDialog.cur_Resolution)
@@ -433,7 +435,7 @@ static LRESULT	dlg_set_Resolution_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARA
       }   
       //返回按键
       CreateWindow(BUTTON, L"F", BS_FLAT | BS_NOTIFY|WS_TRANSPARENT|WS_OWNERDRAW |WS_VISIBLE,
-      0, 0, 90, 50, hwnd, eID_BT1, NULL, NULL); 
+      0, 0, 100, 30, hwnd, eID_BT1, NULL, NULL); 
 
       //擦除背景
       SetWindowEraseEx(hwnd, cbErase, TRUE);
@@ -464,21 +466,21 @@ static LRESULT	dlg_set_Resolution_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARA
       ////用户的绘制内容...
       GetClientRect(hwnd, &rc);
       //上边栏目
-      rc.h = 50;
+      rc.h = 30;
       SetBrushColor(hdc,MapRGB(hdc,0,0,0));
       FillRect(hdc, &rc);
       GetClientRect(hwnd, &rc);
       SetBrushColor(hdc,MapRGB(hdc,105,105,105));
       
-      rc.y = 50;
-      rc.h = rc.h-50;
+      rc.y = 30;
+      rc.h = rc.h-30;
       FillRect(hdc, &rc);         
       SetTextColor(hdc, MapRGB(hdc,250,250,250));
 
       rc.x =100;
       rc.y =0;
-      rc.w =200; 
-      rc.h =50;
+      rc.w =120; 
+      rc.h =30;
 
       DrawText(hdc,L"分辨率",-1,&rc,DT_CENTER|DT_VCENTER); 
 
@@ -516,8 +518,8 @@ static LRESULT	dlg_set_Resolution_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARA
               cam_mode.cam_out_height = 240;
 
               //LCD位置
-              cam_mode.lcd_sx = 270;
-              cam_mode.lcd_sy = 120;
+              cam_mode.lcd_sx = 80;
+              cam_mode.lcd_sy = 16;
               OV5640_OutSize_Set(cam_mode.scaling,
                        cam_mode.cam_out_sx,
                        cam_mode.cam_out_sy,
@@ -536,12 +538,12 @@ static LRESULT	dlg_set_Resolution_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARA
               cam_mode.scaling = 1;      //使能自动缩放
               cam_mode.cam_out_sx = 16;	//使能自动缩放后，一般配置成16即可
               cam_mode.cam_out_sy = 4;	  //使能自动缩放后，一般配置成4即可
-              cam_mode.cam_out_width = 480;
-              cam_mode.cam_out_height = 272;
+              cam_mode.cam_out_width = 320;
+              cam_mode.cam_out_height = 180;
 
               //LCD位置
-              cam_mode.lcd_sx = 160;
-              cam_mode.lcd_sy = 104;
+              cam_mode.lcd_sx = 80;
+              cam_mode.lcd_sy = 42;
               OV5640_OutSize_Set(cam_mode.scaling,
                        cam_mode.cam_out_sx,
                        cam_mode.cam_out_sy,
@@ -560,8 +562,8 @@ static LRESULT	dlg_set_Resolution_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARA
               cam_mode.scaling = 1;      //使能自动缩放
               cam_mode.cam_out_sx = 16;	//使能自动缩放后，一般配置成16即可
               cam_mode.cam_out_sy = 4;	  //使能自动缩放后，一般配置成4即可
-              cam_mode.cam_out_width = 800;
-              cam_mode.cam_out_height = 480;
+              cam_mode.cam_out_width = 480;
+              cam_mode.cam_out_height = 272;
 
               //LCD位置
               cam_mode.lcd_sx = 0;
@@ -612,10 +614,10 @@ static LRESULT	dlg_set_Resolution_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARA
           SetWindowText(wnd, L"320*240");
           break;
         case eID_RB2:
-          SetWindowText(wnd, L"480*272");
+          SetWindowText(wnd, L"320*180");
           break;
         case eID_RB3:
-          SetWindowText(wnd, L"800*480(默认)");
+          SetWindowText(wnd, L"480*272(默认)");
           break;
       }         
 
@@ -632,7 +634,7 @@ static LRESULT	dlg_set_Resolution_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARA
 }
 int cur_LightMode = eID_RB4;
 static LRESULT	dlg_set_LightMode_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
-{
+{     
   switch(msg)
   {
 		case WM_CREATE: //窗口创建时,会自动产生该消息,在这里做一些初始化的操作或创建子窗口.
@@ -640,7 +642,7 @@ static LRESULT	dlg_set_LightMode_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM
       RECT rc;
       GetClientRect(hwnd, &rc);
       rc.x =5;
-      rc.y =55;
+      rc.y =50;
       rc.w =200;
       rc.h =24;
       CreateWindow(BUTTON,L"自动(默认)",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
@@ -659,7 +661,7 @@ static LRESULT	dlg_set_LightMode_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM
                   rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB8,NULL,NULL);     
 
       CreateWindow(BUTTON, L"F", BS_FLAT | BS_NOTIFY|WS_TRANSPARENT|WS_OWNERDRAW |WS_VISIBLE,
-                  0, 0, 90, 50, hwnd, eID_BT2, NULL, NULL); 
+                  0, 0, 80, 30, hwnd, eID_BT2, NULL, NULL); 
                   
       SetWindowEraseEx(hwnd, cbErase, TRUE);
 //      GUI_DEBUG("%d, %d", CamDialog.cur_LightMode, eID_RB4);
@@ -719,20 +721,20 @@ static LRESULT	dlg_set_LightMode_WinProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM
 
       GetClientRect(hwnd, &rc);
 
-      rc.h = 50;
+      rc.h = 30;
       SetBrushColor(hdc,MapRGB(hdc,0,0,0));
       FillRect(hdc, &rc);
       GetClientRect(hwnd, &rc);
       SetBrushColor(hdc,MapRGB(hdc,105,105,105));
-      rc.y = 50;
-      rc.h = rc.h-50;
+      rc.y = 30;
+      rc.h = rc.h-30;
       FillRect(hdc, &rc);         
       SetTextColor(hdc, MapRGB(hdc,250,250,250));
 
       rc.x =100;
       rc.y =0;
-      rc.w =200; 
-      rc.h =50;
+      rc.w =120; 
+      rc.h =30;
 
       DrawText(hdc,L"光线模式",-1,&rc,DT_CENTER|DT_VCENTER); 
 
@@ -859,34 +861,34 @@ static LRESULT	dlg_set_SpecialEffects_WinProc(HWND hwnd,UINT msg,WPARAM wParam,L
       RECT rc;
       GetClientRect(hwnd, &rc);
       rc.x =5;
-      rc.y =55;
-      rc.w =200;
+      rc.y =30;
+      rc.w =120;
       rc.h =24;
       CreateWindow(BUTTON,L"冷色",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB9,NULL,NULL);
-      OffsetRect(&rc,0,rc.h+10);
+      OffsetRect(&rc,0,rc.h+3);
       CreateWindow(BUTTON,L"暖色",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB10,NULL,NULL);         
-      OffsetRect(&rc,0,rc.h+10);
+      OffsetRect(&rc,0,rc.h+3);
       CreateWindow(BUTTON,L"黑白",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB11,NULL,NULL);          
-      OffsetRect(&rc,0,rc.h+10);
+      OffsetRect(&rc,0,rc.h+3);
       CreateWindow(BUTTON,L"泛黄",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB12,NULL,NULL);         
-      OffsetRect(&rc,0,rc.h+10);
+      OffsetRect(&rc,0,rc.h+3);
       CreateWindow(BUTTON,L"反色",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB13,NULL,NULL); 
-      OffsetRect(&rc,0,rc.h+10);         
+      OffsetRect(&rc,0,rc.h+3);         
       CreateWindow(BUTTON,L"偏绿",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB14,NULL,NULL);         
-      OffsetRect(&rc,0,rc.h+10);
+      OffsetRect(&rc,0,rc.h+3);
       CreateWindow(BUTTON,L"过曝",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB15,NULL,NULL);   
-      OffsetRect(&rc,0,rc.h+10);
+      OffsetRect(&rc,0,rc.h+3);
       CreateWindow(BUTTON,L"正常(默认)",BS_RADIOBOX|WS_VISIBLE|WS_TRANSPARENT,
       rc.x,rc.y,rc.w,rc.h,hwnd,(1<<16)|eID_RB16,NULL,NULL); 
       CreateWindow(BUTTON, L"F", BS_FLAT | BS_NOTIFY|WS_TRANSPARENT|WS_OWNERDRAW |WS_VISIBLE,
-      0, 0, 90, 50, hwnd, eID_BT3, NULL, NULL); 
+      0, 0, 80, 30, hwnd, eID_BT3, NULL, NULL); 
 
       SetWindowEraseEx(hwnd, cbErase, TRUE);
 
@@ -943,20 +945,20 @@ static LRESULT	dlg_set_SpecialEffects_WinProc(HWND hwnd,UINT msg,WPARAM wParam,L
 			hdc =BeginPaint(hwnd,&ps); //开始绘图
       GetClientRect(hwnd, &rc);
 
-      rc.h = 50;
+      rc.h = 30;
       SetBrushColor(hdc,MapRGB(hdc,0,0,0));
       FillRect(hdc, &rc);
       GetClientRect(hwnd, &rc);
       SetBrushColor(hdc,MapRGB(hdc,105,105,105));
-      rc.y = 50;
-      rc.h = rc.h-50;
+      rc.y = 30;
+      rc.h = rc.h-30;
       FillRect(hdc, &rc);         
       SetTextColor(hdc, MapRGB(hdc,250,250,250));
 
       rc.x =100;
       rc.y =0;
-      rc.w =200; 
-      rc.h =50;
+      rc.w =120; 
+      rc.h =30;
 
       DrawText(hdc,L"特殊效果",-1,&rc,DT_CENTER|DT_VCENTER);
 
@@ -972,7 +974,7 @@ static LRESULT	dlg_set_SpecialEffects_WinProc(HWND hwnd,UINT msg,WPARAM wParam,L
       if(id >=eID_RB9 && id <= eID_RB16)
       {
         cr->TextColor =RGB888(250,250,250);
-        cr->BackColor =RGB888(105,105,105);
+        cr->BackColor =RGB888(200,220,200);
         cr->BorderColor =RGB888(50,50,50);
         cr->ForeColor =RGB888(105,105,105);
         return TRUE;            
@@ -1126,9 +1128,9 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
     {
       b_close =FALSE;
 			rc.x =5;
-			rc.y =50;
-			rc.w =400;
-			rc.h =50;    
+			rc.y =35;
+			rc.w =250;
+			rc.h =30;    
 
 
       MakeMatrixRect(rc_first, &rc, 5, 0, 2, 1);
@@ -1136,7 +1138,7 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
                    rc_first[0].x,rc_first[0].y,rc_first[0].w,rc_first[0].h,hwnd,eID_SET1,NULL,NULL); 
       rc_first[1].y = Set_VCENTER(rc_first[0].y+rc_first[0].h/2,30);
       CreateWindow(BUTTON,L" ",WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,
-                   rc.w-70,rc_first[1].y,60,30,hwnd,eID_switch,NULL,NULL);   
+                   rc.w-70,rc_first[1].y+6,45,20,hwnd,eID_switch,NULL,NULL);   
 
 			OffsetRect(&rc,0,rc.h);
       MakeMatrixRect(rc_second, &rc, 5, 0, 2, 1);
@@ -1147,11 +1149,11 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
       sif.nMin = -2;
       sif.nMax = 2;
       sif.nValue = cam_mode.brightness;
-      sif.TrackSize = 31;//滑块值
+      sif.TrackSize = 19;//滑块值
       sif.ArrowSize = 0;//两端宽度为0（水平滑动条）
       rc_second[1].y = Set_VCENTER(rc_second[0].y+rc_second[0].h/2,31);
       CreateWindow(SCROLLBAR, L"SCROLLBAR_liangdu", WS_OWNERDRAW|WS_VISIBLE, 
-                   rc_second[1].x,rc_second[1].y,180,31, hwnd, eID_SCROLLBAR, NULL, NULL);                 
+                   rc_second[1].x,rc_second[1].y,110,20, hwnd, eID_SCROLLBAR, NULL, NULL);                 
       SendMessage(GetDlgItem(hwnd, eID_SCROLLBAR), SBM_SETSCROLLINFO, TRUE, (LPARAM)&sif);       
 
 			OffsetRect(&rc,0,rc.h);
@@ -1163,11 +1165,11 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
       sif1.nMin = -3;
       sif1.nMax = 3;
       sif1.nValue = cam_mode.saturation;
-      sif1.TrackSize = 31;//滑块值
+      sif1.TrackSize = 19;//滑块值
       sif1.ArrowSize = 0;//两端宽度为0（水平滑动条）
       rc_third[1].y = Set_VCENTER(rc_third[0].y+rc_third[0].h/2,31);
       CreateWindow(SCROLLBAR, L"SCROLLBAR_R", WS_OWNERDRAW|WS_VISIBLE, 
-                   rc_third[1].x,rc_third[1].y,180,31, hwnd, eID_SCROLLBAR1, NULL, NULL);
+                   rc_third[1].x,rc_third[1].y,110,20, hwnd, eID_SCROLLBAR1, NULL, NULL);
       SendMessage(GetDlgItem(hwnd, eID_SCROLLBAR1), SBM_SETSCROLLINFO, TRUE, (LPARAM)&sif1);
 
       OffsetRect(&rc,0,rc.h);
@@ -1179,11 +1181,11 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
       sif2.nMin = -3;
       sif2.nMax = 3;
       sif2.nValue = cam_mode.contrast;
-      sif2.TrackSize = 31;//滑块值
+      sif2.TrackSize = 19;//滑块值
       sif2.ArrowSize = 0;//两端宽度为0（水平滑动条）
       rc_third[1].y = Set_VCENTER(rc_third[0].y+rc_third[0].h/2,31);
       CreateWindow(SCROLLBAR, L"SCROLLBAR_R", WS_OWNERDRAW|WS_VISIBLE, 
-                   rc_third[1].x,rc_third[1].y, 180, 31, hwnd, eID_SCROLLBAR2, NULL, NULL);
+                   rc_third[1].x,rc_third[1].y, 110, 20, hwnd, eID_SCROLLBAR2, NULL, NULL);
       SendMessage(GetDlgItem(hwnd, eID_SCROLLBAR2), SBM_SETSCROLLINFO, TRUE, (LPARAM)&sif2);
 
 
@@ -1192,24 +1194,24 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
       CreateWindow(BUTTON,L"分辨率",WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,rc.x,rc.y,rc.w,rc.h,hwnd,eID_SET5,NULL,NULL);
       MakeMatrixRect(rc_third, &rc, 0, 0, 2, 1);
       rc_third[1].y = Set_VCENTER(rc_third[0].y+rc_third[0].h/2,30);
-      CreateWindow(BUTTON,L"800*480(默认)",WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,
-                   rc_third[1].x,rc_third[1].y,200,30,hwnd,eID_TB1,NULL,NULL); 
+      CreateWindow(BUTTON,L"480*270(默认)",WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,
+                   rc_third[1].x-50,rc_third[1].y,200,30,hwnd,eID_TB1,NULL,NULL); 
 
       switch(CamDialog.cur_Resolution)
       {
         case eID_RB1:
           SetWindowText(GetDlgItem(hwnd, eID_TB1), L"320*240");break;                 
         case eID_RB2:
-          SetWindowText(GetDlgItem(hwnd, eID_TB1), L"480*272");break;
+          SetWindowText(GetDlgItem(hwnd, eID_TB1), L"320*180");break;
         case eID_RB3:
-          SetWindowText(GetDlgItem(hwnd, eID_TB1), L"800*480(默认)");break;
+          SetWindowText(GetDlgItem(hwnd, eID_TB1), L"480*272(默认)");break;
       }   
       OffsetRect(&rc,0,rc.h);
       CreateWindow(BUTTON,L"光线模式",WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,rc.x,rc.y,rc.w,rc.h,hwnd,eID_SET6,NULL,NULL);
       MakeMatrixRect(rc_third, &rc, 0, 0, 2, 1);
       rc_third[1].y = Set_VCENTER(rc_third[0].y+rc_third[0].h/2,40);
       CreateWindow(BUTTON,L"自动(默认)",WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,
-      rc_third[1].x,rc_third[1].y,200,40,hwnd,eID_TB2,NULL,NULL);                      
+      rc_third[1].x-50,rc_third[1].y,200,40,hwnd,eID_TB2,NULL,NULL);                      
 
       switch(CamDialog.cur_LightMode)
       {
@@ -1230,7 +1232,7 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
       MakeMatrixRect(rc_third, &rc, 0, 0, 2, 1);
       rc_third[1].y = Set_VCENTER(rc_third[0].y+rc_third[0].h/2,30);         
       CreateWindow(BUTTON,L"正常(默认)",WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,
-      rc_third[1].x,rc_third[1].y,200,30,hwnd,eID_TB3,NULL,NULL);                      
+      rc_third[1].x-50,rc_third[1].y,200,30,hwnd,eID_TB3,NULL,NULL);                      
       switch(CamDialog.cur_SpecialEffects)
       {
         case eID_RB9:
@@ -1251,7 +1253,7 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
           SetWindowText(GetDlgItem(hwnd, eID_TB3), L"正常(默认)");break;            
       }        
       CreateWindow(BUTTON, L"F", BS_FLAT | BS_NOTIFY|WS_TRANSPARENT|WS_OWNERDRAW |WS_VISIBLE,
-                    0, 0, 90, 50, hwnd, eID_RETURN, NULL, NULL);       
+                    0, 0, 80, 30, hwnd, eID_RETURN, NULL, NULL);       
       SetTimer(hwnd,2,20,TMR_START,NULL);
       GetClientRect(hwnd, &rc);
       hdc_bk = CreateMemoryDC(SURF_SCREEN, rc.w, rc.h);
@@ -1391,7 +1393,7 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
         
         GetClientRect(CamDialog.Cam_Hwnd,&rc);
         rc.x = rc.x+(rc.w-win_rc.w)/2;
-        rc.w =400;
+        rc.w =250;
         rc.h =155;
 
         wcex.Tag	 		= WNDCLASS_TAG;
@@ -1418,7 +1420,7 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
         GetClientRect(CamDialog.Cam_Hwnd,&rc);
         
         rc.x = rc.x+(rc.w-win_rc.w)/2;
-        rc.w =400;
+        rc.w =250;
         rc.h =225;
         wcex.Tag	 		= WNDCLASS_TAG;
         wcex.Style			= CS_HREDRAW | CS_VREDRAW;
@@ -1445,8 +1447,8 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
         rc.x = rc.x+(rc.w-win_rc.w)/2;
  
-        rc.w =400;
-        rc.h =325;
+        rc.w =250;
+        rc.h =250;
         wcex.Tag	 		= WNDCLASS_TAG;
         wcex.Style			= CS_HREDRAW | CS_VREDRAW;
         wcex.lpfnWndProc	= (WNDPROC)dlg_set_SpecialEffects_WinProc;
@@ -1485,32 +1487,32 @@ static LRESULT dlg_set_WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 			hdc =BeginPaint(hwnd,&ps); //开始绘图
       GetClientRect(hwnd, &rc);
 
-      rc.h = 50;
+      rc.h = 35;
       SetBrushColor(hdc_bk,MapRGB(hdc_bk,0,0,0));
       FillRect(hdc_bk, &rc);
       GetClientRect(hwnd, &rc);
       SetBrushColor(hdc_bk,MapRGB(hdc_bk,105,105,105));
-      rc.y = 50;
-      rc.h = rc.h-50;
+      rc.y = 35;
+      rc.h = rc.h-35;
       FillRect(hdc_bk, &rc);         
       SetTextColor(hdc_bk, MapRGB(hdc_bk,250,250,250));
 
       rc.x =100;
       rc.y =0;
-      rc.w =200; 
-      rc.h =50;
+      rc.w =250; 
+      rc.h =240;
 
 //      DrawText(hdc_bk,L"参数设置",-1,&rc,DT_CENTER|DT_VCENTER); 
       SetPenColor(hdc_bk, MapRGB(hdc_bk, 245,245,245));
       GetClientRect(hwnd, &rc);
       //间隔线
-      HLine(hdc_bk, 0, 50, 400);
-      HLine(hdc_bk, 0, 100, 400);
-      HLine(hdc_bk, 0, 150, 400);
-      HLine(hdc_bk, 0, 200, 400);
-      HLine(hdc_bk, 0, 250, 400);
-      HLine(hdc_bk, 0, 300, 400);
-      HLine(hdc_bk, 0, 350, 400);
+      HLine(hdc_bk, 0, 35, 250);
+      HLine(hdc_bk, 0, 60, 250);
+      HLine(hdc_bk, 0, 90, 250);
+      HLine(hdc_bk, 0, 120, 250);
+      HLine(hdc_bk, 0, 150, 250);
+      HLine(hdc_bk, 0, 180, 250);
+      HLine(hdc_bk, 0, 210, 250);
       BitBlt(hdc, 0,0,rc.w, rc.h, hdc_bk,0,0,SRCCOPY);        
       EndPaint(hwnd,&ps); //结束绘图
       break;
@@ -1541,7 +1543,7 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       OV5640_ReadID(&OV5640_Camera_ID);
 
       //退出按键
-      CreateWindow(BUTTON, L"O",WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,720, 5, 80, 80, hwnd, eID_EXIT, NULL, NULL);       
+      CreateWindow(BUTTON, L"O",WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,444, 0, 36, 36, hwnd, eID_EXIT, NULL, NULL);       
       if(OV5640_Camera_ID.PIDH  == 0x56)
       {
         GUI_DEBUG("OV5640 ID:%x %x",OV5640_Camera_ID.PIDH ,OV5640_Camera_ID.PIDL);
@@ -1551,17 +1553,17 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       else
       {
         MSGBOX_OPTIONS ops;
-        //const WCHAR *btn[]={L"确定"};
+        const WCHAR *btn[]={L"确定"};
         int x,y,w,h;
 
         ops.Flag =MB_ICONERROR;
-        //ops.pButtonText =btn;
-        ops.ButtonCount =0;
-        w =500;
-        h =200;
+        ops.pButtonText =btn;
+        ops.ButtonCount =1;
+        w =230;
+        h =150;
         x =(GUI_XSIZE-w)>>1;
         y =(GUI_YSIZE-h)>>1;
-        MessageBox(hwnd,x,y,w,h,L"没有检测到OV5640摄像头，\n请重新检查连接。",L"消息",&ops); 
+        MessageBox(hwnd,x,y,w,h,L"未检测到OV5640摄像头，\n请重新检查连接。",L"错误",&ops); 
 				CamDialog.AutoFocus_Thread = 0;
 				CamDialog.Update_Thread = 0;
 				PostCloseMessage(hwnd);
@@ -1571,12 +1573,12 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       set_sem = GUI_SemCreate(0,1);//同步摄像头图像
       GetClientRect(hwnd, &rc);
       //设置按键
-      CreateWindow(BUTTON,L"参数设置",WS_OWNERDRAW|WS_TRANSPARENT,rc.w-135,419,120,40,hwnd,eID_SET,NULL,NULL);
+      CreateWindow(BUTTON,L"参数设置",WS_OWNERDRAW|WS_TRANSPARENT,370,232,90,25,hwnd,eID_SET,NULL,NULL);
 
 			BaseType_t xReturn = pdPASS;
 			xReturn = xTaskCreate((TaskFunction_t )Set_AutoFocus,      /* 任务入口函数 */
 														(const char*    )"Set_AutoFocus",    /* 任务名字 */
-														(uint16_t       )1024,                  /* 任务栈大小FreeRTOS的任务栈以字为单位 */
+														(uint16_t       )8*1024/4,                  /* 任务栈大小FreeRTOS的任务栈以字为单位 */
 														(void*          )NULL,                      /* 任务入口函数参数 */
 														(UBaseType_t    )5,                         /* 任务的优先级 */
 														(TaskHandle_t*  )&Set_AutoFocus_Task_Handle);     /* 任务控制块指针 */
@@ -1588,7 +1590,7 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			
       xReturn = xTaskCreate((TaskFunction_t )Update_Dialog,      /* 任务入口函数 */
 														(const char*    )"Update_Dialog",    /* 任务名字 */
-														(uint16_t       )512,                  /* 任务栈大小FreeRTOS的任务栈以字为单位 */
+														(uint16_t       )1024,                  /* 任务栈大小FreeRTOS的任务栈以字为单位 */
 														(void*          )NULL,                      /* 任务入口函数参数 */
 														(UBaseType_t    )6,                         /* 任务的优先级 */
 														(TaskHandle_t*  )&Update_Dialog_Handle);     /* 任务控制块指针 */
@@ -1598,6 +1600,7 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			}					
       
       //帧率
+      //CreateWindow(BUTTON,L" ",WS_OWNERDRAW|WS_TRANSPARENT|WS_VISIBLE,rc.w-600,400,400,72,hwnd,eID_FPS,NULL,NULL);
       SetTimer(hwnd,1,1000,TMR_START,NULL); 
      
 
@@ -1644,6 +1647,8 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             OV5640_FOCUS_AD5820_Constant_Focus();
             CamDialog.focus_status = 1;
           }
+          //使能DCMI采集数据
+          //OV5640_Capture_Control(FunctionalState state)
 
           state = 1;
           break;
@@ -1671,7 +1676,8 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       HDC hdc;
       RECT rc;
       static int switch_res = 0;
-      hdc = BeginPaint(hwnd,&ps);
+
+			hdc = BeginPaint(hwnd,&ps);
       GetClientRect(hwnd,&rc);
       if(state==0)
       {
@@ -1682,11 +1688,13 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         DrawText(hdc,L"正在初始化摄像头\r\n\n请等待...",-1,&rc,DT_VCENTER|DT_CENTER|DT_BKGND);
 
       }   
+
       if(state == 2)
       {     
         U16 *ptmp;
         switch(cur_index)//DMA使用的内存块，不能被CPU使用
         {
+          //SCB_CleanInvalidateDCache();
           case 0:
           {
             SCB_InvalidateDCache_by_Addr((uint32_t *)CamDialog.cam_buff1, cam_mode.cam_out_height*cam_mode.cam_out_width / 2);
@@ -1702,6 +1710,8 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             break;
           }
         }
+//        pSurf =CreateSurface(SURF_RGB565,GUI_XSIZE, GUI_YSIZE, 0, bits);
+//        //切换分辨率时，清除窗口内容
         if(switch_res == 1)
         {
           switch_res = 0;
@@ -1710,11 +1720,21 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
           FillRect(hdc, &rc);
         }
         hdc_mem =CreateDC(pSurf,NULL);
-
+//        //更新窗口分辨率
+//        if(update_flag)
+//        {
+//          update_flag = 0;
+//          old_fps = fps;
+//          fps = 0;
+//        }              
+//        x_wsprintf(wbuf,L"帧率:%dFPS",old_fps);
+//        SetWindowText(GetDlgItem(hwnd, ID_FPS), wbuf);                
+//        //更新图像
         
         BitBlt(hdc, cam_mode.lcd_sx , cam_mode.lcd_sy, cam_mode.cam_out_width,  cam_mode.cam_out_height, hdc_mem, 0 , 0, SRCCOPY);          
         DeleteSurface(pSurf);
         DeleteDC(hdc_mem);
+//        cur_index++;
         
       }
       if(state == 3)
@@ -1729,6 +1749,7 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_NOTIFY: //WM_NOTIFY消息:wParam低16位为发送该消息的控件ID,高16位为通知码;lParam指向了一个NMHDR结构体.
     {
       u16 code,id;
+//      static  = 0;//设置窗口是否弹出
       code =HIWORD(wParam); //获得通知码类型.
       id   =LOWORD(wParam); //获得产生该消息的控件ID.
       if(CamDialog.flag == 0)//设置窗口未存在，则创建
@@ -1755,18 +1776,18 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             GetClientRect(hwnd,&rc);
            
 
-            win_rc.w =400;
-            win_rc.h =400;
+            win_rc.w =250;
+            win_rc.h =240;
 
             win_rc.x = rc.x+(rc.w-win_rc.w)/2;
-            win_rc.y = rc.y;//rc.y+(rc.h>>2);
+            win_rc.y = 0;
 
             CamDialog.SetWIN = CreateWindowEx(
                                               NULL,
                                               &wcex,L"Set",
                                               WS_OVERLAPPED|WS_CLIPCHILDREN|WS_VISIBLE,
 
-                                              win_rc.x,-win_rc.h-4,win_rc.w,win_rc.h,
+                                              win_rc.x,win_rc.y,win_rc.w,win_rc.h,
                                               hwnd,0,NULL,NULL);
           }
 
@@ -1781,7 +1802,6 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
       if(id==eID_EXIT && code==BN_CLICKED)//退出窗口
       {
-			  OV5640_Capture_Control(DISABLE);
         PostCloseMessage(hwnd);
       }
       break;  
@@ -1816,7 +1836,7 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       cam_mode.cam_out_width = GUI_XSIZE;
       cam_mode.lcd_sx = 0;
       cam_mode.lcd_sy = 0;
-      cam_mode.light_mode =0x00;
+      cam_mode.light_mode =0x04;
       cam_mode.saturation = 0;
       cam_mode.brightness = 0;
       cam_mode.contrast = 0;
@@ -1828,8 +1848,6 @@ static LRESULT Cam_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       CamDialog.focus_status = 1;
       state = 0;   //摄像头状态机
 			cur_index = 0;
-      GUI_VMEM_Free(CamDialog.cam_buff1);
-      GUI_VMEM_Free(CamDialog.cam_buff0);
       return PostQuitMessage(hwnd);
     }  
       
@@ -1877,5 +1895,7 @@ void	GUI_Camera_DIALOG(void)
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
   }
+	 GUI_VMEM_Free(CamDialog.cam_buff1);
+   GUI_VMEM_Free(CamDialog.cam_buff0);
 }
 

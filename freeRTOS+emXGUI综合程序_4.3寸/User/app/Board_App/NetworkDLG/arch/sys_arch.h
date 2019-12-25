@@ -32,7 +32,7 @@
  
 #include <lwip/opt.h>
 #include <lwip/arch.h>
-#include "tcpip.h"
+#include "lwip/tcpip.h"
 
  /* FreeRTOSÍ·ÎÄ¼þ */
 #include "FreeRTOS.h"
@@ -46,7 +46,7 @@
 #define DEST_IP_ADDR2                 0
 #define DEST_IP_ADDR3               181
 
-#define DEST_PORT                  80
+#define DEST_PORT                  8080
 
 #define UDP_SERVER_PORT            5002   /* define the UDP local connection port */
 #define UDP_CLIENT_PORT            5002   /* define the UDP remote connection port */
