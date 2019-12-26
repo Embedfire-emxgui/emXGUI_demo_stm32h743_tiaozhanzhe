@@ -46,8 +46,8 @@ extern DMA_HandleTypeDef DMA_Handle_dcmi;
 
 /*摄像头采集图像的大小，改变这两个值可以改变数据量，
 但不会加快采集速度，要加快采集速度需要改成SVGA模式*/
-#define img_width  800
-#define img_height 480
+#define img_width  480
+#define img_height 272
 
 
 /* Exported constants --------------------------------------------------------*/
@@ -102,18 +102,18 @@ typedef enum
 
 /*摄像头接口 */
 //IIC SCCB
-#define CAMERA_I2C                          I2C1
-#define CAMERA_I2C_CLK_ENABLE()             __HAL_RCC_I2C1_CLK_ENABLE()
+//#define CAMERA_I2C                          I2C1
+//#define CAMERA_I2C_CLK_ENABLE()             __HAL_RCC_I2C1_CLK_ENABLE()
 
-#define CAMERA_I2C_SCL_PIN                  GPIO_PIN_6
-#define CAMERA_I2C_SCL_GPIO_PORT            GPIOB
-#define CAMERA_I2C_SCL_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
-#define CAMERA_I2C_SCL_AF                   GPIO_AF4_I2C1
+//#define CAMERA_I2C_SCL_PIN                  GPIO_PIN_6
+//#define CAMERA_I2C_SCL_GPIO_PORT            GPIOB
+//#define CAMERA_I2C_SCL_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
+//#define CAMERA_I2C_SCL_AF                   GPIO_AF4_I2C1
 
-#define CAMERA_I2C_SDA_PIN                  GPIO_PIN_7
-#define CAMERA_I2C_SDA_GPIO_PORT            GPIOB
-#define CAMERA_I2C_SDA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
-#define CAMERA_I2C_SDA_AF                   GPIO_AF4_I2C1
+//#define CAMERA_I2C_SDA_PIN                  GPIO_PIN_7
+//#define CAMERA_I2C_SDA_GPIO_PORT            GPIOB
+//#define CAMERA_I2C_SDA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
+//#define CAMERA_I2C_SDA_AF                   GPIO_AF4_I2C1
 //VSYNC
 #define DCMI_VSYNC_GPIO_PORT        	    GPIOI
 #define DCMI_VSYNC_GPIO_CLK_ENABLE()        __HAL_RCC_GPIOI_CLK_ENABLE()
@@ -183,9 +183,9 @@ typedef enum
 
 /*debug*/
 
-#define CAMERA_DEBUG_ON          0
-#define CAMERA_DEBUG_ARRAY_ON   0
-#define CAMERA_DEBUG_FUNC_ON    0
+#define CAMERA_DEBUG_ON          1
+#define CAMERA_DEBUG_ARRAY_ON    1
+#define CAMERA_DEBUG_FUNC_ON     1
    
    
 // Log define

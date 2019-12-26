@@ -56,8 +56,8 @@ OV5640_MODE_PARAM cam_mode =
 	.scaling = 1,      //使能自动缩放
 	.cam_out_sx = 16,	//使能自动缩放后，一般配置成16即可
 	.cam_out_sy = 4,	  //使能自动缩放后，一般配置成4即可
-	.cam_out_width = 800,
-	.cam_out_height = 480,
+	.cam_out_width = 480,
+	.cam_out_height = 272,
 	
 	//LCD位置
 	.lcd_sx = 0,
@@ -65,7 +65,7 @@ OV5640_MODE_PARAM cam_mode =
 	.lcd_scan = 5, //LCD扫描模式，本横屏配置可用1、3、5、7模式
 	
 	//以下可根据自己的需要调整，参数范围见结构体类型定义	
-	.light_mode = 0x04,//自动光照模式
+	.light_mode = 0x00,//自动光照模式
 	.saturation = 0,	
 	.brightness = 0,
 	.contrast = 0,
@@ -647,11 +647,11 @@ unsigned short RGB565_WVGA[][2]=
 
     0x3035, 0x41, // PLL
 
-    0x3036, 0x72, // PLL
+    0x3036, 0x80, //0x72, // PLL
 
     0x3c07, 0x08, // light meter 1 threshold[7:0]
 
-    0x3820, 0x42, // flip
+    0x3820, 0x72, //0x42, // flip
 
     0x3821, 0x00, // mirror
 
@@ -874,6 +874,7 @@ void OV5640_ReadID(OV5640_IDTypeDef *OV5640ID)
   * @param  None
   * @retval None
   */
+TickType_t tick_record;
 void OV5640_Init(void) 
 {
   /*** 配置DCMI接口 ***/
@@ -900,7 +901,7 @@ void OV5640_Init(void)
   HAL_DCMI_Init(&DCMI_Handle); 	
     
 	/* 配置中断 */
-  HAL_NVIC_SetPriority(DCMI_IRQn, 7, 0);
+  HAL_NVIC_SetPriority(DCMI_IRQn, 6, 0);
   HAL_NVIC_EnableIRQ(DCMI_IRQn); 	
   //dma_memory 以16位数据为单位， dma_bufsize以32位数据为单位(即像素个数/2)
   OV5640_DMA_Config((uint32_t)CamDialog.cam_buff0,cam_mode.cam_out_height*cam_mode.cam_out_width/2);	
@@ -1514,6 +1515,7 @@ void OV5640_Capture_Control(FunctionalState state)
 //  i++;
 //  HAL_DMA2D_IRQHandler(&h_dma2d);
 //}
+int once =1;
 /**
   * @brief  DCMI帧同步中断回调函数 Line event callback.
   * @param  None
@@ -1521,7 +1523,9 @@ void OV5640_Capture_Control(FunctionalState state)
   */
 void HAL_DCMI_VsyncEventCallback(DCMI_HandleTypeDef *hdcmi)
 {
-  GUI_SemPostISR(cam_sem);  
+	GUI_SemPostISR(cam_sem);
+#if 0
+  
 	if(cur_index == 0)//0--准备配置第二块内存，当前使用的是第一块内存
 	 {
 		  cur_index = 1;
@@ -1532,20 +1536,15 @@ void HAL_DCMI_VsyncEventCallback(DCMI_HandleTypeDef *hdcmi)
 			else
 			{
 //				SCB_InvalidateDCache_by_Addr((uint32_t *)CamDialog.cam_buff0,cam_mode.cam_out_width * cam_mode.cam_out_height *2);
-				cur_index = 1;
-				OV5640_DMA_Config((uint32_t)CamDialog.cam_buff1,
-													cam_mode.cam_out_height*cam_mode.cam_out_width/2);  
 			}
-		}
+	}
 	else//1--配置第一块内存，使用第二块内存
-		{      
+	{
 //			SCB_InvalidateDCache_by_Addr((uint32_t *)CamDialog.cam_buff0,cam_mode.cam_out_width * cam_mode.cam_out_height *2);
-			cur_index = 0;
-			OV5640_DMA_Config((uint32_t)CamDialog.cam_buff0,
-												cam_mode.cam_out_height*cam_mode.cam_out_width/2);       
-		}
-
+	}
+#endif
 }
+
 
 
 

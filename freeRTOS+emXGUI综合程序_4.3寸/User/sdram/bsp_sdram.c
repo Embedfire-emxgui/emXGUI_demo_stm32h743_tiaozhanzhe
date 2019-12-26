@@ -352,14 +352,14 @@ void SDRAM_Init(void)
 
 	/* ≈‰÷√SDRAM ±÷”‘¥*/
   RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_FMC;
-//  RCC_PeriphClkInit.PLL2.PLL2M = 5;
-//  RCC_PeriphClkInit.PLL2.PLL2N = 144;
-  RCC_PeriphClkInit.PLL2.PLL2M = 2;
-  RCC_PeriphClkInit.PLL2.PLL2N = 16;
-  RCC_PeriphClkInit.PLL2.PLL2P = 2;
+  RCC_PeriphClkInit.PLL2.PLL2M = 5;
+  RCC_PeriphClkInit.PLL2.PLL2N = 132;
+//  RCC_PeriphClkInit.PLL2.PLL2M = 2;
+//  RCC_PeriphClkInit.PLL2.PLL2N = 16;
+  RCC_PeriphClkInit.PLL2.PLL2P = 7;
   RCC_PeriphClkInit.PLL2.PLL2Q = 2;
-//  RCC_PeriphClkInit.PLL2.PLL2R = 3;
-	RCC_PeriphClkInit.PLL2.PLL2R = 1;
+  RCC_PeriphClkInit.PLL2.PLL2R = 3;
+//	RCC_PeriphClkInit.PLL2.PLL2R = 1;
   RCC_PeriphClkInit.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_2;
   RCC_PeriphClkInit.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   RCC_PeriphClkInit.PLL2.PLL2FRACN = 0;
