@@ -632,15 +632,15 @@ static void Set_Icon_Bmp_Or_Xtf(void)
 //        menu_list_1[11].bmp = bmp_icon[bmp_sudish_icon];
         menu_list_1[11].bmp = bmp_icon[bmp_entwork_icon];
 				
-				menu_list_1[12].bmp = bmp_icon[bmp_game_icon];
-        menu_list_1[13].bmp = bmp_icon[bmp_phone_icon];
-        menu_list_1[14].bmp = bmp_icon[bmp_note_icon];
-        menu_list_1[15].bmp = bmp_icon[bmp_QRcode_icon];
+//				menu_list_1[12].bmp = bmp_icon[bmp_game_icon];
+        menu_list_1[12].bmp = bmp_icon[bmp_phone_icon];
+        menu_list_1[13].bmp = bmp_icon[bmp_note_icon];
+        menu_list_1[14].bmp = bmp_icon[bmp_QRcode_icon];
+        menu_list_1[15].bmp = bmp_icon[bmp_record_icon];
 				
-        menu_list_1[16].bmp = bmp_icon[bmp_record_icon];
-        menu_list_1[17].bmp = bmp_icon[bmp_widget_icon];
-        menu_list_1[18].bmp = bmp_icon[bmp_beeper_icon];
-				menu_list_1[19].bmp = bmp_icon[bmp_keyled_icon];
+        menu_list_1[16].bmp = bmp_icon[bmp_widget_icon];
+        menu_list_1[17].bmp = bmp_icon[bmp_beeper_icon];
+				menu_list_1[18].bmp = bmp_icon[bmp_keyled_icon];
 //        menu_list_1[19].bmp = bmp_icon[bmp_flash_icon];
 	}else
 	{

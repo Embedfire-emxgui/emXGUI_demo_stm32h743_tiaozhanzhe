@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "stm32h7xx.h"
-//#include "ff.h"
 #include "Backend_avifile.h"
 #include "Backend_vidoplayer.h"
-//#include "./sai/bsp_sai.h" 
-//#include "./Bsp/wm8978/bsp_wm8978.h"  
+#include "board.h"  
 #include "emXGUI.h"
 #include "emXGUI_JPEG.h"
 #include "GUI_VEDIOPLAYER_DIALOG.h"
@@ -34,7 +32,7 @@ extern WAVEFORMAT*   wavinfo;
 extern avih_TypeDef* avihChunk;
 //extern HWND avi_wnd_time;
 //extern int avi_chl;
-void MUSIC_SAI_DMA_TX_Callback(void);
+void VEDIO_I2S_DMA_TX_Callback(void);
 
 extern GUI_MUTEX*	AVI_JPEG_MUTEX;    // 用于确保一帧图像用后被释放完在退出线程
 
@@ -133,8 +131,9 @@ void AVI_play(char *filename)
     }
     audiosize=*(uint8_t *)(mid+offset+4)+256*(*(uint8_t *)(mid+offset+5));
   }
-#if 0
-  SAI_Play_Stop();			/* 停止I2S录音和放音 */
+
+  I2S_Play_Stop();
+  I2S_Stop();			/* 停止I2S录音和放音 */
 	wm8978_Reset();		/* 复位WM8978到复位状态 */	
   	/* 配置WM8978芯片，输入为DAC，输出为耳机 */
 	wm8978_CfgAudioPath(DAC_ON, SPK_ON|EAR_LEFT_ON | EAR_RIGHT_ON);
@@ -143,20 +142,20 @@ void AVI_play(char *filename)
 	wm8978_SetOUT1Volume(VideoDialog.power);
 
 	/* 配置WM8978音频接口为飞利浦标准I2S接口，16bit */
-	wm8978_CfgAudioIF(SAI_I2S_STANDARD, 16);
-  SAI_GPIO_Config();
-  SAIxA_Tx_Config(SAI_I2S_STANDARD, SAI_PROTOCOL_DATASIZE_16BIT, wavinfo->SampleRate);
-  SAI_DMA_TX_Callback=MUSIC_SAI_DMA_TX_Callback;			//回调函数指wav_i2s_dma_callback
-//  I2S_Play_Stop();
-  SAIA_TX_DMA_Init((uint32_t )Sound_buf[1],(uint32_t )Sound_buf[2],audiosize/2);
+	wm8978_CfgAudioIF(I2S_STANDARD_PHILIPS, 16);
+  I2S_GPIO_Config();
+  I2Sx_Mode_Config(I2S_STANDARD_PHILIPS, I2S_DATAFORMAT_16B, I2S_AUDIOFREQ_11K);
+  I2S_DMA_TX_Callback=VEDIO_I2S_DMA_TX_Callback;//回调函数指wav_i2s_dma_callback wavinfo->SampleRate
+  I2S_Play_Stop();
+  I2Sx_TX_DMA_Init((uint32_t )Sound_buf[1],(uint32_t )Sound_buf[2],audiosize/2);
   audiobufflag=0;	    
   video_timeout=0;
   audiosavebuf=0;
   audiobufflag=0;
-  
-  SAI_Play_Start();  
-#endif
-TIM3_Config((avihChunk->SecPerFrame/100)-1,20000-1);
+	TIM3_Config((avihChunk->SecPerFrame/100)-1,20000-1);  
+  I2S_Start();
+  I2S_Play_Start();  
+
 	t0= GUI_GetTickCount();
 
   
@@ -334,15 +333,16 @@ TIM3_Config((avihChunk->SecPerFrame/100)-1,20000-1);
   }
   else
     VideoDialog.SWITCH_STATE = 0;
-//  I2S_Play_Stop();
-//  I2S_Stop();		/* 停止I2S录音和放音 */
-//	wm8978_Reset();	/* 复位WM8978到复位状态 */
+  I2S_Play_Stop();
+  I2S_Stop();		/* 停止I2S录音和放音 */
+	wm8978_Reset();	/* 复位WM8978到复位状态 */
   HAL_TIM_Base_Stop_IT(&TIM3_Handle); //停止定时器3更新中断
   f_close(&fileR);
 	GUI_SemPost(Delete_VideoTask_Sem);
 }
 
-void MUSIC_SAI_DMA_TX_Callback(void)
+extern DMA_HandleTypeDef hdma_spi2_tx;
+void VEDIO_I2S_DMA_TX_Callback(void)
 {
   audiobufflag++;
   if(audiobufflag>3)
@@ -350,13 +350,13 @@ void MUSIC_SAI_DMA_TX_Callback(void)
 		audiobufflag=0;
 	}
 	
-	if(DMA1_Stream2->CR&(1<<19)) //当前读取Memory1数据
+	if(I2Sx_TX_DMA_STREAM->CR&(1<<19)) //当前读取Memory1数据
 	{
-//    HAL_DMAEx_ChangeMemory(&h_txdma, (uint32_t)Sound_buf[audiobufflag], MEMORY0);
+    HAL_DMAEx_ChangeMemory(&hdma_spi2_tx, (uint32_t)Sound_buf[audiobufflag], MEMORY0);
 	}
 	else
 	{
-//    HAL_DMAEx_ChangeMemory(&h_txdma, (uint32_t)Sound_buf[audiobufflag], MEMORY1); 
+    HAL_DMAEx_ChangeMemory(&hdma_spi2_tx, (uint32_t)Sound_buf[audiobufflag], MEMORY1); 
 	} 
 }
 

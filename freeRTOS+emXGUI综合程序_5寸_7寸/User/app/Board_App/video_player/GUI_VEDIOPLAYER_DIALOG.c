@@ -9,7 +9,7 @@
 #include "Backend_vidoplayer.h"
 #include "Backend_avifile.h"
 //#include "./sai/bsp_sai.h" 
-uint8_t chgsch_TouchUp=0;
+//uint8_t chgsch_TouchUp=0;
 GUI_SEM *Delete_VideoTask_Sem;//做任务同步,结束播放器前先关闭播放任务
 TaskHandle_t VideoTask_Handle;
 extern volatile uint8_t video_timeout;//视频播放引入
@@ -770,12 +770,12 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
           avi_icon[1].state = ~avi_icon[1].state;
           if(avi_icon[1].state == FALSE)
           {
-//            wm8978_CfgAudioPath(DAC_ON,  SPK_ON|EAR_LEFT_ON|EAR_RIGHT_ON);
+            wm8978_CfgAudioPath(DAC_ON,  SPK_ON|EAR_LEFT_ON|EAR_RIGHT_ON);
           }
           //当音量icon被按下时，设置为静音模式
           else
           {                
-//						wm8978_CfgAudioPath(DAC_ON,  EAR_LEFT_ON|EAR_RIGHT_ON);
+						wm8978_CfgAudioPath(DAC_ON,  EAR_LEFT_ON|EAR_RIGHT_ON);
           }         
         }      
        //发送单击
@@ -808,7 +808,7 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 //当音量icon未被按下时
                 if(avi_icon[3].state == FALSE)
                 {
-//                   SAI_Play_Start();
+                   I2S_Play_Start();
                    HAL_TIM_Base_Start_IT(&TIM3_Handle);                       
                    
                    SetWindowText(GetDlgItem(hwnd, eID_Vedio_START), L"U");
@@ -817,7 +817,7 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 //当音量icon被按下时，暂停
                 else
                 {          
-//                   SAI_Play_Stop();
+                   I2S_Play_Stop();
                    HAL_TIM_Base_Stop_IT(&TIM3_Handle);               
                    SetWindowText(GetDlgItem(hwnd, eID_Vedio_START), L"T");
                 }
@@ -921,7 +921,7 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 VideoDialog.power= sb_nr->nTrackValue; //得到当前的音量值
                 if(VideoDialog.power == 0) 
                 {
-//                   wm8978_OutMute(1);//静音
+                   wm8978_OutMute(1);//静音
                    SetWindowText(GetDlgItem(hwnd, eID_Vedio_Power), L"J");
                    NoVol_flag = 1;
                    
@@ -933,8 +933,9 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                       SetWindowText(GetDlgItem(hwnd, eID_Vedio_Power), L"A");
                       NoVol_flag = 0;
                    }
-//                   wm8978_OutMute(0);
-//                   wm8978_SetOUT1Volume(VideoDialog.power);//设置WM8978的音量值
+                   wm8978_OutMute(0);
+									 wm8978_SetOUT2Volume(VideoDialog.power);//设置WM8978的外放音量值
+                   wm8978_SetOUT1Volume(VideoDialog.power);//设置WM8978的音量值
                 } 
                 SendMessage(nr->hwndFrom, SBM_SETVALUE, TRUE, VideoDialog.power); //发送SBM_SETVALUE，设置音量值
              }
@@ -1028,8 +1029,8 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			GUI_SemWait(Delete_VideoTask_Sem,0xFFFFFFFF);//死等,同步结束播放线程
 			
 			/* 关闭硬件 */
-//			I2S_Play_Stop();
-//			I2S_Stop();		
+			I2S_Play_Stop();
+			I2S_Stop();		
       HAL_TIM_Base_Stop_IT(&TIM3_Handle);    
 			vTaskDelete(VideoTask_Handle);
 			

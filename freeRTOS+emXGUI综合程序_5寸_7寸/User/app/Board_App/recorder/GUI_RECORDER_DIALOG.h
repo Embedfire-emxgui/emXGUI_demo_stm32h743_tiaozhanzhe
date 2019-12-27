@@ -57,7 +57,7 @@ typedef struct{
    RECT rc;         // 位置信息
    record_id_t id;      // 按钮ID
 }recorder_icon_t;
-
+extern uint8_t chgsch_TouchUp;
 // typedef __packed struct 
 // { 
 // 	uint8_t 	indexsize; 	

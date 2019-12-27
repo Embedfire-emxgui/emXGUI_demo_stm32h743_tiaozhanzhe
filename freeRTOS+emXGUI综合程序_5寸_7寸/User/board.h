@@ -30,6 +30,8 @@
 #include "./app/Board_App/Phone_SMS/bsp_sim/bsp_gsm_gprs.h"
 #include "./app/Board_App/camera/ov5640_AF.h"
 #include "./app/Board_App/camera/bsp_ov5640.h"
+#include "./wm8978/bsp_wm8978.h"  
+#include "./wm8978/i2c_for_wm8978.h"
 
 /*
 *************************************************************************

@@ -303,7 +303,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 160;
   RCC_OscInitStruct.PLL.PLLP = 2;
   RCC_OscInitStruct.PLL.PLLR = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 2;
+  RCC_OscInitStruct.PLL.PLLQ = 18;
  
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
@@ -332,6 +332,15 @@ void SystemClock_Config(void)
   {
     while(1) { ; }
   }
+	
+	RCC_PeriphCLKInitTypeDef RCC_ExCLKInitStruct;
+
+	RCC_ExCLKInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
+	RCC_ExCLKInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
+	if (HAL_RCCEx_PeriphCLKConfig(&RCC_ExCLKInitStruct) != HAL_OK)
+	{
+		while(1);
+	}
 }
 
 /**

@@ -14,10 +14,10 @@
   *
   ******************************************************************************
   */ 
-#include "./i2c_for_wm8978.h"
+#include "./wm8978/i2c_for_wm8978.h"
 
   
-static I2C_HandleTypeDef wm8978_I2C_Handle;					
+I2C_HandleTypeDef wm8978_I2C_Handle;					
 /*******************************  Function ************************************/
 
 /**
@@ -78,7 +78,7 @@ void wm8978_I2cMaster_Init(void)
   * @param  Addr: I2C Address
   * @retval None
   */
-static void I2Cx_Error(uint8_t Addr)
+static void I2Cx_Error1(uint8_t Addr)
 {
 	/* 恢复I2C寄存器为默认值 */
 	HAL_I2C_DeInit(&wm8978_I2C_Handle); 
@@ -104,7 +104,7 @@ int Sensors_I2C_WriteRegister(unsigned char slave_addr,
 	if(status != HAL_OK)
 	{
 		/* 总线出错处理 */
-		I2Cx_Error(slave_addr);
+		I2Cx_Error1(slave_addr);
 	}
 	while (HAL_I2C_GetState(&wm8978_I2C_Handle) != HAL_I2C_STATE_READY)
 	{
@@ -139,7 +139,7 @@ int Sensors_I2C_ReadRegister(unsigned char slave_addr,
 	if(status != HAL_OK)
 	{
 		/* 总线出错处理 */
-		I2Cx_Error(slave_addr);
+		I2Cx_Error1(slave_addr);
 	}
 	while (HAL_I2C_GetState(&wm8978_I2C_Handle) != HAL_I2C_STATE_READY)
 	{

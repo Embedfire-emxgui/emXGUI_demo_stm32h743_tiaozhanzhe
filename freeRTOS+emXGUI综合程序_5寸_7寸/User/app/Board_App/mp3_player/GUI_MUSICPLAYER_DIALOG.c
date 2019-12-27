@@ -3,11 +3,10 @@
 #include "x_libc.h"
 #include "string.h"
 #include "ff.h"
-#include "./mp3_player/Backend_mp3Player.h"
+#include "./app/Board_App/mp3_player/Backend_mp3Player.h"
 #include "GUI_AppDef.h"
 #include "emXGUI_JPEG.h"
-#include "./sai/bsp_sai.h"
-
+#include "board.h"
 /* 外部资源名 */
 #define ROTATE_DISK_NAME "rotate_disk_ARGB8888.bmp"
 
@@ -38,6 +37,7 @@ int IsCreateList = 0;
 int time2exit = 0;
 static COLORREF color_bg;//透明控件的背景颜色
 uint8_t chgsch=0; //调整进度条标志位
+uint8_t chgsch_TouchUp=0; //调整进度条完毕松手标志位
 char music_name[FILE_NAME_LEN] __EXRAM;//歌曲名数组
 //文件系统相关变量
 FRESULT f_result; 
@@ -1109,28 +1109,20 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
                //播放icon处理case
                case ID_BUTTON_START:
                {
-//                     WCHAR wbuf[128];
                      music_icon[6].state = ~music_icon[6].state;
-                     //擦除icon的背景
-                     //
-
                      if(music_icon[6].state == FALSE)
                      {
-
                         vTaskResume(h_music);
-                        SAI_Play_Start();
+                        I2S_Play_Start();
                         SetWindowText(sub11_wnd, L"U");
                         ResetTimer(hwnd, 1, 200, TMR_START,NULL);
-                        
                      }
                      else if(music_icon[6].state != FALSE)
                      {
                         vTaskSuspend(h_music);
-                        SAI_Play_Stop();                    
+                        I2S_Play_Stop();                    
                         SetWindowText(sub11_wnd, L"T");
                         ResetTimer(hwnd, 1, 200, NULL,NULL);                       
-
-                        
                      }  
                      InvalidateRect(hwnd, &music_icon[6].rc, TRUE);                     
                   break;                  
@@ -1214,22 +1206,17 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
                      //RedrawWindow(hwnd, NULL, RDW_ALLCHILDREN|RDW_INVALIDATE);
                      if(music_icon[9].state == FALSE)
                      {
-                        
                         vTaskSuspend(h_music);
-                        SAI_Play_Stop();                    
+                        I2S_Play_Stop();                    
                         SetWindowText(mini_start, L"I");
-                        
                         SetWindowText(sub11_wnd, L"I");
-                        
                      }
                      else if(music_icon[9].state != FALSE)
-                     {
-                        
+                     {          
                         vTaskResume(h_music);
-                        SAI_Play_Start();
+                        I2S_Play_Start();
                         SetWindowText(mini_start, L"H");
                         SetWindowText(sub11_wnd, L"H");
-                        
                      }
 
                      
@@ -1323,6 +1310,11 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
                   //置位进度条变更位置
                   chgsch = 1;
                }
+               break;
+							 case SBN_CLICKED://松手检测,调整进度条使用
+							 {
+									chgsch_TouchUp = 1;
+							 }
                break;
             }
          }              
@@ -1481,7 +1473,8 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         power = 20;
         a = 0;
         
-        SAI_Play_Stop();		/* 停止I2S录音和放音 */
+        I2S_Play_Stop();		/* 停止I2S录音和放音 */
+				I2S_Stop();
         wm8978_Reset();	/* 复位WM8978到复位状态 */ 
         a = PostQuitMessage(hwnd);	        
         return TRUE;	

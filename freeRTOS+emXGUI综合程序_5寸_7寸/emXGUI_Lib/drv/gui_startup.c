@@ -5,6 +5,7 @@
 /*============================================================================*/
 extern BOOL	GL_CursorInit(const SURFACE *pSurf,int x,int y);
 extern BOOL	GUI_Arch_Init(void);
+extern void RecorderDemo(void);
 
 extern void GUI_DesktopStartup(void);
 static BOOL GUI_LowLevelInit(void);
@@ -115,7 +116,8 @@ void	GUI_Startup(void)
     GUI_ERROR("File_System Failed.");
   }
 #endif 
-
+	
+//RecorderDemo();		
 /***********************第9部分*************************/
    GUI_DesktopStartup();   //启动桌面窗口(该函数不会返回).
 }

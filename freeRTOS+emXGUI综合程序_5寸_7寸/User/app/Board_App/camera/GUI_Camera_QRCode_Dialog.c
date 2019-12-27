@@ -74,7 +74,7 @@ static void Update_Dialog(void *p)
 			
 			OV5640_DMA_Config((uint32_t)CamDialog.cam_buff0,
 														cam_mode.cam_out_height*cam_mode.cam_out_width/2); 
-			GUI_msleep(100);
+			GUI_msleep(50);
 			GUI_Yield();
 		}
 	}
@@ -130,7 +130,6 @@ static void QR_decoder_Task(void *p)
 
 				addr =0;//«Â¡„
 				
-				
 				WCHAR *wbuf_data = (WCHAR *)GUI_VMEM_Alloc(1024 * sizeof(WCHAR));
 				x_mbstowcs_cp936(wbuf_type, qr_type_buf, sizeof(wbuf_type));
 				x_mbstowcs_cp936(wbuf_data, qr_data_buf, 1024 * sizeof(WCHAR));
@@ -145,7 +144,7 @@ static void QR_decoder_Task(void *p)
 				GUI_VMEM_Free(wbuf_data);
 				qr_num = 0;
 			}
-			GUI_msleep(10);
+//			GUI_msleep(1);
 		}
 	}
 	GUI_SemPost(QR_Exit);

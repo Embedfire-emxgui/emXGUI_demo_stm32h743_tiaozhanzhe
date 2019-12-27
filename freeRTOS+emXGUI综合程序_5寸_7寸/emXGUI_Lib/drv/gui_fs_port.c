@@ -21,7 +21,7 @@
 
 
 	/* FatFs文件系统对象 */
-static FATFS fs;									
+FATFS fs;									
 
 void FileSystem_Test(void);
 
