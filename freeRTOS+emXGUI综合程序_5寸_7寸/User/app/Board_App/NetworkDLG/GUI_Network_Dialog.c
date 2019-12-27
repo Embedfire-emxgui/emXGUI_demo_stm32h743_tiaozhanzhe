@@ -69,7 +69,7 @@ void Network_Dispose_Task(void *p)
 	
 	if(network_start_flag == 0)
 	{
-	if(GUI_SemWait( Wait_TCPIP_Init_Sem,5000) != pdTRUE)
+	if(GUI_SemWait( Wait_TCPIP_Init_Sem,8000) != pdTRUE)
 		{
       network_start_flag=0;
       bsp_result =0;
