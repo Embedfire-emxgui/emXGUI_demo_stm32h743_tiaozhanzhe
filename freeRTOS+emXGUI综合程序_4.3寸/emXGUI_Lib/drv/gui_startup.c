@@ -5,7 +5,7 @@
 /*============================================================================*/
 extern BOOL	GL_CursorInit(const SURFACE *pSurf,int x,int y);
 extern BOOL	GUI_Arch_Init(void);
-
+extern void RecorderDemo(void);
 extern void GUI_DesktopStartup(void);
 static BOOL GUI_LowLevelInit(void);
 /***********************µÚ1²¿·Ö*************************/

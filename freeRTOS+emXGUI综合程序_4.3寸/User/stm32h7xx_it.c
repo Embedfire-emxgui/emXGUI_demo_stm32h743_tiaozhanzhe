@@ -186,20 +186,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         video_timeout = 1;
 }
 
-/**
-* @brief This function handles DMA1 stream4 global interrupt.
-*/
-void DMA1_Stream4_IRQHandler(void)
-{
-  I2Sx_TX_DMA_STREAM_IRQFUN();
-}
-/**
-* @brief This function handles DMA1 stream3 global interrupt.
-*/
-void DMA1_Stream0_IRQHandler(void)
-{
-  I2Sxext_RX_DMA_STREAM_IRQFUN();
-}
 
 
 /* MPU6050中断服务函数 */
@@ -225,4 +211,15 @@ void DMA2_Stream1_IRQHandler(void)
 void DCMI_IRQHandler(void)
 {
   HAL_DCMI_IRQHandler(&DCMI_Handle);
+}
+
+/* I2S音频播放中断服务函数 */
+void DMA1_Stream4_IRQHandler(void)
+{
+  I2Sx_TX_DMA_STREAM_IRQFUN();
+}
+
+void DMA1_Stream0_IRQHandler(void)
+{
+  I2Sx_RX_DMA_STREAM_IRQFUN();
 }

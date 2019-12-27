@@ -21,6 +21,7 @@
 #include "Backend_Recorder.h"
 #include "./mp3_player/Backend_mp3Player.h"
 
+
 /* 音频格式切换列表(可以自定义) */
 #define FMT_COUNT	6		/* 音频格式数组元素个数 */
 
@@ -31,8 +32,8 @@ WavHead rec_wav;            /* WAV设备  */
 uint8_t Isread=0;           /* DMA传输完成标志 */
 uint8_t bufflag=0;          /* 数据缓存区选择标志 */
 uint32_t wavsize=0;         /* wav音频数据大小 */
- __align(4) uint16_t record_buffer0[RECBUFFER_SIZE];//__EXRAM	__attribute__((at(0x24008000)));//;  /* 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 BUF不放在外部会有不能读取SD卡的BUG*/
- __align(4) uint16_t record_buffer1[RECBUFFER_SIZE];//__EXRAM	__attribute__((at(0x24004000)));//;  /* 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
+__attribute__((at(0x24008000))) uint16_t record_buffer0[RECBUFFER_SIZE];//	__attribute__((at(0x24008000)));//__EXRAM;  /* 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 BUF不放在外部会有不能读取SD卡的BUG*/
+__attribute__((at(0x24004000))) uint16_t record_buffer1[RECBUFFER_SIZE];//	__attribute__((at(0x24004000)));//__EXRAM;  /* 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
 
 FIL record_file	__EXRAM;			/* file objects */
 extern FRESULT result; 
@@ -40,12 +41,12 @@ extern UINT bw;            					/* File R/W count */
 
 uint32_t g_FmtList[FMT_COUNT][3] =
 {
-	{SAI_I2S_STANDARD, SAI_PROTOCOL_DATASIZE_16BIT, SAI_AUDIO_FREQUENCY_44K},
-	{SAI_I2S_STANDARD, SAI_PROTOCOL_DATASIZE_16BIT, SAI_AUDIO_FREQUENCY_44K},
-	{SAI_I2S_STANDARD, SAI_PROTOCOL_DATASIZE_16BIT, SAI_AUDIO_FREQUENCY_44K},
-	{SAI_I2S_STANDARD, SAI_PROTOCOL_DATASIZE_16BIT, SAI_AUDIO_FREQUENCY_44K},
-	{SAI_I2S_STANDARD, SAI_PROTOCOL_DATASIZE_16BIT, SAI_AUDIO_FREQUENCY_44K},
-	{SAI_I2S_STANDARD, SAI_PROTOCOL_DATASIZE_16BIT, SAI_AUDIO_FREQUENCY_44K},
+	{I2S_STANDARD_PHILIPS, I2S_DATAFORMAT_16B, I2S_AUDIOFREQ_8K},
+	{I2S_STANDARD_PHILIPS, I2S_DATAFORMAT_16B, I2S_AUDIOFREQ_16K},
+	{I2S_STANDARD_PHILIPS, I2S_DATAFORMAT_16B, I2S_AUDIOFREQ_22K},
+	{I2S_STANDARD_PHILIPS, I2S_DATAFORMAT_16B, I2S_AUDIOFREQ_44K},
+	{I2S_STANDARD_PHILIPS, I2S_DATAFORMAT_16B, I2S_AUDIOFREQ_96K},
+	{I2S_STANDARD_PHILIPS, I2S_DATAFORMAT_16B, I2S_AUDIOFREQ_192K},
 };
 
 //extern const uint16_t recplaybuf[4];//2个16位数据,用于录音时I2S Master发送.循环发送0.
@@ -155,7 +156,7 @@ void StartRecord(const char *filename)
 	
 	I2Sxext_Mode_Config(g_FmtList[Recorder.ucFmtIdx][0],g_FmtList[Recorder.ucFmtIdx][1],g_FmtList[Recorder.ucFmtIdx][2]);
 
-	I2Sxext_RX_DMA_Init(record_buffer0,record_buffer1,RECBUFFER_SIZE);
+	I2Sxext_RX_DMA_Init((uint32_t)record_buffer0,(uint32_t)record_buffer1,RECBUFFER_SIZE);
   	
 	I2Sxext_Recorde_Start();
 }
@@ -164,7 +165,7 @@ void MusicPlayer_I2S_DMA_RX_Callback(void)
 {
 	if(Recorder.ucStatus == STA_RECORDING)
 	{
-		if(I2Sxext_RX_DMA_STREAM->CR&(1<<19)) //当前使用Memory1数据
+		if(I2Sx_RX_DMA_STREAM->CR&(1<<19)) //当前使用Memory1数据
 		{
 			bufflag=0;                       //可以将数据读取到缓冲区0
 		}

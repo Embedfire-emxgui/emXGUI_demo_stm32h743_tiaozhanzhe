@@ -653,7 +653,7 @@ unsigned short RGB565_WVGA[][2]=
 
     0x3820, 0x72, //0x42, // flip
 
-    0x3821, 0x00, // mirror
+    0x3821, 0x07, // mirror
 
     0x3814, 0x31, // timing X inc
 

@@ -105,21 +105,17 @@ void wm8978_NotchFilter(uint16_t _NFA0, uint16_t _NFA1);
 #define WM8978_MCLK_AF                 GPIO_AF5_SPI2
 
 #define I2Sx_DMA                       DMA1
-#define I2Sx_DMA_CLK_ENABLE()          __DMA1_CLK_ENABLE()
+#define I2Sx_DMA_CLK_ENABLE()          __HAL_RCC_DMA1_CLK_ENABLE()
 #define I2Sx_TX_DMA_STREAM             DMA1_Stream4
 #define I2Sx_TX_DMA_STREAM_IRQn        DMA1_Stream4_IRQn 
 
-
-#define I2Sxext_RX_DMA_STREAM          DMA1_Stream0
-#define I2Sxext_RX_DMA_STREAM_IRQn     DMA1_Stream0_IRQn 
-
-extern DMA_HandleTypeDef hdma_spi2_tx;
-extern DMA_HandleTypeDef hdma_spi2_rx;
+#define I2Sx_RX_DMA_STREAM             DMA1_Stream0
+#define I2Sx_RX_DMA_STREAM_IRQn        DMA1_Stream0_IRQn 
 
 static HAL_StatusTypeDef I2Cx_ReadMultiple(I2C_HandleTypeDef *i2c_handler, uint8_t Addr, uint16_t Reg, uint16_t MemAddSize, uint8_t *Buffer, uint16_t Length);
 static HAL_StatusTypeDef I2Cx_WriteMultiple(I2C_HandleTypeDef *i2c_handler, uint8_t Addr, uint16_t Reg, uint16_t MemAddSize, uint8_t *Buffer, uint16_t Length);
 static HAL_StatusTypeDef I2Cx_IsDeviceReady(I2C_HandleTypeDef *i2c_handler, uint16_t DevAddress, uint32_t Trials);
-static void              I2Cx_Error(I2C_HandleTypeDef *i2c_handler, uint8_t Addr);
+//static void              I2Cx_Error(I2C_HandleTypeDef *i2c_handler, uint8_t Addr);
 
 void wm8978_CtrlGPIO1(uint8_t _ucValue);
 extern void (*I2S_DMA_TX_Callback)(void);		//I2S DMA TX回调函数指针  
@@ -128,16 +124,18 @@ extern void I2S_DMAConvCplt(DMA_HandleTypeDef *hdma);
 extern void I2Sxext_DMAConvCplt(DMA_HandleTypeDef *hdma);
 
 void I2S_GPIO_Config(void);
-void I2S_Start(void);
-void I2S_Stop(void);
+
 void I2Sx_Mode_Config(const uint16_t _usStandard, const uint16_t _usWordLen,const uint32_t _usAudioFreq);
 void I2Sx_TX_DMA_Init(const uint32_t buffer0,const uint32_t buffer1,const uint32_t num);
-void I2S_Play_Start(void);
+void I2S_Start(void);//I2s开始工作
+void I2S_Stop(void);
+void I2S_Play_Start(void);//I2s开始播放---适配暂停+继续播放功能
 void I2S_Play_Stop(void);
 extern void I2Sx_TX_DMA_STREAM_IRQFUN(void);
-extern void I2Sxext_RX_DMA_STREAM_IRQFUN(void);
+//extern void I2Sxext_RX_DMA_STREAM_IRQFUN(void);
+extern void I2Sx_RX_DMA_STREAM_IRQFUN(void);
 void I2Sxext_Mode_Config(const uint16_t _usStandard, const uint16_t _usWordLen,const uint32_t _usAudioFreq);
-void I2Sxext_RX_DMA_Init(const uint16_t *buffer0,const uint16_t *buffer1,const uint32_t num);
+void I2Sxext_RX_DMA_Init(uint32_t buffer0,uint32_t buffer1,const uint32_t num);
 void I2Sxext_Recorde_Start(void);
 void I2Sxext_Recorde_Stop(void);
 

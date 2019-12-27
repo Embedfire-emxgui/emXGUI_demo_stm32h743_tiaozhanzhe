@@ -5,12 +5,12 @@ Purpose :
 #ifndef __I2C_H__
 #define __I2C_H__
 /****************************** Includes *****************************/
-#include "stm32H7xx.h"
-#include "./usart/bsp_usart.h"
+#include "stm32h7xx.h"
+#include "board.h"
 /****************************** Defines *******************************/
 
 #define I2C_OWN_ADDRESS           0x00
-#define OV5640_DEVICE_ADDRESS     0x78
+
 
 //毫秒级延时(需要定时器支持)，或者重写Delay宏
 #define Delay 		HAL_Delay
@@ -56,14 +56,14 @@ Purpose :
 
 
 																			 
-void WM8978_I2cMaster_Init(void);
+void wm8978_I2cMaster_Init(void);
 unsigned short Get_I2C_Retry(void);
 																			 
-int WM8978_Sensors_I2C_ReadRegister(unsigned char slave_addr,
+int wm8978_Sensors_I2C_ReadRegister(unsigned char slave_addr,
                                        unsigned char reg_addr,
                                        unsigned short len, 
                                        unsigned char *data_ptr);
-int WM8978_Sensors_I2C_WriteRegister(unsigned char slave_addr,
+int wm8978_Sensors_I2C_WriteRegister(unsigned char slave_addr,
                                         unsigned char reg_addr,
                                         unsigned short len, 
                                         unsigned char *data_ptr);

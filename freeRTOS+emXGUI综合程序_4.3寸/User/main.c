@@ -115,11 +115,14 @@ static void BSP_Init(void)
 	
 	RTC_CLK_Config();
 	
-	/* wm8978 播放器初始化	*/
+	/* 检测WM8978芯片，此函数会自动配置CPU的GPIO */
 	if (wm8978_Init()==0)
-  {
-    printf("检测不到WM8978芯片!!!\n");
-  }
+	{
+		printf("检测不到WM8978芯片!!!\n");
+		while (1);	/* 停机 */
+	}
+	printf("WM8978芯片初始化成功\n");
+	
  
 	MODIFY_REG(FMC_Bank1->BTCR[0],FMC_BCR1_MBKEN,0); //关闭FMC_Bank1,不然LCD会闪.
 
@@ -173,7 +176,7 @@ static void GUI_Thread_Entry(void* parameter)
 {	
   
   printf("野火emXGUI演示例程\n\n");
-
+	vTaskDelay(100);//确保屏幕上电,能正常读取寄存器
   /* 执行本函数不会返回 */
 	GUI_Startup();
   

@@ -17,7 +17,7 @@
 #include "./i2c/i2c.h"
 
   
-I2C_HandleTypeDef WM8978_I2C_Handle;					
+I2C_HandleTypeDef wm8978_I2C_Handle;						
 /*******************************  Function ************************************/
 
 /**
@@ -25,7 +25,7 @@ I2C_HandleTypeDef WM8978_I2C_Handle;
   * @param  无
   * @retval 无
   */
-void WM8978_I2cMaster_Init(void) 
+void wm8978_I2cMaster_Init(void) 
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -48,7 +48,7 @@ void WM8978_I2cMaster_Init(void)
 	GPIO_InitStructure.Pin = SENSORS_I2C_SDA_GPIO_PIN;  
 	HAL_GPIO_Init(SENSORS_I2C_SDA_GPIO_PORT, &GPIO_InitStructure); 
 	
-	if(HAL_I2C_GetState(&WM8978_I2C_Handle) == HAL_I2C_STATE_RESET)
+	if(HAL_I2C_GetState(&wm8978_I2C_Handle) == HAL_I2C_STATE_RESET)
 	{	
 		/* 强制复位I2C外设时钟 */  
 		SENSORS_I2C_FORCE_RESET(); 
@@ -57,20 +57,20 @@ void WM8978_I2cMaster_Init(void)
 		SENSORS_I2C_RELEASE_RESET(); 
 		
 		/* I2C 配置 */
-		WM8978_I2C_Handle.Instance = SENSORS_I2C;
-		WM8978_I2C_Handle.Init.Timing           = 0x60201E2B;//100KHz
-		WM8978_I2C_Handle.Init.OwnAddress1      = 0;
-		WM8978_I2C_Handle.Init.AddressingMode   = I2C_ADDRESSINGMODE_7BIT;
-		WM8978_I2C_Handle.Init.DualAddressMode  = I2C_DUALADDRESS_DISABLE;
-		WM8978_I2C_Handle.Init.OwnAddress2      = 0;
-		WM8978_I2C_Handle.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
-		WM8978_I2C_Handle.Init.GeneralCallMode  = I2C_GENERALCALL_DISABLE;
-		WM8978_I2C_Handle.Init.NoStretchMode    = I2C_NOSTRETCH_DISABLE;
+		wm8978_I2C_Handle.Instance = SENSORS_I2C;
+		wm8978_I2C_Handle.Init.Timing           = 0x40604E73;//100KHz
+		wm8978_I2C_Handle.Init.OwnAddress1      = 0;
+		wm8978_I2C_Handle.Init.AddressingMode   = I2C_ADDRESSINGMODE_7BIT;
+		wm8978_I2C_Handle.Init.DualAddressMode  = I2C_DUALADDRESS_DISABLE;
+		wm8978_I2C_Handle.Init.OwnAddress2      = 0;
+		wm8978_I2C_Handle.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+		wm8978_I2C_Handle.Init.GeneralCallMode  = I2C_GENERALCALL_DISABLE;
+		wm8978_I2C_Handle.Init.NoStretchMode    = I2C_NOSTRETCH_DISABLE;
 
 		/* 初始化I2C */
-		HAL_I2C_Init(&WM8978_I2C_Handle);	
+		HAL_I2C_Init(&wm8978_I2C_Handle);	
 		/* 使能模拟滤波器 */
-		HAL_I2CEx_AnalogFilter_Config(&WM8978_I2C_Handle, I2C_ANALOGFILTER_ENABLE); 
+		HAL_I2CEx_AnalogFilter_Config(&wm8978_I2C_Handle, I2C_ANALOGFILTER_ENABLE); 
 	}
 }
 /**
@@ -78,12 +78,12 @@ void WM8978_I2cMaster_Init(void)
   * @param  Addr: I2C Address
   * @retval None
   */
-static void I2Cx_Error(uint8_t Addr)
+static void I2Cx_Error1(uint8_t Addr)
 {
 	/* 恢复I2C寄存器为默认值 */
-	HAL_I2C_DeInit(&WM8978_I2C_Handle); 
+	HAL_I2C_DeInit(&wm8978_I2C_Handle); 
 	/* 重新初始化I2C外设 */
-	WM8978_I2cMaster_Init();
+	wm8978_I2cMaster_Init();
 }
 /**
   * @brief  写寄存器，这是提供给上层的接口
@@ -93,27 +93,27 @@ static void I2Cx_Error(uint8_t Addr)
 	*	@param data_ptr:指向要写入的数据
   * @retval 正常为0，不正常为非0
   */
-int WM8978_Sensors_I2C_WriteRegister(unsigned char slave_addr,
+int Sensors_I2C_WriteRegister(unsigned char slave_addr,
                                         unsigned char reg_addr,
                                         unsigned short len, 
                                         unsigned char *data_ptr)
 {
 	HAL_StatusTypeDef status = HAL_OK;
-	status = HAL_I2C_Mem_Write(&WM8978_I2C_Handle, slave_addr, reg_addr, I2C_MEMADD_SIZE_8BIT,data_ptr, len,I2Cx_FLAG_TIMEOUT); 
+	status = HAL_I2C_Mem_Write(&wm8978_I2C_Handle, slave_addr, reg_addr, I2C_MEMADD_SIZE_8BIT,data_ptr, len,I2Cx_FLAG_TIMEOUT); 
 	/* 检查通讯状态 */
 	if(status != HAL_OK)
 	{
 		/* 总线出错处理 */
-		I2Cx_Error(slave_addr);
+		I2Cx_Error1(slave_addr);
 	}
-	while (HAL_I2C_GetState(&WM8978_I2C_Handle) != HAL_I2C_STATE_READY)
+	while (HAL_I2C_GetState(&wm8978_I2C_Handle) != HAL_I2C_STATE_READY)
 	{
 		
 	}
 	/* 检查SENSOR是否就绪进行下一次读写操作 */
-	while (HAL_I2C_IsDeviceReady(&WM8978_I2C_Handle, slave_addr, I2Cx_FLAG_TIMEOUT, I2Cx_FLAG_TIMEOUT) == HAL_TIMEOUT);
+	while (HAL_I2C_IsDeviceReady(&wm8978_I2C_Handle, slave_addr, I2Cx_FLAG_TIMEOUT, I2Cx_FLAG_TIMEOUT) == HAL_TIMEOUT);
 	/* 等待传输结束 */
-	while (HAL_I2C_GetState(&WM8978_I2C_Handle) != HAL_I2C_STATE_READY)
+	while (HAL_I2C_GetState(&wm8978_I2C_Handle) != HAL_I2C_STATE_READY)
 	{
 		
 	}
@@ -128,27 +128,27 @@ int WM8978_Sensors_I2C_WriteRegister(unsigned char slave_addr,
 	*	@param data_ptr:指向要存储数据的指针
   * @retval 正常为0，不正常为非0
   */
-int WM8978_Sensors_I2C_ReadRegister(unsigned char slave_addr,
+int Sensors_I2C_ReadRegister(unsigned char slave_addr,
                                        unsigned char reg_addr,
                                        unsigned short len, 
                                        unsigned char *data_ptr)
 {
 	HAL_StatusTypeDef status = HAL_OK;
-	status =HAL_I2C_Mem_Read(&WM8978_I2C_Handle,slave_addr,reg_addr,I2C_MEMADD_SIZE_8BIT,data_ptr,len,I2Cx_FLAG_TIMEOUT);    
+	status =HAL_I2C_Mem_Read(&wm8978_I2C_Handle,slave_addr,reg_addr,I2C_MEMADD_SIZE_8BIT,data_ptr,len,I2Cx_FLAG_TIMEOUT);    
 	/* 检查通讯状态 */
 	if(status != HAL_OK)
 	{
 		/* 总线出错处理 */
-		I2Cx_Error(slave_addr);
+		I2Cx_Error1(slave_addr);
 	}
-	while (HAL_I2C_GetState(&WM8978_I2C_Handle) != HAL_I2C_STATE_READY)
+	while (HAL_I2C_GetState(&wm8978_I2C_Handle) != HAL_I2C_STATE_READY)
 	{
 		
 	}
 	/* 检查SENSOR是否就绪进行下一次读写操作 */
-	while (HAL_I2C_IsDeviceReady(&WM8978_I2C_Handle, slave_addr, I2Cx_FLAG_TIMEOUT, I2Cx_FLAG_TIMEOUT) == HAL_TIMEOUT);
+	while (HAL_I2C_IsDeviceReady(&wm8978_I2C_Handle, slave_addr, I2Cx_FLAG_TIMEOUT, I2Cx_FLAG_TIMEOUT) == HAL_TIMEOUT);
 	/* 等待传输结束 */
-	while (HAL_I2C_GetState(&WM8978_I2C_Handle) != HAL_I2C_STATE_READY)
+	while (HAL_I2C_GetState(&wm8978_I2C_Handle) != HAL_I2C_STATE_READY)
 	{
 		
 	}

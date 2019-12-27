@@ -42,21 +42,23 @@
 
 static HMP3Decoder		Mp3Decoder;			/* mp3解码器指针	*/
 static MP3FrameInfo		Mp3_Frame_Info;		/* mP3帧信息  */
+
 MP3_TYPE mp3player;/* mp3播放设备 */
+
 static uint8_t Isread=0;           /* DMA传输完成标志 */
 static uint8_t bufflag=0;          /* 数据缓存区选择标志 */
 
 extern HFONT DEFAULT_FONT;
 uint32_t led_delay=0;
 
- uint8_t inputbuf[INPUTBUF_SIZE]	;//__EXRAM ;        /*__EXRAM 解码输入缓冲区，1940字节为最大MP3帧大小  */
- short outbuffer[2][MP3BUFFER_SIZE] ;//__EXRAM ;  /*__EXRAM 解码输出缓冲区，也是I2S输入数据，实际占用字节数：RECBUFFER_SIZE*2 */
+ uint8_t inputbuf[INPUTBUF_SIZE]	 ;        /*__EXRAM 解码输入缓冲区，1940字节为最大MP3帧大小  */
+ short outbuffer[2][MP3BUFFER_SIZE]  ;  /*__EXRAM 解码输出缓冲区，也是I2S输入数据，实际占用字节数：RECBUFFER_SIZE*2 */
 
 
 /*wav播放器*/
 REC_TYPE Recorder;          /* 录音设备 */
-uint16_t buffer0[RECBUFFER_SIZE] ;//__EXRAM ;  /*__EXRAM 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 */
-uint16_t buffer1[RECBUFFER_SIZE] ;//__EXRAM ;  /*__EXRAM 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
+uint16_t buffer0[RECBUFFER_SIZE] ;  /*__EXRAM 数据缓存区1 ，实际占用字节数：RECBUFFER_SIZE*2 */
+uint16_t buffer1[RECBUFFER_SIZE] ;  /*__EXRAM 数据缓存区2 ，实际占用字节数：RECBUFFER_SIZE*2 */
 static WavHead rec_wav;            /* WAV设备  */
 
 static FIL MP3_file;											/* file objects */
@@ -212,7 +214,7 @@ void mp3PlayerDemo(HWND hwnd,const char *mp3file, uint8_t vol,uint8_t vol_horn, 
   //获取ID3V2的大小，并偏移至该位置,拖到任意位置播放功能
 	ID3V2_size = mp3_GetID3V2_Size(inputbuf);
 	GUI_DEBUG("ID3V2_size :%d",ID3V2_size);
-	f_lseek(&MP3_file,ID3V2_size& ~0x3f);	
+	f_lseek(&MP3_file,ID3V2_size);	
 	
 	result=f_read(&MP3_file,inputbuf,INPUTBUF_SIZE,&bw);
 	if(result!=FR_OK)
@@ -359,8 +361,7 @@ void mp3PlayerDemo(HWND hwnd,const char *mp3file, uint8_t vol,uint8_t vol_horn, 
 					I2Sx_Mode_Config(I2S_STANDARD_PHILIPS,I2S_DATAFORMAT_16B,mp3player.ucFreq);						//根据采样率修改iis速率
 					I2Sx_TX_DMA_Init((uint32_t)&outbuffer[0],(uint32_t)&outbuffer[1],outputSamps);//MP3BUFFER_SIZE);
 				}
-//*				I2S_Start();
-				I2S_Play_Start();
+				I2S_Start();
 			}
 		}//else 解码正常
 		
@@ -485,20 +486,25 @@ void mp3PlayerDemo(HWND hwnd,const char *mp3file, uint8_t vol,uint8_t vol_horn, 
          else
          {
 					 if(chgsch_TouchUp == 1)
-					 {
-						 uint8_t temp=0;
+				  {
+						 uint8_t temp=0;	
+								 
 						 //根据进度条调整播放位置				
 						 temp=SendMessage(music_wnd_time, SBM_GETVALUE, NULL, NULL);        
+						 GUI_DEBUG("SendMessage temp : %d",temp);
 						 //计算进度条表示的时间
 						 time_sum = (float)alltime/255*temp*1000;  	
+											 GUI_DEBUG(" temp : %d",time_sum);
+
 						 //根据时间计算文件位置并跳转至该位置
 						 pos = ID3V2_size + (time_sum/26)*frame_size;
-						 result = f_lseek(&MP3_file,pos& ~0x3f);
+															 GUI_DEBUG(" pos : %ld",pos);
+						 result = f_lseek(&MP3_file,pos);
 						 lrc.oldtime=0;
 						 lyriccount=0;
-						 chgsch=0;      
+						 chgsch=0;  
 						 chgsch_TouchUp = 0;
-					 }
+					}
          }
 		}
 		Isread=0;
@@ -542,7 +548,7 @@ void wavplayer(const char *wavfile, uint8_t vol, HDC hdc, HWND hwnd)
 	{
 		mp3player.ucStatus = STA_IDLE;  /* 开始设置为空闲状态  */
 	}
-//	Recorder.ucFmtIdx=3;            /* 缺省飞利浦I2S标准，16bit数据长度，44K采样率  */
+	Recorder.ucFmtIdx=3;            /* 缺省飞利浦I2S标准，16bit数据长度，44K采样率 设置播放的音频采样率为44K */
 	Recorder.ucVolume=vol;          /* 缺省耳机音量  */
    
   DWORD pos;//记录文字变量
@@ -582,7 +588,7 @@ void wavplayer(const char *wavfile, uint8_t vol, HDC hdc, HWND hwnd)
       result = f_read(&MP3_file,(uint16_t *)buffer0,RECBUFFER_SIZE*2,&bw);
       result = f_read(&MP3_file,(uint16_t *)buffer1,RECBUFFER_SIZE*2,&bw);
       
-      Delay_ms(10);	/* 延迟一段时间，等待I2S中断结束 */			
+//      Delay_ms(10);	/* 延迟一段时间，等待I2S中断结束 */			
 			I2S_Play_Stop();
       wm8978_Reset();		/* 复位WM8978到复位状态 */	
       wm8978_CtrlGPIO1(1);
@@ -606,12 +612,11 @@ void wavplayer(const char *wavfile, uint8_t vol, HDC hdc, HWND hwnd)
       /* 调节音量，左右相同音量 30*/
       wm8978_SetOUT1Volume(Recorder.ucVolume);
       /* 配置WM8978音频接口为飞利浦标准I2S接口，16bit */
-			wm8978_CfgAudioIF(SAI_I2S_STANDARD, 16);  
-      
+			wm8978_CfgAudioIF(I2S_STANDARD_PHILIPS, 16);  
+      I2S_DMA_TX_Callback = MusicPlayer_I2S_DMA_TX_Callback;
 			I2Sx_Mode_Config(g_FmtList[Recorder.ucFmtIdx][0],g_FmtList[Recorder.ucFmtIdx][1],g_FmtList[Recorder.ucFmtIdx][2]);
       I2Sx_TX_DMA_Init((uint32_t)buffer0,(uint32_t)buffer1,RECBUFFER_SIZE);		
-//*      I2S_Start();
-			I2S_Play_Start();
+	    I2S_Start();
    }
    /* 进入主程序循环体 */
    while(mp3player.ucStatus == STA_PLAYING){
@@ -645,7 +650,7 @@ void wavplayer(const char *wavfile, uint8_t vol, HDC hdc, HWND hwnd)
          } 
          else
          {
-					 if(chgsch_TouchUp == 1)
+					 	if(chgsch_TouchUp == 1)
 					 {
 						 uint8_t temp=0;
 						
@@ -658,12 +663,12 @@ void wavplayer(const char *wavfile, uint8_t vol, HDC hdc, HWND hwnd)
 						 {
 							 pos+=temp-(pos-sizeof(WavHead))%temp;
 						 }        
-						 f_lseek(&MP3_file,pos& (~0x3f));
+						 f_lseek(&MP3_file,pos);
 						 lrc.oldtime=0;
 						 lyriccount=0;
 						 chgsch=0; 
 						 chgsch_TouchUp = 0;
-	  			 }					 
+					 }					 
          }
          timecount++;
          if(bufflag==0)
@@ -701,6 +706,7 @@ void wavplayer(const char *wavfile, uint8_t vol, HDC hdc, HWND hwnd)
    	 /* 停止I2S录音和放音 */
 	    I2Sxext_Recorde_Stop();
 	    I2S_Play_Stop();
+			I2S_Stop();
       wm8978_Reset();	/* 复位WM8978到复位状态 */
 			if(time2exit == 1)
 			{

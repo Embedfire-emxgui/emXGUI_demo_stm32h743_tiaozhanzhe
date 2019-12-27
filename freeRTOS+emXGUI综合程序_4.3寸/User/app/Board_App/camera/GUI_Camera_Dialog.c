@@ -1081,7 +1081,8 @@ static LRESULT	dlg_set_SpecialEffects_WinProc(HWND hwnd,UINT msg,WPARAM wParam,L
         }
         case eID_RB12:
         {
-          SetWindowText(GetDlgItem(CamDialog.SetWIN, eID_TB3), L"·º»Æ");break;
+          SetWindowText(GetDlgItem(CamDialog.SetWIN, eID_TB3), L"·º»Æ");
+					break;
         }
         case eID_RB13:
         {
