@@ -47,7 +47,6 @@ uint32_t g_FmtList[FMT_COUNT][3] =
 };
 
 //extern const uint16_t recplaybuf[4];//2个16位数据,用于录音时I2S Master发送.循环发送0.
-__EXRAM uint16_t recplaybuf[4]={0X0000,0X0000};
 /* 仅允许本文件内调用的函数声明 */
 
 void MusicPlayer_SAI_DMA_TX_Callback(void);

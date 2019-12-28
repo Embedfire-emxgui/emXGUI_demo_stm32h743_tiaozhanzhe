@@ -689,7 +689,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
          BaseType_t xReturn = pdPASS;/* 定义一个创建信息返回值，默认为pdPASS */
          xReturn = xTaskCreate((TaskFunction_t )(void(*)(void*))App_PlayRecord,  /* 任务入口函数 */
                             (const char*    )"App_PlayMusic",          /* 任务名字 */
-                            (uint16_t       )8*1024/4,                   /* 任务栈大小FreeRTOS的任务栈以字为单位 */
+                            (uint16_t       )4*1024,                   /* 任务栈大小FreeRTOS的任务栈以字为单位 */
                             (void*          )hwnd,                     /* 任务入口函数参数 */
                             (UBaseType_t    )5,                        /* 任务的优先级 */
                             (TaskHandle_t  )&h_play_record);           /* 任务控制块指针 */
@@ -701,7 +701,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                             
         xReturn = xTaskCreate((TaskFunction_t )(void(*)(void*))App_Record,  /* 任务入口函数 */
                             (const char*    )"Record Task",       /* 任务名字 */
-                            (uint16_t       )4*1024/4,              /* 任务栈大小FreeRTOS的任务栈以字为单位 */
+                            (uint16_t       )2*1024,              /* 任务栈大小FreeRTOS的任务栈以字为单位 */
                             (void*          )NULL,                /* 任务入口函数参数 */
                             (UBaseType_t    )5,                   /* 任务的优先级 */
                             (TaskHandle_t  )&h_record);           /* 任务控制块指针 */
@@ -919,14 +919,14 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
             case ID_RECORD_STOP:
             {
-              vTaskSuspend(h_play_record);            // 挂起录音任务
+              vTaskSuspend(h_record);            // 挂起录音任务
               KillTimer(hwnd, ID_Record_Timer);       // 删除录音计时定时器
               Record_Timer = 0;
               SetWindowText(GetDlgItem(hwnd, ID_RECORD_TIME), L"00:00");
               /* 对于录音，需要把WAV文件内容填充完整 */
               if(Recorder.ucStatus == STA_RECORDING)
               {
-                I2Sxext_Recorde_Start();
+                I2Sxext_Recorde_Stop();
                 I2S_Play_Stop();
                 rec_wav.size_8=wavsize+36;
                 rec_wav.datasize=wavsize;
@@ -937,7 +937,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
               }
               //ucRefresh = 1;
               Recorder.ucStatus = STA_IDLE;		/* 待机状态 */
-              I2S_Play_Stop();		/* 停止SAI录音和放音 */
+              I2S_Stop();		/* 停止SAI录音和放音 */
               wm8978_Reset();	/* 复位WM8978到复位状态 */
               
               /* 文件记录处理 */		

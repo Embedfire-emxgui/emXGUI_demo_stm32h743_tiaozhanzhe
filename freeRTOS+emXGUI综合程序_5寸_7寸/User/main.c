@@ -228,4 +228,49 @@ static void MPU_Config(void)
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
 
+#if 0
+/* FreeRTOS任务debug */
+static void DEBUG_Thread_Entry(void* parameter)
+{
+	while(1)
+	{
+				char tasks_buf[512] = {0};
+			
+		{
+			memset(tasks_buf, 0, 512);
+
+			strcat((char *)tasks_buf, "任务名称\t运行计数\t使用率\r\n" );
+
+			strcat((char *)tasks_buf, "---------------------------------------------\r\n");
+
+			/* displays the amount of time each task has spent in the Running state
+
+			* in both absolute and percentage terms. */
+
+			vTaskGetRunTimeStats((char *)(tasks_buf + strlen(tasks_buf)));
+
+			strcat((char *)tasks_buf, "\r\n");
+			printf("%s\r\n",tasks_buf);
+			
+		}
+			memset(tasks_buf, 0, 512);
+
+			strcat((char *)tasks_buf, "任务名称\t运行状态\t优先级\t剩余堆栈\t任务序号\r\n" );
+
+			strcat((char *)tasks_buf, "---------------------------------------------\r\n");
+
+
+		{
+			vTaskList((char *)(tasks_buf + strlen(tasks_buf)));
+
+			strcat((char *)tasks_buf, "\r\n---------------------------------------------\r\n");
+
+
+			strcat((char *)tasks_buf, "B : 阻塞, R : 就绪, D : 删除, S : 暂停\r\n");
+			printf("%s\r\n",tasks_buf);
+		}
+		vTaskDelay(1000);
+	}
+}
+#endif
 /********************************END OF FILE****************************/
