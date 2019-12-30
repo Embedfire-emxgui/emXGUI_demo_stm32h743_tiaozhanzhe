@@ -873,7 +873,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                   RC.x = (GUI_XSIZE - RC.w) >> 1;
                   RC.y = (GUI_YSIZE - RC.h) >> 1;
                   SelectDialogBox(hwnd, RC, L"没有检测到SD卡\n请确认SD已插入。", L"错误", &ops);    // 显示错误提示框
-                  break;
+                  break;   /* 多次出现检测不到SD卡，需要重新格式化SD卡再使用 */
                 }
                 f_mkdir(RECORDERDIR);
                 result = f_opendir(&dir,RECORDERDIR);
