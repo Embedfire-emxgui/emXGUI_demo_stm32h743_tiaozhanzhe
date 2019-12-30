@@ -120,7 +120,7 @@ DRESULT SD_read(BYTE lun,//物理扇区，多个设备时用到(0...)
     return res;
   }
   
-    GUI_MutexLock(mutex_lock,0xffffff);
+//    GUI_MutexLock(mutex_lock,0xffffff);
 	 	for(i=0;i<count;i++)
 		{
 		 	res = SD_ReadBlocks((BYTE *)pbuff,sector+i,1);//单个sector的读操作

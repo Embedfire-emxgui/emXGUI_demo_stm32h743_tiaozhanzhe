@@ -791,6 +791,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
               I2S_Play_Start();
               play_index = SendMessage(GetDlgItem(hwnd, ID_RECORD_LIST), LB_GETCURSEL,0,0);    // 获得当前选中项
               mp3player.ucStatus = STA_SWITCH;
+							GUI_msleep(100);
             }
             break;
             
@@ -816,6 +817,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
               I2S_Play_Start();
               play_index = SendMessage(GetDlgItem(hwnd, ID_RECORD_LIST), LB_GETCURSEL,0,0);    // 获得当前选中项
               mp3player.ucStatus = STA_SWITCH;
+							GUI_msleep(100);
             }
             break;
             
@@ -841,6 +843,7 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 								SetWindowText(wnd, L"U");
 								EnableWindow(GetDlgItem(hwnd, ID_RECORD_START), DISABLE);     // 禁用开始录音按钮
 							}
+							GUI_msleep(500);
             }
             break;
             
