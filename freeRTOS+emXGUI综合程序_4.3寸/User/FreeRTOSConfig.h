@@ -227,7 +227,7 @@
           FreeRTOS与运行时间和任务状态收集有关的配置选项   
 **********************************************************************/
 //启用运行时间统计功能
-#define configGENERATE_RUN_TIME_STATS	        0             
+#define configGENERATE_RUN_TIME_STATS	        1             
  //启用可视化跟踪调试
 #define configUSE_TRACE_FACILITY				      1  
 /* 与宏configUSE_TRACE_FACILITY同时为1时会编译下面3个函数

@@ -65,7 +65,7 @@ static void GUI_Thread_Entry(void* pvParameters);/* Test_Task任务实现 */
 static void MPU_Config(void);
 static void SystemClock_Config(void);
 static void BSP_Init(void);/* 用于初始化板载相关资源 */
-
+static void GUI_Thread(void* parameter);
 
 /***********************************************************************
   * @ 函数名  ： BSP_Init
@@ -154,6 +154,13 @@ int main(void)
                         (void*          )NULL,/* 任务入口函数参数 */
                         (UBaseType_t    )10, /* 任务的优先级 */
                         (TaskHandle_t*  )NULL);/* 任务控制块指针 */ 
+
+xReturn = xTaskCreate((TaskFunction_t )GUI_Thread,  /* 任务入口函数 */
+                        (const char*    )"guixx",/* 任务名字 */
+                        (uint16_t       )1*1024,  /* 任务栈大小 */
+                        (void*          )NULL,/* 任务入口函数参数 */
+                        (UBaseType_t    )7, /* 任务的优先级 */
+                        (TaskHandle_t*  )NULL);/* 任务控制块指针 */ 
   /* 启动任务调度 */           
   if(pdPASS == xReturn)
     vTaskStartScheduler();   /* 启动任务，开启调度 */
@@ -192,6 +199,50 @@ static void GUI_Thread_Entry(void* parameter)
   }
 }
 
+
+static void GUI_Thread(void* parameter)
+{
+	char tasks_buf[512] = {0};
+	while(1)
+	{
+//		{
+//			memset(tasks_buf, 0, 512);
+
+//			strcat((char *)tasks_buf, "任务名称\t运行计数\t使用率\r\n" );
+
+//			strcat((char *)tasks_buf, "---------------------------------------------\r\n");
+
+//			/* displays the amount of time each task has spent in the Running state
+
+//			* in both absolute and percentage terms. */
+
+//			vTaskGetRunTimeStats((char *)(tasks_buf + strlen(tasks_buf)));
+
+//			strcat((char *)tasks_buf, "\r\n");
+//			printf("%s\r\n",tasks_buf);
+//			
+//		}
+//			memset(tasks_buf, 0, 512);
+
+//			strcat((char *)tasks_buf, "任务名称\t运行状态\t优先级\t剩余堆栈\t任务序号\r\n" );
+
+//			strcat((char *)tasks_buf, "---------------------------------------------\r\n");
+
+
+//		{
+//			vTaskList((char *)(tasks_buf + strlen(tasks_buf)));
+
+//			strcat((char *)tasks_buf, "\r\n---------------------------------------------\r\n");
+
+
+//			strcat((char *)tasks_buf, "B : 阻塞, R : 就绪, D : 删除, S : 暂停\r\n");
+//			printf("%s\r\n",tasks_buf);
+//		}
+		
+		vTaskDelay(500);;
+	}
+		
+}
 
 static void MPU_Config(void)
 {

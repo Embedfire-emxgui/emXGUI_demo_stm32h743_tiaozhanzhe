@@ -1685,6 +1685,76 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>tutorial/video_player</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_VEDIOPLAYER_DIALOG.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\video_player\GUI_VEDIOPLAYER_DIALOG.c</FilePath>
+            </File>
+            <File>
+              <FileName>Backend_vidoplayer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\video_player\Backend_vidoplayer.c</FilePath>
+            </File>
+            <File>
+              <FileName>Backend_avifile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\video_player\Backend_avifile.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/camera</GroupName>
+          <Files>
+            <File>
+              <FileName>bsp_ov5640.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\camera\bsp_ov5640.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_ov5640_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\camera\bsp_ov5640_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUI_Camera_Dialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\camera\GUI_Camera_Dialog.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUI_Camera_QRCode_Dialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\camera\GUI_Camera_QRCode_Dialog.c</FilePath>
+            </File>
+            <File>
+              <FileName>ov5640_AF.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\camera\ov5640_AF.c</FilePath>
+            </File>
+            <File>
+              <FileName>QR_Core.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\User\app\Board_App\camera\QR_Decoder\QR_Core.lib</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tutorial/lwip</GroupName>
+          <Files>
+            <File>
+              <FileName>GUI_Network_Dialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\NetworkDLG\GUI_Network_Dialog.c</FilePath>
+            </File>
+            <File>
+              <FileName>LAN8720A.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\app\Board_App\NetworkDLG\bsp\LAN8720A\LAN8720A.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>tutorial/gyro</GroupName>
           <Files>
             <File>
@@ -1786,86 +1856,6 @@
               <FileName>libmpllib.lib</FileName>
               <FileType>4</FileType>
               <FilePath>..\..\User\app\Board_App\gyro\mpu6050\mpl\libmpllib_Keil_M4\libmpllib.lib</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>tutorial/video_player</GroupName>
-          <Files>
-            <File>
-              <FileName>GUI_VEDIOPLAYER_DIALOG.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\app\Board_App\video_player\GUI_VEDIOPLAYER_DIALOG.c</FilePath>
-            </File>
-            <File>
-              <FileName>Backend_vidoplayer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\app\Board_App\video_player\Backend_vidoplayer.c</FilePath>
-            </File>
-            <File>
-              <FileName>Backend_avifile.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\app\Board_App\video_player\Backend_avifile.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>DOC</GroupName>
-          <Files>
-            <File>
-              <FileName>必读说明.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\必读说明.txt</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>tutorial/camera</GroupName>
-          <Files>
-            <File>
-              <FileName>bsp_ov5640.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\app\Board_App\camera\bsp_ov5640.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_ov5640_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\app\Board_App\camera\bsp_ov5640_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>GUI_Camera_Dialog.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\app\Board_App\camera\GUI_Camera_Dialog.c</FilePath>
-            </File>
-            <File>
-              <FileName>GUI_Camera_QRCode_Dialog.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\app\Board_App\camera\GUI_Camera_QRCode_Dialog.c</FilePath>
-            </File>
-            <File>
-              <FileName>ov5640_AF.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\app\Board_App\camera\ov5640_AF.c</FilePath>
-            </File>
-            <File>
-              <FileName>QR_Core.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\..\User\app\Board_App\camera\QR_Decoder\QR_Core.lib</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>tutorial/lwip</GroupName>
-          <Files>
-            <File>
-              <FileName>GUI_Network_Dialog.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\app\Board_App\NetworkDLG\GUI_Network_Dialog.c</FilePath>
-            </File>
-            <File>
-              <FileName>LAN8720A.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\app\Board_App\NetworkDLG\bsp\LAN8720A\LAN8720A.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2141,6 +2131,16 @@
               <FileName>udp_echoserver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\app\Board_App\NetworkDLG\lwipapp\udp_echoserver.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DOC</GroupName>
+          <Files>
+            <File>
+              <FileName>必读说明.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\必读说明.txt</FilePath>
             </File>
           </Files>
         </Group>

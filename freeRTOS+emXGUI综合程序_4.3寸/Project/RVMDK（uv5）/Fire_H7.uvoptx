@@ -1553,7 +1553,7 @@
 
   <Group>
     <GroupName>Fafts</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1713,7 +1713,7 @@
 
   <Group>
     <GroupName>freeRTOS/port</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3017,7 +3017,7 @@
 
   <Group>
     <GroupName>tutorial/rgb_led</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3069,7 +3069,7 @@
 
   <Group>
     <GroupName>tutorial/LED&amp;KEY</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3141,7 +3141,7 @@
 
   <Group>
     <GroupName>tutorial/adc</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3173,7 +3173,7 @@
 
   <Group>
     <GroupName>tutorial/dth11</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3280,7 +3280,7 @@
   </Group>
 
   <Group>
-    <GroupName>tutorial/gyro</GroupName>
+    <GroupName>tutorial/video_player</GroupName>
     <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
@@ -3292,8 +3292,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\gyro\GUI_Gyro_Dialog.c</PathWithFileName>
-      <FilenameWithoutPath>GUI_Gyro_Dialog.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\User\app\Board_App\video_player\GUI_VEDIOPLAYER_DIALOG.c</PathWithFileName>
+      <FilenameWithoutPath>GUI_VEDIOPLAYER_DIALOG.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -3304,14 +3304,170 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\gyro\mpu6050\bsp_mpu_exti.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_mpu_exti.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\User\app\Board_App\video_player\Backend_vidoplayer.c</PathWithFileName>
+      <FilenameWithoutPath>Backend_vidoplayer.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>31</GroupNumber>
       <FileNumber>234</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\video_player\Backend_avifile.c</PathWithFileName>
+      <FilenameWithoutPath>Backend_avifile.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+  </Group>
+
+  <Group>
+    <GroupName>tutorial/camera</GroupName>
+    <tvExp>0</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>32</GroupNumber>
+      <FileNumber>235</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\camera\bsp_ov5640.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_ov5640.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>32</GroupNumber>
+      <FileNumber>236</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\camera\bsp_ov5640_i2c.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_ov5640_i2c.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>32</GroupNumber>
+      <FileNumber>237</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\camera\GUI_Camera_Dialog.c</PathWithFileName>
+      <FilenameWithoutPath>GUI_Camera_Dialog.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>32</GroupNumber>
+      <FileNumber>238</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\camera\GUI_Camera_QRCode_Dialog.c</PathWithFileName>
+      <FilenameWithoutPath>GUI_Camera_QRCode_Dialog.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>32</GroupNumber>
+      <FileNumber>239</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\camera\ov5640_AF.c</PathWithFileName>
+      <FilenameWithoutPath>ov5640_AF.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>32</GroupNumber>
+      <FileNumber>240</FileNumber>
+      <FileType>4</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\camera\QR_Decoder\QR_Core.lib</PathWithFileName>
+      <FilenameWithoutPath>QR_Core.lib</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+  </Group>
+
+  <Group>
+    <GroupName>tutorial/lwip</GroupName>
+    <tvExp>0</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>33</GroupNumber>
+      <FileNumber>241</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\NetworkDLG\GUI_Network_Dialog.c</PathWithFileName>
+      <FilenameWithoutPath>GUI_Network_Dialog.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>33</GroupNumber>
+      <FileNumber>242</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\NetworkDLG\bsp\LAN8720A\LAN8720A.c</PathWithFileName>
+      <FilenameWithoutPath>LAN8720A.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+  </Group>
+
+  <Group>
+    <GroupName>tutorial/gyro</GroupName>
+    <tvExp>0</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>34</GroupNumber>
+      <FileNumber>243</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\gyro\GUI_Gyro_Dialog.c</PathWithFileName>
+      <FilenameWithoutPath>GUI_Gyro_Dialog.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>34</GroupNumber>
+      <FileNumber>244</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\User\app\Board_App\gyro\mpu6050\bsp_mpu_exti.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_mpu_exti.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>34</GroupNumber>
+      <FileNumber>245</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3330,8 +3486,8 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>32</GroupNumber>
-      <FileNumber>235</FileNumber>
+      <GroupNumber>35</GroupNumber>
+      <FileNumber>246</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3342,8 +3498,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>32</GroupNumber>
-      <FileNumber>236</FileNumber>
+      <GroupNumber>35</GroupNumber>
+      <FileNumber>247</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3354,8 +3510,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>32</GroupNumber>
-      <FileNumber>237</FileNumber>
+      <GroupNumber>35</GroupNumber>
+      <FileNumber>248</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3366,8 +3522,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>32</GroupNumber>
-      <FileNumber>238</FileNumber>
+      <GroupNumber>35</GroupNumber>
+      <FileNumber>249</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3386,8 +3542,8 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>33</GroupNumber>
-      <FileNumber>239</FileNumber>
+      <GroupNumber>36</GroupNumber>
+      <FileNumber>250</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3398,8 +3554,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>33</GroupNumber>
-      <FileNumber>240</FileNumber>
+      <GroupNumber>36</GroupNumber>
+      <FileNumber>251</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3410,8 +3566,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>33</GroupNumber>
-      <FileNumber>241</FileNumber>
+      <GroupNumber>36</GroupNumber>
+      <FileNumber>252</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3422,8 +3578,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>33</GroupNumber>
-      <FileNumber>242</FileNumber>
+      <GroupNumber>36</GroupNumber>
+      <FileNumber>253</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3434,8 +3590,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>33</GroupNumber>
-      <FileNumber>243</FileNumber>
+      <GroupNumber>36</GroupNumber>
+      <FileNumber>254</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3446,8 +3602,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>33</GroupNumber>
-      <FileNumber>244</FileNumber>
+      <GroupNumber>36</GroupNumber>
+      <FileNumber>255</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3458,8 +3614,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>33</GroupNumber>
-      <FileNumber>245</FileNumber>
+      <GroupNumber>36</GroupNumber>
+      <FileNumber>256</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3470,8 +3626,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>33</GroupNumber>
-      <FileNumber>246</FileNumber>
+      <GroupNumber>36</GroupNumber>
+      <FileNumber>257</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3482,8 +3638,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>33</GroupNumber>
-      <FileNumber>247</FileNumber>
+      <GroupNumber>36</GroupNumber>
+      <FileNumber>258</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3502,8 +3658,8 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>34</GroupNumber>
-      <FileNumber>248</FileNumber>
+      <GroupNumber>37</GroupNumber>
+      <FileNumber>259</FileNumber>
       <FileType>4</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3516,190 +3672,14 @@
   </Group>
 
   <Group>
-    <GroupName>tutorial/video_player</GroupName>
-    <tvExp>1</tvExp>
-    <tvExpOptDlg>0</tvExpOptDlg>
-    <cbSel>0</cbSel>
-    <RteFlg>0</RteFlg>
-    <File>
-      <GroupNumber>35</GroupNumber>
-      <FileNumber>249</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\video_player\GUI_VEDIOPLAYER_DIALOG.c</PathWithFileName>
-      <FilenameWithoutPath>GUI_VEDIOPLAYER_DIALOG.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>35</GroupNumber>
-      <FileNumber>250</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\video_player\Backend_vidoplayer.c</PathWithFileName>
-      <FilenameWithoutPath>Backend_vidoplayer.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>35</GroupNumber>
-      <FileNumber>251</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\video_player\Backend_avifile.c</PathWithFileName>
-      <FilenameWithoutPath>Backend_avifile.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-  </Group>
-
-  <Group>
-    <GroupName>DOC</GroupName>
+    <GroupName>LwIP/arch</GroupName>
     <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>36</GroupNumber>
-      <FileNumber>252</FileNumber>
-      <FileType>5</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\必读说明.txt</PathWithFileName>
-      <FilenameWithoutPath>必读说明.txt</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-  </Group>
-
-  <Group>
-    <GroupName>tutorial/camera</GroupName>
-    <tvExp>1</tvExp>
-    <tvExpOptDlg>0</tvExpOptDlg>
-    <cbSel>0</cbSel>
-    <RteFlg>0</RteFlg>
-    <File>
-      <GroupNumber>37</GroupNumber>
-      <FileNumber>253</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\camera\bsp_ov5640.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_ov5640.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>37</GroupNumber>
-      <FileNumber>254</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\camera\bsp_ov5640_i2c.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_ov5640_i2c.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>37</GroupNumber>
-      <FileNumber>255</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\camera\GUI_Camera_Dialog.c</PathWithFileName>
-      <FilenameWithoutPath>GUI_Camera_Dialog.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>37</GroupNumber>
-      <FileNumber>256</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\camera\GUI_Camera_QRCode_Dialog.c</PathWithFileName>
-      <FilenameWithoutPath>GUI_Camera_QRCode_Dialog.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>37</GroupNumber>
-      <FileNumber>257</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\camera\ov5640_AF.c</PathWithFileName>
-      <FilenameWithoutPath>ov5640_AF.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>37</GroupNumber>
-      <FileNumber>258</FileNumber>
-      <FileType>4</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\camera\QR_Decoder\QR_Core.lib</PathWithFileName>
-      <FilenameWithoutPath>QR_Core.lib</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-  </Group>
-
-  <Group>
-    <GroupName>tutorial/lwip</GroupName>
-    <tvExp>1</tvExp>
-    <tvExpOptDlg>0</tvExpOptDlg>
-    <cbSel>0</cbSel>
-    <RteFlg>0</RteFlg>
-    <File>
-      <GroupNumber>38</GroupNumber>
-      <FileNumber>259</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\NetworkDLG\GUI_Network_Dialog.c</PathWithFileName>
-      <FilenameWithoutPath>GUI_Network_Dialog.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
       <GroupNumber>38</GroupNumber>
       <FileNumber>260</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\User\app\Board_App\NetworkDLG\bsp\LAN8720A\LAN8720A.c</PathWithFileName>
-      <FilenameWithoutPath>LAN8720A.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-  </Group>
-
-  <Group>
-    <GroupName>LwIP/arch</GroupName>
-    <tvExp>1</tvExp>
-    <tvExpOptDlg>0</tvExpOptDlg>
-    <cbSel>0</cbSel>
-    <RteFlg>0</RteFlg>
-    <File>
-      <GroupNumber>39</GroupNumber>
-      <FileNumber>261</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3710,8 +3690,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>39</GroupNumber>
-      <FileNumber>262</FileNumber>
+      <GroupNumber>38</GroupNumber>
+      <FileNumber>261</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3730,8 +3710,8 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>40</GroupNumber>
-      <FileNumber>263</FileNumber>
+      <GroupNumber>39</GroupNumber>
+      <FileNumber>262</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3742,8 +3722,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>40</GroupNumber>
-      <FileNumber>264</FileNumber>
+      <GroupNumber>39</GroupNumber>
+      <FileNumber>263</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3754,8 +3734,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>40</GroupNumber>
-      <FileNumber>265</FileNumber>
+      <GroupNumber>39</GroupNumber>
+      <FileNumber>264</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3766,8 +3746,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>40</GroupNumber>
-      <FileNumber>266</FileNumber>
+      <GroupNumber>39</GroupNumber>
+      <FileNumber>265</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3778,8 +3758,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>40</GroupNumber>
-      <FileNumber>267</FileNumber>
+      <GroupNumber>39</GroupNumber>
+      <FileNumber>266</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3790,8 +3770,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>40</GroupNumber>
-      <FileNumber>268</FileNumber>
+      <GroupNumber>39</GroupNumber>
+      <FileNumber>267</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3802,8 +3782,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>40</GroupNumber>
-      <FileNumber>269</FileNumber>
+      <GroupNumber>39</GroupNumber>
+      <FileNumber>268</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3814,8 +3794,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>40</GroupNumber>
-      <FileNumber>270</FileNumber>
+      <GroupNumber>39</GroupNumber>
+      <FileNumber>269</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3826,8 +3806,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>40</GroupNumber>
-      <FileNumber>271</FileNumber>
+      <GroupNumber>39</GroupNumber>
+      <FileNumber>270</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3846,8 +3826,8 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>272</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>271</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3858,8 +3838,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>273</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>272</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3870,8 +3850,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>274</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>273</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3882,8 +3862,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>275</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>274</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3894,8 +3874,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>276</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>275</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3906,8 +3886,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>277</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>276</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3918,8 +3898,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>278</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>277</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3930,8 +3910,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>279</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>278</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3942,8 +3922,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>280</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>279</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3954,8 +3934,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>281</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>280</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3966,8 +3946,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>282</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>281</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3978,8 +3958,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>283</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>282</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3990,8 +3970,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>284</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>283</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4002,8 +3982,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>285</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>284</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4014,8 +3994,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>286</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>285</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4026,8 +4006,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>287</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>286</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4038,8 +4018,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>288</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>287</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4050,8 +4030,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>289</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>288</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4062,8 +4042,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>290</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>289</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4074,8 +4054,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>291</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>290</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4086,8 +4066,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>292</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>291</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4098,8 +4078,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>293</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>292</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4110,8 +4090,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>294</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>293</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4122,8 +4102,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>295</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>294</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4134,8 +4114,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>296</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>295</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4146,8 +4126,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>297</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>296</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4158,8 +4138,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>298</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>297</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4170,8 +4150,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>41</GroupNumber>
-      <FileNumber>299</FileNumber>
+      <GroupNumber>40</GroupNumber>
+      <FileNumber>298</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4190,8 +4170,8 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>42</GroupNumber>
-      <FileNumber>300</FileNumber>
+      <GroupNumber>41</GroupNumber>
+      <FileNumber>299</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4202,8 +4182,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>42</GroupNumber>
-      <FileNumber>301</FileNumber>
+      <GroupNumber>41</GroupNumber>
+      <FileNumber>300</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4214,8 +4194,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>42</GroupNumber>
-      <FileNumber>302</FileNumber>
+      <GroupNumber>41</GroupNumber>
+      <FileNumber>301</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4226,8 +4206,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>42</GroupNumber>
-      <FileNumber>303</FileNumber>
+      <GroupNumber>41</GroupNumber>
+      <FileNumber>302</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4238,8 +4218,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>42</GroupNumber>
-      <FileNumber>304</FileNumber>
+      <GroupNumber>41</GroupNumber>
+      <FileNumber>303</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4250,8 +4230,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>42</GroupNumber>
-      <FileNumber>305</FileNumber>
+      <GroupNumber>41</GroupNumber>
+      <FileNumber>304</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4270,8 +4250,8 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>43</GroupNumber>
-      <FileNumber>306</FileNumber>
+      <GroupNumber>42</GroupNumber>
+      <FileNumber>305</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4282,8 +4262,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>43</GroupNumber>
-      <FileNumber>307</FileNumber>
+      <GroupNumber>42</GroupNumber>
+      <FileNumber>306</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4294,8 +4274,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>43</GroupNumber>
-      <FileNumber>308</FileNumber>
+      <GroupNumber>42</GroupNumber>
+      <FileNumber>307</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4306,8 +4286,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>43</GroupNumber>
-      <FileNumber>309</FileNumber>
+      <GroupNumber>42</GroupNumber>
+      <FileNumber>308</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4318,14 +4298,34 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>43</GroupNumber>
-      <FileNumber>310</FileNumber>
+      <GroupNumber>42</GroupNumber>
+      <FileNumber>309</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\User\app\Board_App\NetworkDLG\lwipapp\udp_echoserver.c</PathWithFileName>
       <FilenameWithoutPath>udp_echoserver.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+  </Group>
+
+  <Group>
+    <GroupName>DOC</GroupName>
+    <tvExp>0</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>43</GroupNumber>
+      <FileNumber>310</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\必读说明.txt</PathWithFileName>
+      <FilenameWithoutPath>必读说明.txt</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

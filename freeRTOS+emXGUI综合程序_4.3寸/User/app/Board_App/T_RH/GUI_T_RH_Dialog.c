@@ -170,8 +170,8 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       /* 温度数值显示 */
       rc.w = 62;
       rc.h = 46;
-      rc.x = 317;
-      rc.y = 75;
+      rc.x = 335;
+      rc.y = 83;
       
       x_wsprintf(wbuf, L"%d.%d", DHT11_Data.temp_int,DHT11_Data.temp_deci);
       SetTextColor(hdc, MapRGB(hdc, 250, 250, 250));
@@ -179,9 +179,9 @@ static LRESULT win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式)
 
       /* 显示湿度数值 *///defaultFont
-      rc.y = 146;
+      rc.y = 155;
       rc.w = 36;
-      rc.x = 326;
+      rc.x = 345;
       x_wsprintf(wbuf, L"%d", DHT11_Data.humi_int);//.%d//,DHT11_Data.humi_deci
       DrawText(hdc, wbuf, -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式)
 

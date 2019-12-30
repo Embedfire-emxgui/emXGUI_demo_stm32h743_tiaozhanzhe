@@ -164,7 +164,7 @@ struct __obj_list menu_list_1[] = {
 			L"设置",        	NULL,	  L"h",   RGB_WHITE,				(void(*)(void *))GUI_Settings_DIALOG,
  			L"以太网",	     	NULL,	  L"Q",   RGB_WHITE,				(void(*)(void *))GUI_NetworkDLG_Dialog,//dummy,
 //				
-			L"游戏",        	NULL,	  L"S",   RGB_WHITE,				(void(*)(void *))dummy,
+//			L"游戏",        	NULL,	  L"S",   RGB_WHITE,				(void(*)(void *))dummy,
 //      //L"模拟U盘",   	NULL,	  L"N",   RGB_WHITE,				dummy,       
 //      //L"WiFi",	    	NULL,	  L"P",   RGB_WHITE,				dummy,
       L"电话",	        NULL, 	L"T",   RGB_WHITE,				(void(*)(void *))GUI_Phone_Dialog,
@@ -284,15 +284,15 @@ static	LRESULT	WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 //        menu_list_1[11].bmp = bmp_icon[bmp_sudish_icon];
         menu_list_1[11].bmp = bmp_icon[bmp_entwork_icon];
 				
-				menu_list_1[12].bmp = bmp_icon[bmp_game_icon];
-        menu_list_1[13].bmp = bmp_icon[bmp_phone_icon];
-        menu_list_1[14].bmp = bmp_icon[bmp_note_icon];
-        menu_list_1[15].bmp = bmp_icon[bmp_QRcode_icon];
+//				menu_list_1[12].bmp = bmp_icon[bmp_game_icon];
+        menu_list_1[12].bmp = bmp_icon[bmp_phone_icon];
+        menu_list_1[13].bmp = bmp_icon[bmp_note_icon];
+        menu_list_1[14].bmp = bmp_icon[bmp_QRcode_icon];
 				
-        menu_list_1[16].bmp = bmp_icon[bmp_record_icon];
-        menu_list_1[17].bmp = bmp_icon[bmp_widget_icon];
-        menu_list_1[18].bmp = bmp_icon[bmp_beeper_icon];
-				menu_list_1[19].bmp = bmp_icon[bmp_keyled_icon];
+        menu_list_1[15].bmp = bmp_icon[bmp_record_icon];
+        menu_list_1[16].bmp = bmp_icon[bmp_widget_icon];
+        menu_list_1[17].bmp = bmp_icon[bmp_beeper_icon];
+				menu_list_1[18].bmp = bmp_icon[bmp_keyled_icon];
 //        menu_list_1[19].bmp = bmp_icon[bmp_flash_icon];
 
               //ListMenu控件，需要在创建时传入一个 list_menu_cfg_t 的结构体参数.
