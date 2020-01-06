@@ -64,7 +64,7 @@
 /* ETH_RMII_TXD1 */
 #define ETH_RMII_TXD1_GPIO_CLK_ENABLE()     __GPIOG_CLK_ENABLE();
 #define ETH_RMII_TXD1_PORT                  GPIOG
-#define ETH_RMII_TXD1_PIN                   GPIO_PIN_12
+#define ETH_RMII_TXD1_PIN                   GPIO_PIN_14
 #define ETH_RMII_TXD1_AF                    GPIO_AF11_ETH
 
 //MACµÿ÷∑

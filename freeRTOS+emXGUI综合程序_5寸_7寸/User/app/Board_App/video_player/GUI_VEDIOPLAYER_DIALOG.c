@@ -8,8 +8,8 @@
 #include <string.h>
 #include "Backend_vidoplayer.h"
 #include "Backend_avifile.h"
-#include "./sai/bsp_sai.h" 
-
+//#include "./sai/bsp_sai.h" 
+//uint8_t chgsch_TouchUp=0;
 GUI_SEM *Delete_VideoTask_Sem;//做任务同步,结束播放器前先关闭播放任务
 TaskHandle_t VideoTask_Handle;
 extern volatile uint8_t video_timeout;//视频播放引入
@@ -808,7 +808,7 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 //当音量icon未被按下时
                 if(avi_icon[3].state == FALSE)
                 {
-                   SAI_Play_Start();
+                   I2S_Play_Start();
                    HAL_TIM_Base_Start_IT(&TIM3_Handle);                       
                    
                    SetWindowText(GetDlgItem(hwnd, eID_Vedio_START), L"U");
@@ -817,7 +817,7 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 //当音量icon被按下时，暂停
                 else
                 {          
-                   SAI_Play_Stop();
+                   I2S_Play_Stop();
                    HAL_TIM_Base_Stop_IT(&TIM3_Handle);               
                    SetWindowText(GetDlgItem(hwnd, eID_Vedio_START), L"T");
                 }
@@ -874,6 +874,11 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 VideoDialog.avi_chl = 1;//滑动标志
              }
              break;
+						 case SBN_CLICKED://松手检测,调整进度条使用
+						 {
+								chgsch_TouchUp = 1;
+						 }
+						 break;
           }
        }
       if(id==eID_Vedio_List && code==BN_CLICKED)
@@ -929,6 +934,7 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                       NoVol_flag = 0;
                    }
                    wm8978_OutMute(0);
+									 wm8978_SetOUT2Volume(VideoDialog.power);//设置WM8978的外放音量值
                    wm8978_SetOUT1Volume(VideoDialog.power);//设置WM8978的音量值
                 } 
                 SendMessage(nr->hwndFrom, SBM_SETVALUE, TRUE, VideoDialog.power); //发送SBM_SETVALUE，设置音量值
@@ -1023,7 +1029,8 @@ static LRESULT video_win_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			GUI_SemWait(Delete_VideoTask_Sem,0xFFFFFFFF);//死等,同步结束播放线程
 			
 			/* 关闭硬件 */
-			SAI_Play_Stop();	
+			I2S_Play_Stop();
+			I2S_Stop();		
       HAL_TIM_Base_Stop_IT(&TIM3_Handle);    
 			vTaskDelete(VideoTask_Handle);
 			
@@ -1054,11 +1061,11 @@ void	GUI_VideoPlayer_DIALOG(void*param)
 	MSG msg;
 	VideoDialog.avi_file_num = 0;
   scan_files(path);
-	if (wm8978_Init()==0)
-	{
-		GUI_DEBUG("检测不到WM8978芯片!!!\n");
-		while (1);	/* 停机 */
-	}  
+//	if (wm8978_Init()==0)
+//	{
+//		GUI_DEBUG("检测不到WM8978芯片!!!\n");
+//		while (1);	/* 停机 */
+//	}  
 	wcex.Tag = WNDCLASS_TAG;
 
 	wcex.Style = CS_HREDRAW | CS_VREDRAW;

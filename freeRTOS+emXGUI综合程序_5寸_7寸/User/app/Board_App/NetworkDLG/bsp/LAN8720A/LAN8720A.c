@@ -22,7 +22,8 @@
 #include "semphr.h"
 
 #include "./led/bsp_led.h" 
-#include "emXGUI.h"
+#include "debug.h"
+
 extern ETH_HandleTypeDef EthHandle;
 
 /**
@@ -190,12 +191,12 @@ void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
 
 void HAL_ETH_TxCpltCallback(ETH_HandleTypeDef *heth)
 {
-  GUI_ERROR("HAL_ETH_TxCpltCallback\n");;
+  printf("HAL_ETH_TxCpltCallback\n");
 }
 
 void HAL_ETH_ErrorCallback(ETH_HandleTypeDef *heth)
 {
-    GUI_ERROR("eth err\n");
+  printf("eth err\n");
 }
 
 

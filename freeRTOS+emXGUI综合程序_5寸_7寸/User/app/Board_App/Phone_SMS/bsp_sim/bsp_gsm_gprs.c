@@ -18,7 +18,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
-#include "./usart/bsp_usart.h"
+#include "board.h"
 #include "./bsp_gsm_usart.h"
 #include "./bsp_gsm_gprs.h"
 #include "./FATFS/ff.h"

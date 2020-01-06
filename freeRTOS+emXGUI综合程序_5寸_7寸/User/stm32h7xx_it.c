@@ -144,9 +144,9 @@ void DebugMon_Handler(void)
 /**
 * @brief This function handles System tick timer.
 */
-extern void xPortSysTickHandler(void);
 
-//systick中断服务函数
+/* systick中断服务函数 */
+extern void xPortSysTickHandler(void);
 void SysTick_Handler(void)
 {	
     #if (INCLUDE_xTaskGetSchedulerState  == 1 )
@@ -159,29 +159,65 @@ void SysTick_Handler(void)
     #endif  /* INCLUDE_xTaskGetSchedulerState */
 }
 
+/* SD卡中断服务函数 */
 extern SD_HandleTypeDef uSdHandle;
 void SDMMC1_IRQHandler(void)
 {
   HAL_SD_IRQHandler(&uSdHandle);
 }
 
-/* 用于统计运行时间 */
+/* 用于统计运行时间中断服务 */
 volatile uint32_t CPU_RunTime = 0UL;
-//extern TIM_HandleTypeDef TIM_Base;
-
+extern TIM_HandleTypeDef TIM_Base;
 void BASIC_TIM_IRQHandler(void)
 {
-//    HAL_TIM_IRQHandler(&TIM_Base);
+    HAL_TIM_IRQHandler(&TIM_Base);
 }
-///**
-//  * @brief  定时器更新中断回调函数
-//  * @param  htim : TIM句柄
-//  * @retval 无
-//  */
-//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-//{
-//    if(htim->Instance == TIM6)
-//        CPU_RunTime++;
-//}
 
+/* 视频播放定时器6 */
+extern volatile uint8_t video_timeout;//视频播放引入
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if(htim->Instance == TIM6)
+        CPU_RunTime++;
+		if(htim->Instance == TIM3)
+        video_timeout = 1;
+}
 
+/* MPU6050中断服务函数 */
+extern void gyro_data_ready_cb(void);
+void MPU_IRQHandler(void)
+{
+	
+	if(__HAL_GPIO_EXTI_GET_IT(MPU_INT_GPIO_PIN) != RESET) //确保是否产生了EXTI Line中断
+	{
+		/* Handle new gyro*/
+		gyro_data_ready_cb();
+	
+		__HAL_GPIO_EXTI_CLEAR_IT(MPU_INT_GPIO_PIN);     //清除中断标志位
+	}  
+}
+
+/* OV5640中断服务函数 */
+void DMA2_Stream1_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&DMA_Handle_dcmi);
+}
+
+void DCMI_IRQHandler(void)
+{
+  HAL_DCMI_IRQHandler(&DCMI_Handle);
+}
+
+/* I2S音频播放中断服务函数 */
+void DMA1_Stream4_IRQHandler(void)
+{
+  I2Sx_TX_DMA_STREAM_IRQFUN();
+}
+
+void DMA1_Stream0_IRQHandler(void)
+{
+  I2Sx_RX_DMA_STREAM_IRQFUN();
+}
+
+/************************************END*****************************************/

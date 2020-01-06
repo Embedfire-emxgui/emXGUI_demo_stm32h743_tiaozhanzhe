@@ -19,7 +19,7 @@
 #include "string.h"
 #include "./eth/bsp_eth.h" 
 
-#include "./usart/bsp_usart.h"
+#include "./usart/bsp_debug_usart.h"
 #include "./led/bsp_led.h" 
 #include "./eth/bsp_eth.h" 
 /* FreeRTOSÍ·ÎÄ¼þ */

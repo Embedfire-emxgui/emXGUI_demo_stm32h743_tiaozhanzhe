@@ -303,7 +303,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 160;
   RCC_OscInitStruct.PLL.PLLP = 2;
   RCC_OscInitStruct.PLL.PLLR = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 2;
+  RCC_OscInitStruct.PLL.PLLQ = 18;
  
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
@@ -332,6 +332,15 @@ void SystemClock_Config(void)
   {
     while(1) { ; }
   }
+	
+	RCC_PeriphCLKInitTypeDef RCC_ExCLKInitStruct;
+
+	RCC_ExCLKInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
+	RCC_ExCLKInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
+	if (HAL_RCCEx_PeriphCLKConfig(&RCC_ExCLKInitStruct) != HAL_OK)
+	{
+		while(1);
+	}
 }
 
 /**
@@ -350,16 +359,16 @@ void SDRAM_Init(void)
   /* 配置FMC接口相关的 GPIO*/
   SDRAM_GPIO_Config();
 
-	/* 配置SDRAM时钟源*/
+	/* 配置SDRAM时钟源 25MHZ / PLL2M * PLL2N / PLL2R / 2 = FMC =110M*/
   RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_FMC;
-//  RCC_PeriphClkInit.PLL2.PLL2M = 5;
-//  RCC_PeriphClkInit.PLL2.PLL2N = 144;
-  RCC_PeriphClkInit.PLL2.PLL2M = 2;
-  RCC_PeriphClkInit.PLL2.PLL2N = 16;
-  RCC_PeriphClkInit.PLL2.PLL2P = 2;
-  RCC_PeriphClkInit.PLL2.PLL2Q = 2;
-//  RCC_PeriphClkInit.PLL2.PLL2R = 3;
-	RCC_PeriphClkInit.PLL2.PLL2R = 1;
+  RCC_PeriphClkInit.PLL2.PLL2M = 5;
+  RCC_PeriphClkInit.PLL2.PLL2N = 132;
+//  RCC_PeriphClkInit.PLL2.PLL2M = 2;
+//  RCC_PeriphClkInit.PLL2.PLL2N = 16;
+  RCC_PeriphClkInit.PLL2.PLL2P = 7;//ADC,33.33M
+  RCC_PeriphClkInit.PLL2.PLL2Q = 2; 
+  RCC_PeriphClkInit.PLL2.PLL2R = 3;//FMC,200/2=100M
+//	RCC_PeriphClkInit.PLL2.PLL2R = 1;
   RCC_PeriphClkInit.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_2;
   RCC_PeriphClkInit.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   RCC_PeriphClkInit.PLL2.PLL2FRACN = 0;
@@ -368,6 +377,7 @@ void SDRAM_Init(void)
   {
     while(1);
   }
+	
   /* 使能 FMC 时钟 */
   __FMC_CLK_ENABLE();
 

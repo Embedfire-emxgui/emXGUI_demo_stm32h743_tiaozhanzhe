@@ -34,15 +34,12 @@
  * get_ms(unsigned long *count)
  */
 #if defined EMPL_TARGET_STM32F7
-#include "./i2c/i2c.h" 
+#include "./i2c_for_mpu6050/MPU6050_i2c.h"  
 #include "main.h"
 #include "emXGUI_Arch.h"
-//#include "./systick/bsp_SysTick.h"
-//#include "main.h"
-//#include "board-st_discovery.h"
    
-#define i2c_write   Sensors_I2C_WriteRegister
-#define i2c_read    Sensors_I2C_ReadRegister
+#define i2c_write   MPU6050_Sensors_I2C_WriteRegister
+#define i2c_read    MPU6050_Sensors_I2C_ReadRegister
 #define get_ms(Tick)      *(Tick) = (unsigned long)xTaskGetTickCount
 
 #elif defined MOTION_DRIVER_TARGET_MSP430

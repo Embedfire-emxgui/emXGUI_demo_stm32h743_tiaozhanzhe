@@ -80,7 +80,7 @@ static void PicViewer_TBOX_OwnerDraw(DRAWITEM_HDR *ds) //绘制一个按钮外观
   hdc_mem = GetDC(s_PicViewer_Dialog.PicView_Handle);//CreateMemoryDC(SURF_ARGB4444,rc.w,rc.h); 
   BitBlt(hdc, rc.x, rc.y, rc.w, rc.h, hdc_mem, rc_tmp.x, rc_tmp.y, SRCCOPY);
 
-  DeleteDC(hdc_mem);
+  ReleaseDC(s_PicViewer_Dialog.PicView_Handle,hdc_mem);
 
   SetTextColor(hdc, MapRGB(hdc, 255, 255, 255));
 
@@ -107,7 +107,7 @@ static void PicView_Button_OwnerDraw(DRAWITEM_HDR *ds)
   hdc_mem = GetDC(s_PicViewer_Dialog.PicView_Handle);//CreateMemoryDC(SURF_ARGB4444,rc.w,rc.h); 
   BitBlt(hdc, rc.x, rc.y, rc.w, rc.h, hdc_mem, rc_tmp.x, rc_tmp.y, SRCCOPY);
 
-  DeleteDC(hdc_mem);
+  ReleaseDC(s_PicViewer_Dialog.PicView_Handle,hdc_mem);
 	
   GetWindowText(ds->hwnd,wbuf,128); //获得按钮控件的文字  
    //设置按键的颜色
@@ -356,8 +356,8 @@ static BOOL Draw_Pic_GIF(char *file_name,HDC mhdc)
 				}
         s_PicViewer_Dialog.ms_gif.m_hgif = GIF_Open(s_PicViewer_Dialog.ms_gif.gif_buf);
         GIF_GetInfo(s_PicViewer_Dialog.ms_gif.m_hgif,&(s_PicViewer_Dialog.ms_gif.gif_info));
-        s_PicViewer_Dialog.ms_gif.frame_num = GIF_GetFrameCount(s_PicViewer_Dialog.ms_gif.m_hgif); 
-        gif_hdc_tmp = CreateMemoryDC(SURF_SCREEN,s_PicViewer_Dialog.ms_gif.gif_info.Width,s_PicViewer_Dialog.ms_gif.gif_info.Height);
+				s_PicViewer_Dialog.ms_gif.frame_num = GIF_GetFrameCount(s_PicViewer_Dialog.ms_gif.m_hgif); 
+				gif_hdc_tmp = CreateMemoryDC(SURF_SCREEN,s_PicViewer_Dialog.ms_gif.gif_info.Width,s_PicViewer_Dialog.ms_gif.gif_info.Height);
       }break;
       case 1:
       {
@@ -728,7 +728,7 @@ static LRESULT	PicViewer_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       PicTypeDef pic_info = (PicTypeDef)wParam;
       float load_time = (float)lParam/1000;
       char* file_name = s_PicViewer_Dialog.mp_file_list[s_PicViewer_Dialog.m_file_index];
-      file_name +=  Get_FlieNames(file_name); ;
+      file_name +=  Get_FlieNames(file_name);
       GetWindowText(GetDlgItem(hwnd, eID_Pic_Name), wbuf, 128);
       x_wcstombs_cp936(cbuf, wbuf, PICFILE_NAME_MAXLEN);
       if (strstr(file_name, cbuf) == NULL)     // 为空时不是一张图片更新信息，否则不更新
@@ -801,7 +801,7 @@ static LRESULT	PicViewer_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       }
       break;
     }
-#if Slide_Enable 
+#if  Slide_Enable
     case WM_LBUTTONDOWN:
     {
       
@@ -849,6 +849,8 @@ static LRESULT	PicViewer_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
           ShowWindow(GetDlgItem(hwnd, xC), viewr_flag ? SW_HIDE : SW_SHOW);
         }
+        if (s_PicViewer_Dialog.m_file_index >= s_PicViewer_Dialog.m_file_nums)
+          s_PicViewer_Dialog.m_file_index=0;	
         InvalidateRect(hwnd,NULL, TRUE);
         //GUI_DEBUG("viewr_flag = %d",viewr_flag);
         s_PicViewer_Dialog.m_touch_times = 0;
@@ -869,7 +871,8 @@ static LRESULT	PicViewer_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       else
       {
         s_PicViewer_Dialog.m_file_index++;
-
+	    if (s_PicViewer_Dialog.m_file_index >= s_PicViewer_Dialog.m_file_nums)
+           s_PicViewer_Dialog.m_file_index=0;
         SendMessage(hwnd, UpdateButtonState, (WPARAM)eID_Pic_NEXT, NULL);
         InvalidateRect(hwnd,NULL, TRUE);
         if(s_PicViewer_Dialog.ms_gif.m_gif_state == 1)

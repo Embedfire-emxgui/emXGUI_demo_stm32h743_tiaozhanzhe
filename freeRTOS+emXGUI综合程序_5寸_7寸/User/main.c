@@ -25,7 +25,6 @@
 #include "task.h"
 /* 开发板硬件bsp头文件 */
 #include "board.h"
-
 /* hardfault跟踪器需要的定义 */
 #define HARDWARE_VERSION               "V1.0.0"
 #define SOFTWARE_VERSION               "V0.1.0"
@@ -62,11 +61,9 @@
 *************************************************************************
 */
 static void GUI_Thread_Entry(void* pvParameters);/* Test_Task任务实现 */
-
+static void MPU_Config(void);
 static void SystemClock_Config(void);
 static void BSP_Init(void);/* 用于初始化板载相关资源 */
-
-
 /***********************************************************************
   * @ 函数名  ： BSP_Init
   * @ 功能说明： 板级外设初始化，所有板子上的初始化均可放在这个函数里面
@@ -76,12 +73,16 @@ static void BSP_Init(void);/* 用于初始化板载相关资源 */
 static void BSP_Init(void)
 {
 	/* 设置RAM、FLASH为Normal类型,禁用共享, 直写模式*/  
-	Board_MPU_Config(0,MPU_Normal_WT,0xD0000000,MPU_16MB);
-	Board_MPU_Config(5,MPU_Normal_WT,0xD1000000,MPU_8MB);
+	Board_MPU_Config(0,MPU_Normal_WT,0xD0000000,MPU_32MB);
+//	Board_MPU_Config(5,MPU_Normal_WT,0xD1000000,MPU_8MB);
 	Board_MPU_Config(1,MPU_Normal_WT,0x20000000,MPU_128KB);
   Board_MPU_Config(2,MPU_Normal_WT,0x00000000,MPU_64KB);
   Board_MPU_Config(3,MPU_Normal_WT,0x24000000,MPU_512KB);
   Board_MPU_Config(4,MPU_Normal_WT,0x08000000,MPU_2MB);
+	
+	/* 以太网缓冲区的MPU配置 */
+	MPU_Config();	
+	
   /* Enable I-Cache */
   SCB_EnableICache();
 
@@ -107,10 +108,20 @@ static void BSP_Init(void)
 	/* usart 端口初始化 */
   Debug_USART_Config();
  
+ 	RTC_CLK_Config();
+
+	/* 检测WM8978芯片，此函数会自动配置CPU的GPIO */
+	if (wm8978_Init()==0)
+	{
+		printf("检测不到WM8978芯片!!!\n");
+		while (1);	/* 停机 */
+	}
+	printf("WM8978芯片初始化成功\n");
+	
 	MODIFY_REG(FMC_Bank1->BTCR[0],FMC_BCR1_MBKEN,0); //关闭FMC_Bank1,不然LCD会闪.
 
   /*hardfault 跟踪器初始化*/  
-  cm_backtrace_init("Fire_emxgui", HARDWARE_VERSION, SOFTWARE_VERSION);
+	cm_backtrace_init("Fire_emxgui", HARDWARE_VERSION, SOFTWARE_VERSION);	
 }
 
 
@@ -124,12 +135,12 @@ static void BSP_Init(void)
             第三步：启动FreeRTOS，开始多任务调度
   ****************************************************************/
 int main(void)
-{	
+{
   BaseType_t xReturn = pdPASS;/* 定义一个创建信息返回值，默认为pdPASS */
   
   /* 开发板硬件初始化 */
   BSP_Init();  
-  
+
    /* 创建AppTaskCreate任务 */
   xReturn = xTaskCreate((TaskFunction_t )GUI_Thread_Entry,  /* 任务入口函数 */
                         (const char*    )"gui",/* 任务名字 */
@@ -156,10 +167,9 @@ extern void GUI_Startup(void);
   * @ 返回值  ： 无
   ********************************************************************/
 static void GUI_Thread_Entry(void* parameter)
-{	
-  
+{
   printf("野火emXGUI演示例程\n\n");
-
+	vTaskDelay(100);//确保屏幕上电,能正常读取寄存器
   /* 执行本函数不会返回 */
 	GUI_Startup();
   
@@ -175,5 +185,92 @@ static void GUI_Thread_Entry(void* parameter)
   }
 }
 
+static void MPU_Config(void)
+{
+  MPU_Region_InitTypeDef MPU_InitStruct;
 
+  /* Disable the MPU */
+  HAL_MPU_Disable();
+
+  /* Configure the MPU attributes as Device not cacheable 
+     for ETH DMA descriptors */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.BaseAddress = 0x30040000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_256B;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER6;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.SubRegionDisable = 0x00;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /* Configure the MPU attributes as Cacheable write through 
+     for LwIP RAM heap which contains the Tx buffers */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.BaseAddress = 0x30044000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_16KB;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER7;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.SubRegionDisable = 0x00;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /* Enable the MPU */
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+}
+
+#if 0
+/* FreeRTOS任务debug */
+static void DEBUG_Thread_Entry(void* parameter)
+{
+	while(1)
+	{
+				char tasks_buf[512] = {0};
+			
+		{
+			memset(tasks_buf, 0, 512);
+
+			strcat((char *)tasks_buf, "任务名称\t运行计数\t使用率\r\n" );
+
+			strcat((char *)tasks_buf, "---------------------------------------------\r\n");
+
+			/* displays the amount of time each task has spent in the Running state
+
+			* in both absolute and percentage terms. */
+
+			vTaskGetRunTimeStats((char *)(tasks_buf + strlen(tasks_buf)));
+
+			strcat((char *)tasks_buf, "\r\n");
+			printf("%s\r\n",tasks_buf);
+			
+		}
+			memset(tasks_buf, 0, 512);
+
+			strcat((char *)tasks_buf, "任务名称\t运行状态\t优先级\t剩余堆栈\t任务序号\r\n" );
+
+			strcat((char *)tasks_buf, "---------------------------------------------\r\n");
+
+
+		{
+			vTaskList((char *)(tasks_buf + strlen(tasks_buf)));
+
+			strcat((char *)tasks_buf, "\r\n---------------------------------------------\r\n");
+
+
+			strcat((char *)tasks_buf, "B : 阻塞, R : 就绪, D : 删除, S : 暂停\r\n");
+			printf("%s\r\n",tasks_buf);
+		}
+		vTaskDelay(1000);
+	}
+}
+#endif
 /********************************END OF FILE****************************/

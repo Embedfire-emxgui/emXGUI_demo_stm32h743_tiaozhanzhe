@@ -313,12 +313,12 @@ static LRESULT DetWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         DrawText(hdc, L"关于开发板", -1, &rc1, DT_VCENTER|DT_CENTER);//绘制文字(居中对齐方式)
 
         DrawText(hdc, L"硬件版本", -1, &rc, DT_VCENTER|DT_LEFT);//绘制文字(居中对齐方式)
-        DrawText(hdc, L"V", -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式) 
+        DrawText(hdc, L"V2", -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式) 
         HLine(hdc, rc.x, rc.y+rc.h, rc.x+782);
 
         OffsetRect(&rc,0,rc.h);
         DrawText(hdc, L"开发板型号", -1, &rc, DT_VCENTER|DT_LEFT);//绘制文字(居中对齐方式)
-        DrawText(hdc, L"野火-H743", -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式) 
+        DrawText(hdc, L"野火-H743挑战者", -1, &rc, DT_VCENTER|DT_RIGHT);//绘制文字(居中对齐方式) 
         HLine(hdc, rc.x, rc.y+rc.h, rc.x+782);
 
         OffsetRect(&rc,0,rc.h);
@@ -632,15 +632,15 @@ static void Set_Icon_Bmp_Or_Xtf(void)
 //        menu_list_1[11].bmp = bmp_icon[bmp_sudish_icon];
         menu_list_1[11].bmp = bmp_icon[bmp_entwork_icon];
 				
-				menu_list_1[12].bmp = bmp_icon[bmp_game_icon];
-        menu_list_1[13].bmp = bmp_icon[bmp_phone_icon];
-        menu_list_1[14].bmp = bmp_icon[bmp_note_icon];
-        menu_list_1[15].bmp = bmp_icon[bmp_QRcode_icon];
+//				menu_list_1[12].bmp = bmp_icon[bmp_game_icon];
+        menu_list_1[12].bmp = bmp_icon[bmp_phone_icon];
+        menu_list_1[13].bmp = bmp_icon[bmp_note_icon];
+        menu_list_1[14].bmp = bmp_icon[bmp_QRcode_icon];
+        menu_list_1[15].bmp = bmp_icon[bmp_record_icon];
 				
-        menu_list_1[16].bmp = bmp_icon[bmp_record_icon];
-        menu_list_1[17].bmp = bmp_icon[bmp_widget_icon];
-        menu_list_1[18].bmp = bmp_icon[bmp_beeper_icon];
-				menu_list_1[19].bmp = bmp_icon[bmp_keyled_icon];
+        menu_list_1[16].bmp = bmp_icon[bmp_widget_icon];
+        menu_list_1[17].bmp = bmp_icon[bmp_beeper_icon];
+				menu_list_1[18].bmp = bmp_icon[bmp_keyled_icon];
 //        menu_list_1[19].bmp = bmp_icon[bmp_flash_icon];
 	}else
 	{

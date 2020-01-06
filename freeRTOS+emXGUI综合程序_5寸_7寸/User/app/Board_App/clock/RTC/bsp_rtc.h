@@ -37,5 +37,6 @@ void RTC_CLK_Config(void);
 void RTC_TimeAndDate_Set(void);
 void RTC_TimeAndDate_Show(void);
 void RTC_AlarmSet(void);
+void RTC_Check_Hrest(void);
 
 #endif // __RTC_H__

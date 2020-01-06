@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:秉火  STM32 F767 开发板  
+  * 实验平台:秉火  STM32 H743 挑战者开发板  
   * 论坛    :http://www.firebbs.cn
   * 淘宝    :http://firestm32.taobao.com
   *
@@ -17,11 +17,11 @@
 
 
 /* Includes ------------------------------------------------------------------*/
-#include "./camera/bsp_ov5640.h"
-#include "./i2c/i2c.h"
+#include "./app/Board_App/camera/bsp_ov5640.h"
+#include "./bsp_ov5640_i2c.h"
 #include "GUI_CAMERA_DIALOG.h"
 #include "./delay/core_delay.h"  
-#include "qr_decoder_user.h"
+#include "./QR_Decoder/qr_decoder_user.h"
 
 DCMI_HandleTypeDef DCMI_Handle;
 DMA_HandleTypeDef DMA_Handle_dcmi;
@@ -32,8 +32,6 @@ void TransferComplete(DMA2D_HandleTypeDef *hdma2d)
 }
 
 int cur_index;//当前内存块
-//uint32_t cam_buff0[800*480];
-//uint32_t cam_buff1[800*480];
 /** @addtogroup DCMI_Camera
   * @{
   */ 
@@ -647,11 +645,11 @@ unsigned short RGB565_WVGA[][2]=
 
     0x3035, 0x41, // PLL
 
-    0x3036, 0x72, // PLL
+    0x3036, 0x80, // PLL
 
     0x3c07, 0x08, // light meter 1 threshold[7:0]
 
-    0x3820, 0x42, // flip
+    0x3820, 0x72, // flip
 
     0x3821, 0x00, // mirror
 
@@ -834,16 +832,16 @@ void OV5640_HW_Init(void)
     GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;    
     HAL_GPIO_Init(DCMI_RST_GPIO_PORT, &GPIO_InitStructure);
 
-    I2CMaster_Init();
+    Ov5640_I2CMaster_Init();
     HAL_GPIO_WritePin(DCMI_RST_GPIO_PORT,DCMI_RST_GPIO_PIN,GPIO_PIN_RESET);
     /*PWDN引脚，高电平关闭电源，低电平供电*/
     HAL_GPIO_WritePin(DCMI_PWDN_GPIO_PORT,DCMI_PWDN_GPIO_PIN,GPIO_PIN_SET);
    
     HAL_GPIO_WritePin(DCMI_PWDN_GPIO_PORT,DCMI_PWDN_GPIO_PIN,GPIO_PIN_RESET);
-    Delay(10);
+    Delay(50);
     HAL_GPIO_WritePin(DCMI_RST_GPIO_PORT,DCMI_RST_GPIO_PIN,GPIO_PIN_SET);
     //必须延时50ms,模块才会正常工作
-    Delay(50);
+    Delay(500);
 }
 /**
   * @brief  Resets the OV5640 camera.
@@ -874,6 +872,7 @@ void OV5640_ReadID(OV5640_IDTypeDef *OV5640ID)
   * @param  None
   * @retval None
   */
+TickType_t tick_record;
 void OV5640_Init(void) 
 {
   /*** 配置DCMI接口 ***/
@@ -900,10 +899,11 @@ void OV5640_Init(void)
   HAL_DCMI_Init(&DCMI_Handle); 	
     
 	/* 配置中断 */
-  HAL_NVIC_SetPriority(DCMI_IRQn, 7, 0);
+  HAL_NVIC_SetPriority(DCMI_IRQn, 6, 0);
   HAL_NVIC_EnableIRQ(DCMI_IRQn); 	
   //dma_memory 以16位数据为单位， dma_bufsize以32位数据为单位(即像素个数/2)
   OV5640_DMA_Config((uint32_t)CamDialog.cam_buff0,cam_mode.cam_out_height*cam_mode.cam_out_width/2);	
+
 }
 
 
@@ -1455,7 +1455,6 @@ void OV5640_Capture_Control(FunctionalState state)
   {
     case ENABLE:
     {
-      //OV5640_DMA_Config((uint32_t)CamDialog.cam_buff0,cam_mode.cam_out_height*cam_mode.cam_out_width);	   
       OV5640_Init();
       break;
     }
@@ -1515,54 +1514,35 @@ void OV5640_Capture_Control(FunctionalState state)
 //  i++;
 //  HAL_DMA2D_IRQHandler(&h_dma2d);
 //}
+int once =1;
+
 /**
   * @brief  DCMI帧同步中断回调函数 Line event callback.
   * @param  None
   * @retval None
   */
-//uint8_t fps;count*BLOCKSIZE + ((uint32_t)buff - alignedAddr)
 void HAL_DCMI_VsyncEventCallback(DCMI_HandleTypeDef *hdcmi)
 {
-    CamDialog.fps++; //帧率计数
-
-    GUI_SemPostISR(cam_sem);  
-
+	GUI_SemPostISR(cam_sem);
+#if 0
+  
 	if(cur_index == 0)//0--准备配置第二块内存，当前使用的是第一块内存
 	 {
 		  cur_index = 1;
 			if (QR_Task)
 			{
-//				SCB_InvalidateDCache_by_Addr((uint32_t *)CamDialog.cam_buff0,cam_mode.cam_out_width * cam_mode.cam_out_height *2);
 				cur_index = 0;
-		    HAL_DCMI_Suspend(&DCMI_Handle);
-        __HAL_DCMI_DISABLE(hdcmi);
-				SCB_InvalidateDCache_by_Addr((uint32_t *)CamDialog.cam_buff0, cam_mode.cam_out_height*cam_mode.cam_out_width / 2);
-        get_image((uint32_t)CamDialog.cam_buff0,cam_mode.cam_out_width , cam_mode.cam_out_height);//从缓存好的第一块内存中获取图像数据
-				/*重新开始采集*/
-				 HAL_DCMI_Resume(&DCMI_Handle);
-//				 __HAL_DCMI_ENABLE(hdcmi);
-       
-				OV5640_DMA_Config((uint32_t)CamDialog.cam_buff0,
-													cam_mode.cam_out_height*cam_mode.cam_out_width/2); 
 			}
 			else
 			{
 //				SCB_InvalidateDCache_by_Addr((uint32_t *)CamDialog.cam_buff0,cam_mode.cam_out_width * cam_mode.cam_out_height *2);
-				cur_index = 1;
-				OV5640_DMA_Config((uint32_t)CamDialog.cam_buff1,
-													cam_mode.cam_out_height*cam_mode.cam_out_width/2);  
 			}
-		}
+	}
 	else//1--配置第一块内存，使用第二块内存
-		{      
+	{
 //			SCB_InvalidateDCache_by_Addr((uint32_t *)CamDialog.cam_buff0,cam_mode.cam_out_width * cam_mode.cam_out_height *2);
-			cur_index = 0;
-			OV5640_DMA_Config((uint32_t)CamDialog.cam_buff0,
-												cam_mode.cam_out_height*cam_mode.cam_out_width/2);       
-		}
-
+	}
+#endif
 }
-
-
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

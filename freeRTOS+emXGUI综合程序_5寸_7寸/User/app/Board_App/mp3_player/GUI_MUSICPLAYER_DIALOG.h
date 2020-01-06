@@ -78,6 +78,8 @@ extern char music_playlist[MUSIC_MAX_NUM][FILE_NAME_LEN];//播放List
 extern char music_lcdlist[MUSIC_MAX_NUM][MUSIC_NAME_LEN];//显示list
 extern uint8_t music_file_num;
 extern uint8_t chgsch; //进度条调整标志位
+extern uint8_t chgsch_TouchUp;
+
 extern HWND music_wnd_time;
 extern LYRIC lrc;
 void com_utf82gbk(const char *src, char *str);

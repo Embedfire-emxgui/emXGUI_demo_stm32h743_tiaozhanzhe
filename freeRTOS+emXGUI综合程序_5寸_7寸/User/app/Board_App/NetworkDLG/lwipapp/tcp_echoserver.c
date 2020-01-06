@@ -45,7 +45,7 @@
 #include "./LAN8720A/LAN8720A.h"
 #include "x_libc.h"
 #include "emXGUI.h"
-#include "./NetworkDLG/GUI_Network_Dialog.h"
+#include "./GUI_Network_Dialog.h"
 
 #if LWIP_TCP
 

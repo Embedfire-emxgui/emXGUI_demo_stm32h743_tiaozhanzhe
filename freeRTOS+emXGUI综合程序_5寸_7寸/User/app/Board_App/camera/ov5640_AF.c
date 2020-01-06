@@ -14,7 +14,7 @@
 * GLOBALS AFFECTED
 *
 *************************************************************************/
-#include "./camera/ov5640_AF.h"
+#include "./app/Board_App/camera/ov5640_AF.h"
 #include "./delay/core_delay.h"   
 static void OV5640_FOCUS_AD5820_Check_MCU(void);
 

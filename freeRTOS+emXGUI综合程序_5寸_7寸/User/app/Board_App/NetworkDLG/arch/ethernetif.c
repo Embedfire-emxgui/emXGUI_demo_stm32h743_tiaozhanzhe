@@ -52,7 +52,7 @@
 #include "lwip/netif.h"
 #include "netif/etharp.h"
 #include "ethernetif.h"
-#include "LAN8720a.h" 
+#include "./LAN8720a/LAN8720a.h" 
 #include <string.h>
 #include "emXGUI.h"
 /* Private typedef -----------------------------------------------------------*/

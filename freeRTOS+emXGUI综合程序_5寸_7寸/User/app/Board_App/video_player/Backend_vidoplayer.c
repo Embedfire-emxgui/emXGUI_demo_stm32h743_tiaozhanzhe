@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "stm32h7xx.h"
-//#include "ff.h"
 #include "Backend_avifile.h"
 #include "Backend_vidoplayer.h"
-#include "./sai/bsp_sai.h" 
-#include "./Bsp/wm8978/bsp_wm8978.h"  
+#include "board.h"  
 #include "emXGUI.h"
 #include "emXGUI_JPEG.h"
 #include "GUI_VEDIOPLAYER_DIALOG.h"
@@ -16,7 +14,7 @@ FIL       fileR ;
 UINT      BytesRD;
 #define   Frame_Buf_Size    (1024*30)
 uint8_t   *Frame_buf;
-
+extern uint8_t chgsch_TouchUp;
 static volatile uint8_t audiobufflag=0;
 //__align(4) uint8_t   Sound_buf[4][1024*5]	__attribute__((at(0xd1bc0000)));
 __align(4) uint8_t   Sound_buf[4][1024*5]	__EXRAM;
@@ -34,7 +32,7 @@ extern WAVEFORMAT*   wavinfo;
 extern avih_TypeDef* avihChunk;
 //extern HWND avi_wnd_time;
 //extern int avi_chl;
-void MUSIC_SAI_DMA_TX_Callback(void);
+void VEDIO_I2S_DMA_TX_Callback(void);
 
 extern GUI_MUTEX*	AVI_JPEG_MUTEX;    // 用于确保一帧图像用后被释放完在退出线程
 
@@ -133,8 +131,9 @@ void AVI_play(char *filename)
     }
     audiosize=*(uint8_t *)(mid+offset+4)+256*(*(uint8_t *)(mid+offset+5));
   }
-  
-  SAI_Play_Stop();			/* 停止I2S录音和放音 */
+
+  I2S_Play_Stop();
+  I2S_Stop();			/* 停止I2S录音和放音 */
 	wm8978_Reset();		/* 复位WM8978到复位状态 */	
   	/* 配置WM8978芯片，输入为DAC，输出为耳机 */
 	wm8978_CfgAudioPath(DAC_ON, SPK_ON|EAR_LEFT_ON | EAR_RIGHT_ON);
@@ -143,44 +142,36 @@ void AVI_play(char *filename)
 	wm8978_SetOUT1Volume(VideoDialog.power);
 
 	/* 配置WM8978音频接口为飞利浦标准I2S接口，16bit */
-	wm8978_CfgAudioIF(SAI_I2S_STANDARD, 16);
-  SAI_GPIO_Config();
-  SAIxA_Tx_Config(SAI_I2S_STANDARD, SAI_PROTOCOL_DATASIZE_16BIT, wavinfo->SampleRate);
-  SAI_DMA_TX_Callback=MUSIC_SAI_DMA_TX_Callback;			//回调函数指wav_i2s_dma_callback
-//  I2S_Play_Stop();
-  SAIA_TX_DMA_Init((uint32_t )Sound_buf[1],(uint32_t )Sound_buf[2],audiosize/2);
+	wm8978_CfgAudioIF(I2S_STANDARD_PHILIPS, 16);
+  I2S_GPIO_Config();
+  I2Sx_Mode_Config(I2S_STANDARD_PHILIPS, I2S_DATAFORMAT_16B, I2S_AUDIOFREQ_11K);
+  I2S_DMA_TX_Callback=VEDIO_I2S_DMA_TX_Callback;//回调函数指wav_i2s_dma_callback wavinfo->SampleRate
+  I2S_Play_Stop();
+  I2Sx_TX_DMA_Init((uint32_t )Sound_buf[1],(uint32_t )Sound_buf[2],audiosize/2);
   audiobufflag=0;	    
   video_timeout=0;
   audiosavebuf=0;
   audiobufflag=0;
-  TIM3_Config((avihChunk->SecPerFrame/100)-1,20000-1);
-  SAI_Play_Start();  
-	
+	TIM3_Config((avihChunk->SecPerFrame/100)-1,20000-1);  
+  I2S_Start();
+  I2S_Play_Start();  
+
 	t0= GUI_GetTickCount();
 
   
 //   //歌曲总长度=每一帧需要的时间（s）*帧总数
   VideoDialog.alltime=(avihChunk->SecPerFrame/1000)*avihChunk->TotalFrame;
   VideoDialog.alltime/=1000;//单位是秒
-//  WCHAR buff[128];
-//  //char *str = NULL;
-// // RECT rc0 = {0, 367,120,30};//当前时间
+
   x_wsprintf(buff, L"分辨率：%d*%d", videoplayer_img_w, videoplayer_img_h);
   SetWindowText(GetDlgItem(VideoDialog.Video_Hwnd, eID_TEXTBOX_RES), buff);
 
-//  char *ss;
-//  int length1=strlen(filename);
-//  int length2=strlen(File_Path);
-//  if(strncpy(filename,File_Path,length2))//比较前n个字符串，类似strcpy
-//  {
-//    ss = filename + length2;
-//  }
   x_mbstowcs_cp936(buff, lcdlist[VideoDialog.playindex], 200);
   SetWindowText(GetDlgItem(VideoDialog.Video_Hwnd, eID_TEXTBOX_ITEM), buff);
   x_wsprintf(buff, L"%02d:%02d:%02d",
              VideoDialog.alltime/3600,(VideoDialog.alltime%3600)/60,VideoDialog.alltime%60);
   SetWindowText(GetDlgItem(VideoDialog.Video_Hwnd, eID_TEXTBOX_ALLTIME), buff);
-//  
+
   while(!VideoDialog.SWITCH_STATE)//播放循环
   {
 
@@ -190,14 +181,10 @@ void AVI_play(char *filename)
       continue;
     }    
 		int t1;
-    if(!VideoDialog.avi_chl)
-    {
-
         
-//        
-//   //fptr存放着文件指针的位置，fsize是文件的总大小，两者之间的比例和当前时间与总时长的比例相同（fptr/fsize = cur/all）     
+  //fptr存放着文件指针的位置，fsize是文件的总大小，两者之间的比例和当前时间与总时长的比例相同（fptr/fsize = cur/all）     
    VideoDialog.curtime=((double)fileR.fptr/fileR.fsize)*VideoDialog.alltime;
-//   //更新进度条
+   //更新进度条
    //GUI_DEBUG("%d", VideoDialog.curtime*255/VideoDialog.alltime);
    if(!(SendMessage(VideoDialog.SBN_TIMER_Hwnd, SBM_GETSTATE,0,0)&SST_THUMBTRACK))
     SendMessage(VideoDialog.SBN_TIMER_Hwnd, SBM_SETVALUE, TRUE, VideoDialog.curtime*255/VideoDialog.alltime);     
@@ -219,12 +206,9 @@ void AVI_play(char *filename)
 				frame =0;
 			}
 
-      //HDC hdc_mem,hdc;
       pbuffer=Frame_buf;
       
-
       res = f_read(&fileR,Frame_buf,Strsize+8,&BytesRD);//读入整帧+下一数据流ID信息
-//      GUI_DEBUG("%d", GUI_GetTickCount()-tt0);
       
       if(res != FR_OK)
       {
@@ -235,49 +219,31 @@ void AVI_play(char *filename)
 		
 			if(frame&1)
 			{	
-#if 1		//直接写到窗口方式.	
+		//直接写到窗口方式.	
 
-				HWND hwnd=VideoDialog.Video_Hwnd;
-				//HDC hdc;
-				//hdc =GetDC(VideoDialog.Video_Hwnd);
-				
-				//hdc =BeginPaint(hwnd,&ps);
+				HWND hwnd=VideoDialog.Video_Hwnd;				
         
         GUI_MutexLock(AVI_JPEG_MUTEX,0xFFFFFFFF);    // 获取互斥量
-				//  JPEG_Out(hdc,160,89,Frame_buf,BytesRD);
-				JPEG_Out(hdc1,0,0,Frame_buf,BytesRD);
-//            ClrDisplay(hdc, &rc0, MapRGB(hdc, 0,0,0));
-//            SetTextColor(hdc, MapRGB(hdc,255,255,255));
-//            DrawText(hdc, buff,-1,&rc0,DT_VCENTER|DT_CENTER);
-            
+				JPEG_Out(hdc1,0,0,Frame_buf,BytesRD);            
 
-//           SetWindowText(GetDlgItem(VideoPlayer_hwnd, ID_TB5), buff);
         x_wsprintf(buff, L"帧率：%dFPS/s", avi_fps);
         if(!VideoDialog.LIST_STATE)
           SetWindowText(GetDlgItem(VideoDialog.Video_Hwnd, eID_TEXTBOX_FPS), buff);
 
         bDrawVideo=TRUE;
-//        GUI_msleep(10);
+
         InvalidateRect(hwnd,NULL,FALSE); //产生无效区...
 
-//			  ReleaseDC(VideoDialog.Video_Hwnd,hdc);
-			 // EndPaint(hwnd,&ps);
         GUI_MutexUnlock(AVI_JPEG_MUTEX);              // 解锁互斥量				
-#endif
+
 
 			}
-
-//			while(bDrawVideo==TRUE)
-//			{
-//				GUI_msleep(5);
-//			}
-
+			
       while(video_timeout==0)
-      {   
-				//rt_thread_delay(1); //不要死等，最好用信号量.				
+      {
         GUI_msleep(5);
-      }      
-	  bDrawVideo=FALSE;
+      }    
+			bDrawVideo=FALSE;
 
       video_timeout=0;
     }//显示帧
@@ -291,7 +257,6 @@ void AVI_play(char *filename)
 			}	
       do
       {
-				//rt_thread_delay(1); 
         i=audiobufflag;
         if(i)
 					i--;
@@ -311,93 +276,52 @@ void AVI_play(char *filename)
       
     }
     else 
-      break;
-					   	
+		{
+      break;		   	
     }
-    else
-    {
-         pos = fileR.fptr;
-         //根据进度条调整播放位置				
-         tmp=SendMessage(VideoDialog.SBN_TIMER_Hwnd, SBM_GETVALUE, NULL, NULL); 
-         time_sum = fileR.fsize/VideoDialog.alltime*(tmp*VideoDialog.alltime/249-VideoDialog.curtime);//跳过多少数据 计算公式：文件总大小/需要跳过的数据量 = 总时间/当前的时间
-         //如果当前文件指针未到最后
-        	if(pos<fileR.fsize)pos+=time_sum; 
-         //如果文件指针到了最后30K内容
-          if(pos>(fileR.fsize-1024*30))
-          {
-            pos=fileR.fsize-1024*30;
-          }
-         
-          f_lseek(&fileR,pos);
-//      
-      #if 0
-         if(pos == 0)
-            mid=Search_Movi(Frame_buf);//寻找movi ID  判断自己是不是还在数据段
-         else 
-            mid = 0;  
-        int iiii= 0;//计算偏移量
-         while(1)
-         {
-            //每次读512个字节，直到找到数据帧的帧头
-            u16 temptt = 0;//计算数据帧的位置
-            AVI_DEBUG("S\n");
+		
+		/* 松手调整进度条 */
+		if(chgsch_TouchUp == 1)
+		{
+		 pos = fileR.fptr;
+		 //根据进度条调整播放位置				
+		 tmp=SendMessage(VideoDialog.SBN_TIMER_Hwnd, SBM_GETVALUE, NULL, NULL); 
+		 time_sum = fileR.fsize/VideoDialog.alltime*(tmp*VideoDialog.alltime/249-VideoDialog.curtime);//跳过多少数据 计算公式：文件总大小/需要跳过的数据量 = 总时间/当前的时间
+		 //如果当前文件指针未到最后
+			if(pos<fileR.fsize)pos+=time_sum; 
+		 //如果文件指针到了最后30K内容
+			if(pos>(fileR.fsize-1024*30))
+			{
+				pos=fileR.fsize-1024*30;
+			}
+		 
+			f_lseek(&fileR,pos);
 
-            f_read(&fileR,Frame_buf,512,&BytesRD);
-            AVI_DEBUG("E\n");
+		 f_read(&fileR,Frame_buf,1024*30,&BytesRD);
+		 AVI_DEBUG("E\n");
+		 if(pos == 0)
+				mid=Search_Movi(Frame_buf);//寻找movi ID
+		 else 
+				mid = 0;
+		 mid += Search_Fram(Frame_buf,1024*30);
+		 pbuffer = Frame_buf;
+		 Strtype=MAKEWORD(pbuffer+mid+2);//流类型
+		 Strsize=MAKEDWORD(pbuffer+mid+4);//流大小
+		 
+		 if(Strsize%2)Strsize++;//奇数加1
+		 f_lseek(&fileR,pos+mid+8);//跳过标志ID  
+		 AVI_DEBUG("S Strsize=%d\n",Strsize);
 
-            temptt = Search_Fram(Frame_buf,BytesRD);
-            iiii++;
-            if(temptt)
-            {            
-               AVI_DEBUG("S temptt =%d\n",temptt);
-               AVI_DEBUG("S Frame_buf[temptt] =%c %c %c %c\n",
-                                      Frame_buf[temptt],
-                                      Frame_buf[temptt+1],
-                                      Frame_buf[temptt+2],
-                                      Frame_buf[temptt+3]);
-               /* 多读取512数据，防止标志在边界时出错 */
-               f_read(&fileR,(u8*)Frame_buf+BytesRD,512,&BytesRD);
-               AVI_DEBUG("E\n");
-                pbuffer = Frame_buf;
-               Strtype=MAKEWORD(pbuffer+temptt+2);//流类型
-               Strsize=MAKEDWORD(pbuffer+temptt+4);//流大小
-               mid += temptt + 512*iiii-512;//加上偏移量
-//               if(temptt == 16)
-//                  continue;
-               break;
-            }
-
-         }
-         #else
-         f_read(&fileR,Frame_buf,1024*30,&BytesRD);
-         AVI_DEBUG("E\n");
-         if(pos == 0)
-            mid=Search_Movi(Frame_buf);//寻找movi ID
-         else 
-            mid = 0;
-         mid += Search_Fram(Frame_buf,1024*30);
-         pbuffer = Frame_buf;
-         Strtype=MAKEWORD(pbuffer+mid+2);//流类型
-         Strsize=MAKEDWORD(pbuffer+mid+4);//流大小
-         #endif
-         
-         if(Strsize%2)Strsize++;//奇数加1
-         f_lseek(&fileR,pos+mid+8);//跳过标志ID  
-         AVI_DEBUG("S Strsize=%d\n",Strsize);
-
-         f_read(&fileR,Frame_buf,Strsize+8,&BytesRD);//读入整帧+下一数据流ID信息 
-         
-//         
-         VideoDialog.avi_chl = 0;    
-     }
-         //判断下一帧的帧内容 
-         Strtype=MAKEWORD(pbuffer+Strsize+2);//流类型
-         Strsize=MAKEDWORD(pbuffer+Strsize+4);//流大小									
-         if(Strsize%2)Strsize++;//奇数加1		  
-//        
-     }
-//  
-// 
+		 f_read(&fileR,Frame_buf,Strsize+8,&BytesRD);//读入整帧+下一数据流ID信息 
+		 
+		 VideoDialog.avi_chl = 0;    
+		 chgsch_TouchUp = 0;
+		}
+	 //判断下一帧的帧内容 
+	 Strtype=MAKEWORD(pbuffer+Strsize+2);//流类型
+	 Strsize=MAKEDWORD(pbuffer+Strsize+4);//流大小									
+	 if(Strsize%2)Strsize++;//奇数加1		     
+ }
 
 	GUI_VMEM_Free(Frame_buf);
   DeleteDC(hdc1);
@@ -409,15 +333,16 @@ void AVI_play(char *filename)
   }
   else
     VideoDialog.SWITCH_STATE = 0;
-  SAI_Play_Stop();
+  I2S_Play_Stop();
+  I2S_Stop();		/* 停止I2S录音和放音 */
 	wm8978_Reset();	/* 复位WM8978到复位状态 */
   HAL_TIM_Base_Stop_IT(&TIM3_Handle); //停止定时器3更新中断
   f_close(&fileR);
 	GUI_SemPost(Delete_VideoTask_Sem);
-
 }
 
-void MUSIC_SAI_DMA_TX_Callback(void)
+extern DMA_HandleTypeDef hdma_spi2_tx;
+void VEDIO_I2S_DMA_TX_Callback(void)
 {
   audiobufflag++;
   if(audiobufflag>3)
@@ -425,14 +350,13 @@ void MUSIC_SAI_DMA_TX_Callback(void)
 		audiobufflag=0;
 	}
 	
-	if(DMA1_Stream2->CR&(1<<19)) //当前读取Memory1数据
+	if(I2Sx_TX_DMA_STREAM->CR&(1<<19)) //当前读取Memory1数据
 	{
-		//DMA_MemoryTargetConfig(DMA1_Stream2,(uint32_t)Sound_buf[audiobufflag], DMA_Memory_0);
-    HAL_DMAEx_ChangeMemory(&h_txdma, (uint32_t)Sound_buf[audiobufflag], MEMORY0);
+    HAL_DMAEx_ChangeMemory(&hdma_spi2_tx, (uint32_t)Sound_buf[audiobufflag], MEMORY0);
 	}
 	else
 	{
-    HAL_DMAEx_ChangeMemory(&h_txdma, (uint32_t)Sound_buf[audiobufflag], MEMORY1); 
+    HAL_DMAEx_ChangeMemory(&hdma_spi2_tx, (uint32_t)Sound_buf[audiobufflag], MEMORY1); 
 	} 
 }
 

@@ -1,10 +1,9 @@
 #include <emXGUI.h>
 #include <string.h>
 #include "Widget.h"
-#include "./camera/bsp_ov5640.h"
 #include "x_libc.h"
-#include "./camera/ov5640_AF.h"
-#include "qr_decoder_user.h"
+#include "board.h"
+#include "./QR_Decoder/qr_decoder_user.h"
 #include "GUI_AppDef.h"
 #include "GUI_CAMERA_DIALOG.h"
 
@@ -19,6 +18,9 @@ extern Cam_DIALOG_Typedef CamDialog;
 extern int cur_index;//内存切换标志位
 
 extern GUI_SEM *cam_sem;//更新图像同步信号量（二值型）
+GUI_SEM *QR_decode;//更新图像同步信号量（二值型）
+GUI_SEM *QR_Exit =NULL;
+
 uint8_t QR_Task = 0;
 TaskHandle_t QR_Task_Handle;
 TaskHandle_t Syn_Updata;
@@ -58,11 +60,31 @@ static void Update_Dialog(void *p)
   
 	while(QR_Task) //线程已创建了
 	{
-    GUI_SemWait(cam_sem, 0xFFFFFFFF);
-    InvalidateRect(CamDialog.Cam_Hwnd, &rc, FALSE);
+		if( GUI_SemWait(cam_sem, 1) == TRUE )
+		{
+			OV5640_Capture_Control(DISABLE);
+			SCB_InvalidateDCache_by_Addr((uint32_t *)CamDialog.cam_buff0, cam_mode.cam_out_height*cam_mode.cam_out_width / 2);
+			
+			InvalidateRect(CamDialog.Cam_Hwnd, &rc, FALSE);//先无效化矩形,使用完当前帧,再去读一下帧
+			
+			get_image((uint32_t)CamDialog.cam_buff0,cam_mode.cam_out_width , cam_mode.cam_out_height);//从缓存好的第一块内存中获取图像数据
+			
+			GUI_SemPost(QR_decode);  
+			/*重新开始采集*/
+			
+			OV5640_DMA_Config((uint32_t)CamDialog.cam_buff0,
+														cam_mode.cam_out_height*cam_mode.cam_out_width/2); 
+			GUI_msleep(50);
+			GUI_Yield();
+		}
+	}
+	/* 任务结束,等待线程被回收 */
+	GUI_SemPost(QR_Exit);
+	
+	while(1)
+	{
 		GUI_Yield();
 	}
-//  GUI_Thread_Delete(GUI_GetCurThreadHandle()); 
 }
 
 static void QR_decoder_Task(void *p)
@@ -78,54 +100,59 @@ static void QR_decoder_Task(void *p)
 	
 	while(QR_Task) //线程已创建了
 	{
+		if( GUI_SemWait(QR_decode, 1) == TRUE )
+		{
 
+			qr_num = QR_decoder();
 
-    qr_num = QR_decoder();
+			if(qr_num)
+			{ 
+				BEEP_ON;
+				GUI_msleep(50);
+				//解码的数据是按照识别条码的个数封装好的二维数组，这些数据需要
+				//根据识别条码的个数，按组解包并通过串口发送到上位机串口终端
+				qr_type_len = decoded_buf[i][addr++];//获取解码类型长度
+				 
+				for(j=0;j < qr_type_len;j++)
+					qr_type_buf[j]=decoded_buf[i][addr++];//获取解码类型名称
+				
+				qr_type_buf[j] = '\0';
+				 
+				qr_data_len  = decoded_buf[i][addr++]<<8; //获取解码数据长度高8位
+				qr_data_len |= decoded_buf[i][addr++];    //获取解码数据长度低8位
+				 
+				for(j=0;j < qr_data_len;j++)
+					qr_data_buf[j]=decoded_buf[i][addr++];//获取解码数据
+				
+				qr_data_buf[j] = '\0';
 
-    if(qr_num)
-    { 
-      BEEP_ON;
-      GUI_msleep(50);
-      //解码的数据是按照识别条码的个数封装好的二维数组，这些数据需要
-      //根据识别条码的个数，按组解包并通过串口发送到上位机串口终端
-      qr_type_len = decoded_buf[i][addr++];//获取解码类型长度
-       
-      for(j=0;j < qr_type_len;j++)
-        qr_type_buf[j]=decoded_buf[i][addr++];//获取解码类型名称
-      
-      qr_type_buf[j] = '\0';
-       
-      qr_data_len  = decoded_buf[i][addr++]<<8; //获取解码数据长度高8位
-      qr_data_len |= decoded_buf[i][addr++];    //获取解码数据长度低8位
-       
-      for(j=0;j < qr_data_len;j++)
-        qr_data_buf[j]=decoded_buf[i][addr++];//获取解码数据
-      
-      qr_data_buf[j] = '\0';
+				printf("类型：%s\n数据：%s\n", qr_type_buf, qr_data_buf);
 
-      printf("类型：%s\n数据：%s\n", qr_type_buf, qr_data_buf);
+				addr =0;//清零
+				
+				WCHAR *wbuf_data = (WCHAR *)GUI_VMEM_Alloc(1024 * sizeof(WCHAR));
+				x_mbstowcs_cp936(wbuf_type, qr_type_buf, sizeof(wbuf_type));
+				x_mbstowcs_cp936(wbuf_data, qr_data_buf, 1024 * sizeof(WCHAR));
 
-      addr =0;//清零
-      
-      
-      WCHAR *wbuf_data = (WCHAR *)GUI_VMEM_Alloc(1024 * sizeof(WCHAR));
-      x_mbstowcs_cp936(wbuf_type, qr_type_buf, sizeof(wbuf_type));
-      x_mbstowcs_cp936(wbuf_data, qr_data_buf, 1024 * sizeof(WCHAR));
+				PostAsyncMessage(CamDialog.Cam_Hwnd, eMSG_QRScan_OK, (WPARAM)wbuf_data, (LPARAM)wbuf_type);     // 识别完成，显示结果
+				BEEP_OFF;
+				
+				vTaskSuspend(QR_Task_Handle);    // 挂起自己 不在执行
 
-      PostAsyncMessage(CamDialog.Cam_Hwnd, eMSG_QRScan_OK, (WPARAM)wbuf_data, (LPARAM)wbuf_type);     // 识别完成，显示结果
-      BEEP_OFF;
-      
-      vTaskSuspend(QR_Task_Handle);    // 挂起自己 不在执行
+				QR_decoder();     // 退出前识别一次，清除上一帧
 
-      QR_decoder();     // 退出前识别一次，清除上一帧
-
-      GUI_VMEM_Free(wbuf_data);
-      qr_num = 0;
-    }
-    
-    GUI_msleep(10);
+				GUI_VMEM_Free(wbuf_data);
+				qr_num = 0;
+			}
+//			GUI_msleep(1);
+		}
 	}
-  GUI_Thread_Delete(GUI_GetCurThreadHandle()); 
+	GUI_SemPost(QR_Exit);
+	/* 任务结束,等待线程被回收 */
+	while(1)
+	{
+		GUI_Yield();
+	}
 }
 
 /*=========================================================================================*/
@@ -439,22 +466,12 @@ static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       }
       else
       {
-        // MSGBOX_OPTIONS ops;
-        // //const WCHAR *btn[]={L"确定"};
-        // int x,y,w,h;
-
-        // ops.Flag =MB_ICONERROR;
-        // //ops.pButtonText =btn;
-        // ops.ButtonCount =0;
-        // w =500;
-        // h =200;
-        // x =(GUI_XSIZE-w)>>1;
-        // y =(GUI_YSIZE-h)>>1;
-        // MessageBox(hwnd,x,y,w,h,L"没有检测到OV5640摄像头，\n请重新检查连接。",L"错误",&ops); 
-        // PostCloseMessage(hwnd);
         SetTimer(hwnd, 3, 3, TMR_START | TMR_SINGLE, NULL);      // 初始化出错启动提示
       }
-      cam_sem = GUI_SemCreate(0,1);//同步摄像头图像
+      cam_sem = GUI_SemCreate(0,1);//同步摄像头图像计数信号量
+			QR_decode = GUI_SemCreate(0,1);//同步二维码计数信号量
+			QR_Exit = GUI_SemCreate(0,2);//任务退出同步信号量
+			
       QR_Task = 1;
       
       xTaskCreate((TaskFunction_t )Update_Dialog,   /* 任务入口函数 */
@@ -654,23 +671,18 @@ static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
       DeleteDC(hdc_mem_temp);
       OV5640_Reset();//复位摄像头
       OV5640_Capture_Control(DISABLE);//关闭摄像头采集图像
-			
-//			OV5640_Capture_Control(DISABLE);
-//      DMA_ITConfig(DMA2_Stream1,DMA_IT_TC,DISABLE); //关闭DMA中断
-//      DCMI_Cmd(DISABLE); //DCMI失能
-//      DCMI_CaptureCmd(DISABLE); 
-			
-      if (QR_Task)
-      {
-        GUI_SemDelete(cam_sem);
-      }
-      QR_Task=0;
+			QR_Task=0;
+			GUI_SemWait(QR_Exit, 0xFFFFFFFF);
+			GUI_SemWait(QR_Exit, 0xFFFFFFFF);
 			GUI_Thread_Delete(Syn_Updata);
+			GUI_Thread_Delete(QR_Task_Handle);
+			GUI_SemDelete(cam_sem);
+			GUI_SemDelete(QR_decode);
+			GUI_SemDelete(QR_Exit);
       GUI_VMEM_Free(CamDialog.cam_buff0);
       //复位摄像头配置参数
       Camera_ReConfig();
       cur_index = 0;
-//      LCD_LayerCamInit((uint32_t)LCD_FRAME_BUFFER,800, 480);
       return PostQuitMessage(hwnd);	
     }    
     

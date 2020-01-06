@@ -80,4 +80,5 @@ typedef enum
 extern void GUI_Camera_DIALOGTest(void *param);
 extern Cam_DIALOG_Typedef CamDialog;
 extern GUI_SEM *cam_sem;//更新图像同步信号量（二值型）
+extern TickType_t tick_record;
 #endif

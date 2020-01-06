@@ -182,62 +182,23 @@ static void CreateSlogan(HDC hdc, const RECT *lprc, HWND hwnd)
   rc.h = 50;
 	DrawText(hdc, L"copyright @ 东莞野火电子技术有限公司", -1, &rc, DT_LEFT|DT_VCENTER);
 
-	/* 右侧图片 */
-#if 0
-  /* 使用资源设备中的文件 */
-  {
-    BOOL res;
-    u8 *jpeg_buf;
-    u32 jpeg_size;
+	BOOL res;
+	u8 *pic_buf;
+	u32 pic_size;
+	PNG_DEC *png_dec;
+	BITMAP png_bm;
 
-    /* 资源设备中加载 */
-    res = RES_Load_Content(GUI_DEMO_PIC, (char **)&jpeg_buf, &jpeg_size);
-    //res = FS_Load_Content(GUI_DEMO_PIC, (char **)&jpeg_buf, &jpeg_size);
-    if(res)
-    {
-      /* 根据图片数据创建JPG_DEC句柄 */
-      dec = JPG_Open(jpeg_buf, jpeg_size);
-
-      /* 绘制至内存对象 */
-      JPG_Draw(hdc, 0, 0, dec);
-
-      /* 关闭JPG_DEC句柄 */
-      JPG_Close(dec);
-    }
-    
-    /* 释放图片内容空间 */
-    RES_Release_Content((char **)&jpeg_buf);
-  }
-#else
-//	/* 根据图片数据创建JPG_DEC句柄 */
-//	dec = JPG_Open(res_slogan, res_slogan_size());
-
-//	/* 绘制至内存对象 */
-//	JPG_Draw(hdc, 480, HEAD_INFO_HEIGHT + 40, dec);
-
-//	/* 关闭JPG_DEC句柄 */
-//	JPG_Close(dec);
-  
-#endif
-  {
-		BOOL res;
-		u8 *pic_buf;
-		u32 pic_size;
-		PNG_DEC *png_dec;
-		BITMAP png_bm;
-
-		//res = FS_Load_Content(GUI_DEMO_PIC, (char**)&pic_buf, &pic_size);    // 资源在 SD 卡
-		res = RES_Load_Content(GUI_DEMO_PIC, (char**)&pic_buf, &pic_size);     // 资源在外部 FLASH
-		if(res)
-		{
-			png_dec = PNG_Open(pic_buf);
-			PNG_GetBitmap(png_dec, &png_bm);
-			DrawBitmap(hdc, 473, 105, &png_bm, NULL);
-			PNG_Close(png_dec);
-		}
-		/* 释放图片内容空间 */
-		RES_Release_Content((char **)&pic_buf);
-  }
+	//res = FS_Load_Content(GUI_DEMO_PIC, (char**)&pic_buf, &pic_size);    // 资源在 SD 卡
+	res = RES_Load_Content(GUI_DEMO_PIC, (char**)&pic_buf, &pic_size);     // 资源在外部 FLASH
+	if(res)
+	{
+		png_dec = PNG_Open(pic_buf);
+		PNG_GetBitmap(png_dec, &png_bm);
+		DrawBitmap(hdc, 473, 105, &png_bm, NULL);
+		PNG_Close(png_dec);
+	}
+	/* 释放图片内容空间 */
+	RES_Release_Content((char **)&pic_buf);
 }
 
 
