@@ -164,7 +164,7 @@ void RTC_CLK_Config(void)
 	__HAL_RCC_RTC_ENABLE(); 
 
 	/* 等待 RTC APB 寄存器同步 */
-	HAL_RTC_WaitForSynchro(&Rtc_Handle);
+//	HAL_RTC_WaitForSynchro(&Rtc_Handle);
 
 	/*=====================初始化同步/异步预分频器的值======================*/
 	/* 驱动日历的时钟ck_spare = LSE/[(255+1)*(127+1)] = 1HZ */
@@ -207,7 +207,7 @@ void RTC_Check_Hrest(void)
 		/* PWR_CR:DBF置1，使能RTC、RTC备份寄存器和备份SRAM的访问 */
 		HAL_PWR_EnableBkUpAccess();
 		/* 等待 RTC APB 寄存器同步 */
-		HAL_RTC_WaitForSynchro(&Rtc_Handle);
+//		HAL_RTC_WaitForSynchro(&Rtc_Handle);
 	}
 }
 /**********************************END OF FILE*************************************/
